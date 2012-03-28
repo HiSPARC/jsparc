@@ -2,58 +2,71 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
-  <title>jSparc.0.3.0</title>
+  <title>jSparc.0.3.5</title>
   <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
   <link rel="stylesheet" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" type="text/css">
   <style>
-   #datum-id{width:450px;height:25px;padding:5px;position:absolute;margin:0px;left:350px;top:5px;}
-   #result-id{width:450px;height:25px;padding:5px;position:absolute;margin:0px;left:350px;top:460px;}
-   #map-id{width:450px;height:420px;position:absolute;margin:0px;left:350px;top:40px;}
-   #dashboard{width:400px;height:470px;padding:5px;position:absolute;margin:0px;left:800px;top:35px;}
-   #graph-id{width:335px;height:500px;padding:5px;position:absolute;margin:0px;left:5px;top:5px;}
-   body{position:relative;color:#666;font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;font-size:1em;background:#aaf;}
+   #datum-id{width:450px; height:25px; padding:5px; position:absolute; margin:0px; left:350px; top:5px;}
+   #result-id{width:450px; height:25px; padding:5px; position:absolute; margin:0px; left:350px; top:460px;}
+   #map-id{width:450px; height:420px; position:absolute; margin:0px; left:350px; top:40px;}
+   #dashboard{width:400px; height:470px; padding:5px; position:absolute; margin:0px; left:800px; top:35px;}
+   #graph-id{width:335px; height:500px; padding:5px; position:absolute; margin:0px; left:5px; top:5px;}
+   #choice > td{border-radius: 2px;}
+   body{position:relative; color:#444; font-family:"Trebuchet MS",Arial,Helvetica,sans-serif; font-size:1em; background:#aaf;}
    input{text-align:right;}
+   input[type="button"]{font-family: "Trebuchet MS",Arial; font-size:1em;}
+   .coincidencegraph{height:225px; width:300px;}
+   .tracegraph{height:225px; width:300px;}
+   table{border:0px;}
   </style>
   <!--[if IE]><script language="javascript" type="text/javascript" src="http://data.hisparc.nl/media/javascript/excanvas.js"></script><![endif]-->
-  <script type="text/javascript" src="../javascript/jquery-1.4.4.min.js"></script>
-  <script type="text/javascript" src="../javascript/jquery.jqplot.min.js"></script>
-  <script type="text/javascript" src="../javascript/openlayers/OpenLayers.js"></script>
-  <script type="text/javascript" src="../javascript/jqplotPlugins/jqplot.cursor.min.js"></script>
-  <script type="text/javascript" src="../javascript/jqplotPlugins/jqplot.dateAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="../javascript/jqplotPlugins/jqplot.categoryAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="../javascript/jqplotPlugins/jqplot.canvasTextRenderer.min.js"></script>
-  <script type="text/javascript" src="../javascript/jqplotPlugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-  <script type="text/javascript" src="../jsparc/jSparc.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery-1.4.4.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/openlayers/OpenLayers.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.cursor.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.dateAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.categoryAxisRenderer.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.canvasTextRenderer.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+  <script type="text/javascript" src="http://data.hisparc.nl/media/jsparc/jSparc.js"></script>
   <script type="text/javascript">
 
-   var URL="http://data.hisparc.nl/django/jsparc/get_coincidence/";
-   var MIPdens=[];
-   var infoURL=[];
-   var get_coincidence={};
-   get_coincidence.session_title="";
-   get_coincidence.session_pin="";
-   get_coincidence.student_name="";
-   var htmlInfo={mapId:"map-id",distId:"dist",chartId:"chartdiv",
-                 mipId:"MIP",mipCalcId:"MIPcalc",energyId:"showEn",
-                 stationEr:"showEr",showerEr:"measEr"};
+   var URL = "http://data.hisparc.nl/django/jsparc/get_coincidence/";
+   var MIPdens = [];
+   var infoURL = [];
+   var get_coincidence = {};
+   get_coincidence.session_title = "";
+   get_coincidence.session_pin = "";
+   get_coincidence.student_name = "";
+   var htmlInfo={mapId: "map-id", distId: "dist", chartId: "chartdiv",
+                 mipId: "MIP", mipCalcId: "MIPcalc", energyId: "showEn",
+                 stationEr: "showEr", showerEr: "measEr"};
+
+   function padZero(number, length) {
+    var str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;}
+    return str;
+   }
 
    function showEvent(i){
-    for(u=0;u<stationNumber;u++){$("#chartdiv"+u).hide();}
-    $("#chartdiv"+i).show();
+    for(u=0; u<8; u++) {
+     $("#chartdiv" + u).hide();}
+    $("#chartdiv" + i).show();
    }
 
    function calcMIP(){
-    for(i=0;i<MIPdens.length;i++){
-     $('#MIP'+i).val((2*MIPdens[i]/$('#count'+i).val()).toFixed(3));      
-    }
+    for(i=0; i<MIPdens.length; i++) {
+     $('#MIP' + i).val((2 * MIPdens[i]/$('#count' + i).val()).toFixed(3));}
    }
 
-   function getStatus(i){
+   function getStatus(i) {
     window.open(infoURL[i]);
    }
 
-   $(function(){
-    var diagramColor=["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
+   $(function() {
+    var diagramColor = ["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
+    var traceColor = ["#414141","#FF5858","#59FF59","#59FFFF"];
     var monthLength=[31,59,90,120,151,181,212,243,273,304,334,365];
     $("#sessionHash").val(get_coincidence.session_hash);
 
@@ -64,117 +77,95 @@
 
 // start callback getJSON
 
-      stationNumber=data.events.length;
-      makeShowerMap(htmlInfo,data);
-      plotGraph(htmlInfo,data);
- 
+      stationNumber = data.events.length;
+      makeShowerMap(htmlInfo, data);
+      plotGraph(htmlInfo, data);
+
 //  Get Year, Month, Day, Hour, Minute, Second.
 
-      var minutes=parseInt(data.events[0].timestamp/60, 10);
-      var seconds=data.events[0].timestamp-60*minutes;
-      var hours=parseInt(minutes/60, 10);
-      minutes=minutes-60*hours;
-      var days=parseInt(hours/24, 10);
-      hours=hours-days*24;
-      var year=parseInt(days/365, 10);
-      var leapDays=parseInt((year-2)/4, 10);
+      var minutes = parseInt(data.events[0].timestamp/60, 10);
+      var seconds = data.events[0].timestamp - 60 * minutes;
+      var hours = parseInt(minutes/60, 10);
+      minutes = minutes - 60 * hours;
+      var days = parseInt(hours/24, 10);
+      hours = hours - days * 24;
+      var year = parseInt(days/365, 10);
+      var leapDays = parseInt((year - 2)/4, 10);
       var yearlength;
-      if(parseInt((year-2)/4)==((year-2)/4)){yearlength=366;}
-      else{yearlength=365}
-      days=days-year*365-leapDays;
-      if(days<0){
-       year=year-1;
-       days=days+yearlength;
-      }
-      year=year+1970;
-      for(i=0;days>monthLength[i];i++){}
-      var month=i;
-      if((parseInt(year/4)==(year/4))&&(month>2)){
-       days=1+days-monthLength[i-1];
-      }
-      else{
-       days=days-monthLength[i-1];
-      }
-      var datumOut=year+"/"+month+"/"+days+"/"+hours+":"+minutes+":"+seconds;
+      if (parseInt((year - 2)/4)==((year - 2)/4)) {yearlength=366;}
+      else {yearlength=365}
+      days = days - year * 365 - leapDays;
+      if (days < 0) {
+       year = year - 1;
+       days = days + yearlength;}
+      year = year + 1970;
+      for (i=0; days > monthLength[i]; i++) {}
+      var month = i;
+      if ((parseInt(year / 4) == (year / 4)) && (month > 2)) {days = 1 + days - monthLength[i - 1];}
+      else{days = days - monthLength[i - 1];}
+      var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
       $("#datum").val(datumOut);
 
 // Greenwich Mean Sidereal Time in hours
 
-      var sidDays=data.events[0].timestamp/86400-10957;
-      var GMST=18.697374558+24.06570982441908*sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
-      hours=parseInt(GMST,10);
-      minutes=(GMST-hours)*60;
-      seconds=(minutes-parseInt(minutes))*60;
-      seconds=(parseInt(0.5+seconds*10))/10;
-      minutes=parseInt(minutes);
-      sidDays=parseInt(hours/24,10);
-      hours=hours-24*sidDays;
-      GMST=sidDays+"/"+hours+":"+minutes+":"+seconds;
+      var sidDays = data.events[0].timestamp/86400 - 10957;
+      var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
+      hours = parseInt(GMST, 10);
+      minutes = (GMST - hours) * 60;
+      seconds = (minutes - parseInt(minutes)) * 60;
+      seconds = (parseInt(0.5 + seconds * 10))/10;
+      minutes = parseInt(minutes);
+      sidDays = parseInt(hours/24, 10);
+      hours = hours - 24 * sidDays;
+      GMST = sidDays + "/" + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
       $("#gmst").val(GMST);
 
 // Write information to dashboard
 
-      var tabWidth=data.events.length;
-      var txt="<tr><td colspan='"+(1+data.events.length)+"'>Station</td></tr><tr><td></td>";
+      var tabWidth = data.events.length;
+      var txt = "<tr><td colspan='" + (1 + data.events.length) + "'>Station</td></tr><tr><td></td>";
       for(i=0;i<data.events.length;i++){
-       if(i<2){
-        txt+="<td>";
-        txt+="<input type='button' value='"+data.events[i].number+"' onclick='getStatus("+i+")' style='background-color:"+diagramColor[1+i]+";color:#aaaaff;'>";
-        txt+="</input></td>";
-       }
-       else{
-        txt+="<td>";
-        txt+="<input type='button' value='"+data.events[i].number+"' onclick='getStatus("+i+")' style='background-color:"+diagramColor[1+i]+";'>";
-        txt+="</input></td>";
-       }
-      }
-      txt+="</tr><tr><td colspan='"+(1+data.events.length)+"'>Distance to shower in [m]</td></tr><tr><td></td>";
+       txt += "<td>";
+       if(i<2){txt += "<input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + "; color:#aaaaff;'>";}
+       else{txt += "<input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + ";'>";}
+        txt += "</input></td>";}
+      txt += "</tr><tr><td colspan='" + (1 + data.events.length) + "'>Distance to shower in [m]</td></tr><tr><td></td>";
       for(i=0;i<data.events.length;i++){
-       txt+="<td><input type='text' id='dist"+i+"' size=4></td>";
-       MIPdens[i]=0;
-      }
-      txt+="</tr><tr><td colspan='"+(1+data.events.length)+"'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
+       txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=4></td>";
+       MIPdens[i]=0;}
+      txt += "</tr><tr><td colspan='" + (1 + data.events.length) + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
       for(j=0;j<4;j++){
-      if(j<2){txt+="<tr><td bgcolor='"+diagramColor[1+j]+"' style='color:#aaf'>"+(1+j)+"</td>";}
-      else{txt+="<tr><td bgcolor='"+diagramColor[1+j]+"'>"+(1+j)+"</td>";}
+       if(j<2){txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px; color:#aaf'>" + (1 + j) + "</td>";}
+       else{txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px;'>" + (1 + j) + "</td>";}
        for(i=0;i<data.events.length;i++){
         if(j<data.events[i].pulseheights.length){
-         if(data.events[i].pulseheights[j]*data.events[i].integrals[j]!==0){
-          MIPdens[i]=data.events[i].mips[j]+MIPdens[i];
-          txt+="<td><input id='MIP"+i+j+"' type='text' value="+(2*data.events[i].mips[j]).toFixed(3)+" size=4></input></td>";
-         }
-         else{txt+="<td><input id='MIP"+i+j+"' type='text' value='no data' style='color:#ff0000' size=4></input></td>";}
-        }
-        else{txt+="<td></td>";}
-       }
-       txt+="</tr>"
-      }
-      txt+="<tr><td></td>";
+         if(data.events[i].pulseheights[j] * data.events[i].integrals[j]!==0){
+          MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
+          txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+         else{txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#ff0000' disabled='disabled' size=5></input></td>";}}
+        else{txt += "<td></td>";}}
+       txt += "</tr>"}
+      txt += "<tr><td></td>";
       for(i=0;i<data.events.length;i++){
-       txt+="<td><select id='count"+i+"' onchange='calcMIP()'>";
+       txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
        for(j=data.events[i].traces.length;j>0;j--){
-        txt+="<option value="+j+">"+j+"</option>";
-       }
-       txt+="</select></td>";
-      }
-      txt+="</tr><tr><td colspan='"+(1+data.events.length)+"'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
-
+        txt += "<option value=" + j + ">" + j + "</option>";}
+       txt += "</select></td>";}
+      txt += "</tr><tr><td colspan='" + (1 + data.events.length) + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
       for(i=0;i<data.events.length;i++){
-       txt+="<td><input type='text' id='MIP"+i+"' value="+(MIPdens[i]/2).toFixed(3)+" size=4></input></td>";
-      }
-      txt+="</tr><tr><td>Calc.</td>";
+       txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i]/2).toFixed(3) + " disabled='disabled' size=4></input></td>";}
+      txt += "</tr><tr><td>Calc.</td>";
       for(i=0;i<data.events.length;i++){
-       txt+="<td><input type='text' id='MIPcalc"+i+"' size=4></input></td>";
-       $("#choice"+i).html(data.events[i].number);
-       infoURL[i]="http://data.hisparc.nl/django/show/stations/"+data.events[i].number+"/"+year+"/"+month+"/"+days+"/";
-      }
+       txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=4></input></td>";
+       $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
+       infoURL[i]="http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + year + "/" + month + "/" + days + "/";}
       $(txt).appendTo("#coinInfo");
       $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
       $("#dataButton").hide();
       showEvent(0);
      });
 
-// end callback getJSON() 
+// end callback getJSON()
 
      $("#choice0").bind('mouseover',function(event){showEvent(0);});
      $("#choice1").bind('mouseover',function(event){showEvent(1);});
@@ -188,9 +179,9 @@
 
 // end main()
 
-    $("#dataButton").bind('click',function(event){getData();});
+    $("#dataButton").bind('click', function(event){getData();});
     $(window).keypress(function(e) {
-     if((e.keyCode===13)&&($("#studentName").val()!=="")){getData();}
+     if ((e.keyCode===13) && ($("#studentName").val()!=="")) {getData();}
     });
 
     var Dataflag=true;
@@ -200,64 +191,57 @@
      get_coincidence.student_name=$("#studentName").val();
      if(Dataflag){
       main(htmlInfo, URL);
-      Dataflag=false;
-     }
+      Dataflag=false;}
     }
    });
   </script>
  </head>
  <body>
   <div id="graph-id">
-   <div id="chartdiv" style="height:225px;width:300px;"></div>
+   <div id="chartdiv" class="coincidencegraph"></div>
    <table width=335px>
-    <tr id="choice">
-     <td id="choice0" bgcolor="#660000" style="color:#aaf">&nbsp;</td>
-     <td id="choice1" bgcolor="#ff0000" style="color:#aaf"></td>
-     <td id="choice2" bgcolor="#ff9900"></td>
-     <td id="choice3" bgcolor="#ffff00"></td>
-     <td id="choice4" bgcolor="#66ff00"></td>
-     <td id="choice5" bgcolor="#66ffff"></td>
-     <td id="choice6" bgcolor="#ff00ff"></td>
-     <td id="choice7" bgcolor="#cccccc"></td>
+    <tr id="choice" align="center">
+     <td id="choice0" bgcolor="#660000" style="visibility:hidden; color:#aaf;">&nbsp;</td>
+     <td id="choice1" bgcolor="#ff0000" style="display:none; color:#aaf;"></td>
+     <td id="choice2" bgcolor="#ff9900" style="display:none;"></td>
+     <td id="choice3" bgcolor="#ffff00" style="display:none;"></td>
+     <td id="choice4" bgcolor="#66ff00" style="display:none;"></td>
+     <td id="choice5" bgcolor="#66ffff" style="display:none;"></td>
+     <td id="choice6" bgcolor="#ff00ff" style="display:none;"></td>
+     <td id="choice7" bgcolor="#cccccc" style="display:none;"></td>
     </tr>
    </table>
    <table width=335px>
-    <tr id="choice">
-     <td bgcolor="#660000" style="color:#aaf">Detector 1</td>
-     <td bgcolor="#ff0000" style="color:#aaf">Detector 2</td>
-     <td bgcolor="#ff9900">Detector 3</td>
-     <td bgcolor="#ffff00">Detector 4</td>
+    <tr id="choice" align="center">
+     <td bgcolor="#414141" style="color:#aaf">Detector 1</td>
+     <td bgcolor="#FF5858" style="color:#aaf">Detector 2</td>
+     <td bgcolor="#59FF59">Detector 3</td>
+     <td bgcolor="#59FFFF">Detector 4</td>
     </tr>
    </table>
-   <div id="chartdiv0" style="height:225px;width:300px;"></div>
-   <div id="chartdiv1" style="height:225px;width:300px;"></div>
-   <div id="chartdiv2" style="height:225px;width:300px;"></div>
-   <div id="chartdiv3" style="height:225px;width:300px;"></div>
-   <div id="chartdiv4" style="height:225px;width:300px;"></div>
-   <div id="chartdiv5" style="height:225px;width:300px;"></div>
-   <div id="chartdiv6" style="height:225px;width:300px;"></div>
-   <div id="chartdiv7" style="height:225px;width:300px;"></div>
+   <div id="chartdiv0" class="tracegraph"></div>
+   <div id="chartdiv1" class="tracegraph"></div>
+   <div id="chartdiv2" class="tracegraph"></div>
+   <div id="chartdiv3" class="tracegraph"></div>
+   <div id="chartdiv4" class="tracegraph"></div>
+   <div id="chartdiv5" class="tracegraph"></div>
+   <div id="chartdiv6" class="tracegraph"></div>
+   <div id="chartdiv7" class="tracegraph"></div>
   </div>
-  <div id="datum-id">Date:<input type="text" id="datum" size=14></input> GMST:<input type="text" id="gmst" size=12></input></div>
+  <div id="datum-id">Date:<input type="text" id="datum" disabled="disabled" size=22></input> GMST:<input type="text" id="gmst" disabled="disabled" size=20></input></div>
   <div id="map-id"></div>
-  <div id="result-id">Energy:<input type="text" id="showEn" size=7></input>eV  X<sup>2</sup>:<input type="text" id="showEr" size=8></input></div>
+  <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8></input>, X<sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></input></div>
   <div id="dashboard">
    <form action="">
    <table>
-    <tr>
-     <td>Title</td><td><input type="text" id="sessionTitle"></input></td>
-    </tr>
-    <tr>
-     <td>Pin</td><td><input type="text" id="sessionPin"></input></td>
-    </tr>
-    <tr>
-     <td>Name</td><td><input type="text" id="studentName"></input></td>
-    </tr>
+    <tr><td>Title</td><td><input type="text" id="sessionTitle"></input></td></tr>
+    <tr><td>Pin</td><td><input type="text" id="sessionPin"></input></td></tr>
+    <tr><td>Name</td><td><input type="text" id="studentName"></input></td></tr>
    </table>
    </form>
    <input type="button" id="dataButton" value="Get data" onclick="getData()"></input>
    <form id="info" action="">
-    <table id="coinInfo" border=0>
+    <table id="coinInfo">
     </table>
    </form>
   </div>
