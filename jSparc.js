@@ -72,11 +72,11 @@
  * @returns (Number} distance in metres between points
  */
 
-function toRad(x){
+function toRad(x) {
  return x*Math.atan(1)/45;
 }
 
-function toDeg(x){
+function toDeg(x) {
  return x*45/Math.atan(1);
 }
 
@@ -110,7 +110,7 @@ function distVincenty(lat1, lon1, lat2, lon2) {
     lambda = L+(1-C)*f*sinAlpha*(sigma + C*sinSigma*(cos2SigmaM+C*cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)));
   } while((Math.abs(lambda-lambdaP)>1e-12)&&(--iterLimit>0));
 
-  if (iterLimit===0){return NaN;}  // formula failed to converge
+  if (iterLimit===0) {return NaN;}  // formula failed to converge
 
   var uSq = cosSqAlpha*(a*a-b*b)/(b*b);
   var A = 1+uSq/16384*(4096+uSq*(-768+uSq*(320-175*uSq)));
@@ -134,8 +134,8 @@ function distVincenty(lat1, lon1, lat2, lon2) {
 var showerMerc, shower4326;
 var PI = 4*Math.atan(1);
 var OpenLayers;
-var diagramColor=[];
-diagramColor = ["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
+var diagramColor = ["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
+var traceColor = ["#414141","#FF5858","#59FF59","#59FFFF"];
 var alfa = 1.2;
 var eta = 3.97; //3,97 – 1,79⋅((1/cos θ) – 1)
 var r0 = 92;
@@ -144,115 +144,115 @@ var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according W
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
 //var data;
 
-function toScient(x,dx){
+function toScient(x,dx) {
  dx = Math.round(Math.log(x/dx)/Math.log(10));
  return parseFloat(x).toExponential(dx);
 }
 
-function invNKG(shower4326,stationIndex,data){
+function invNKG(shower4326, stationIndex, data) {
  var S = $("#MIP"+stationIndex).val();
  var r;
- if(data.events[stationIndex].lat!==""){
+ if (data.events[stationIndex].lat!=="") {
   r = distVincenty(shower4326.y,shower4326.x,data.events[stationIndex].lat,data.events[stationIndex].lon);}
  return S*Math.pow((r/r0),(alfa))*Math.pow((1+(r/r0)),(eta-alfa));
 }
 
-function invAgase(shower4326,stationIndex,data){
+function invAgase(shower4326, stationIndex, data) {
  var S = $("#MIP"+stationIndex).val();
  var r;
- if(data.events[stationIndex].lat!==""){
+ if (data.events[stationIndex].lat!=="") {
   r = distVincenty(shower4326.y,shower4326.x,data.events[stationIndex].lat,data.events[stationIndex].lon);}
- return S*Math.pow((r/r0),(-1.2))*Math.pow((1+(r/r0)),(-2.64))*Math.pow((1+r*r/1000000),(-0.6));
+ return S*Math.pow((r/r0), (-1.2))*Math.pow((1+(r/r0)), (-2.64))*Math.pow((1+r*r/1000000), (-0.6));
 }
 
-function NKG(pMerc,k,stationIndex,data){
+function NKG(pMerc, k, stationIndex, data) {
  var p4326 = (pMerc);
  var r = distVincenty(p4326.y,p4326.x,data.events[i].lat,data.events[i].lon);
- return k*Math.pow((r/r0),(-alfa))*Math.pow((1+(r/r0)),(alfa-eta));
+ return k*Math.pow((r/r0), (-alfa))*Math.pow((1+(r/r0)), (alfa-eta));
 }
 
-function agase(pMerc,k,stationIndex,data){
+function agase(pMerc, k, stationIndex, data) {
  var p4326 = (pMerc);
  var r = distVincenty(p4326.y,p4326.x,data.events[i].lat,data.events[i].lon);
  return k*Math.pow((r/r0),(1.2))*Math.pow((1+(r/r0)),(2.64))*Math.pow((1+r*r/1000000),(0.6));
 }
 
-function energy(k){
- return 2.15e17*Math.pow((k*Math.pow((600/r0),(-alfa))*Math.pow((1+(600/r0)),(alfa-eta))),1.015);
+function energy(k) {
+ return 2.15e17*Math.pow((k*Math.pow((600/r0), (-alfa))*Math.pow((1+(600/r0)), (alfa-eta))), 1.015);
 }
 
-function calcError(htmlInfo,data){
+function calcError(htmlInfo,data) {
  var chiKwad = 0;
  var delta;
- for(i=0;i<data.events.length;i++){
-  delta=$("#"+htmlInfo.mipId+i).val()-$("#"+htmlInfo.mipCalcId+i).val();
-  chiKwad+=delta*delta/$("#"+htmlInfo.mipCalcId+i).val();}
+ for (i=0; i<data.events.length; i++) {
+  delta = $("#"+htmlInfo.mipId+i).val()-$("#"+htmlInfo.mipCalcId+i).val();
+  chiKwad += delta*delta/$("#"+htmlInfo.mipCalcId+i).val();}
  $("#"+htmlInfo.stationEr).val(chiKwad.toFixed(4));
  result.error = chiKwad;
- for(j=0;j<4;j++){
-  for(i=0;i<data.events.length;i++){
-   if($("#"+htmlInfo.mipId+i+j).val()==="no data"){delta=0;}
-   else{delta=$("#"+htmlInfo.mipId+i+j).val();}
-   delta=delta-$("#"+htmlInfo.mipCalcId+i).val();
-   chiKwad+=delta*delta/$("#"+htmlInfo.mipCalcId+i).val();}}
- $("#"+htmlInfo.showerEr).val(chiKwad.toFixed(4));
+ for (j=0; j<4; j++) {
+  for (i=0; i<data.events.length; i++) {
+   if ($("#"+htmlInfo.mipId+i+j).val()==="no data") {delta = 0;}
+   else {delta = $("#" + htmlInfo.mipId + i + j).val();}
+   delta = delta - $("#" + htmlInfo.mipCalcId + i).val();
+   chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}}
+ $("#" + htmlInfo.showerEr).val(chiKwad.toFixed(4));
 }
 
-function calcEnergy(htmlInfo,showerMerc,data){
- var k=invNKG(showerMerc,0,data);
- for(i=0;i<data.events.length;i++){
+function calcEnergy(htmlInfo,showerMerc,data) {
+ var k = invNKG(showerMerc,0,data);
+ for (i=0; i<data.events.length; i++) {
   $("#"+htmlInfo.mipCalcId+i).val(NKG(showerMerc,k,i,data).toFixed(3));
  }
  $("#"+htmlInfo.energyId).val(toScient(energy(k),(energy(k)/100)));
- result.logEnergy=Math.log(energy(k))/Math.log(10);
+ result.logEnergy = Math.log(energy(k))/Math.log(10);
  calcError(htmlInfo,data);
 }
 
-function sendResult(){
+function sendResult() {
  result.session_title=get_coincidence.session_title;
  result.session_pin=get_coincidence.session_pin;
  result.student_name=get_coincidence.student_name;
- $.getJSON('http://data.hisparc.nl/django/jsparc/result/', result, function(data){
+ $.getJSON('http://data.hisparc.nl/django/jsparc/result/', result, function(data) {
   $("#analyseTab").hide();
   window.alert("You are number "+data.rank+".");
   window.location.reload();});
 }
 
-function transPlace(pMerc){
+function transPlace(pMerc) {
  var p4326 = new OpenLayers.Geometry.Point(pMerc.geometry.x,pMerc.geometry.y); // makes a temporary helppoint
  p4326.transform(projmerc, proj4326); // transforms back to WGS 1984
  return p4326;
 }
 
-function writeDist(htmlInfo,pMerc,data){
+function writeDist(htmlInfo,pMerc,data) {
  var p4326 = transPlace(pMerc);
- result.lon=p4326.x;
- result.lat=p4326.y;
+ result.lon = p4326.x;
+ result.lat = p4326.y;
  calcEnergy(htmlInfo,p4326,data);
- for(i=0;i<data.events.length;i++){
+ for (i=0; i<data.events.length; i++) {
   $("#"+htmlInfo.distId+i).val(distVincenty(p4326.y,p4326.x,data.events[i].lat,data.events[i].lon));}
 }
 
-function makeShowerMap(htmlInfo,data){ //htmlInfo and data are JSON's!
- var mapData={lon:0,lat:0,xmin:90,ymin:180,xmax:-90,ymax:-180};
- result.pk=data.pk;
- for(i=0;i<data.events.length;i++){
+function makeShowerMap(htmlInfo,data) { //htmlInfo and data are JSON's!
+ var mapData = {lon:0, lat:0, xmin:90, ymin:180, xmax:-90, ymax:-180};
+ result.pk = data.pk;
+ for (i=0; i<data.events.length; i++) {
   mapData.lon=mapData.lon+data.events[i].lon;
   mapData.lat=mapData.lat+data.events[i].lat;
-  if(mapData.xmax<data.events[i].lon){mapData.xmax=data.events[i].lon;}
-  if(mapData.xmin>data.events[i].lon){mapData.xmin=data.events[i].lon;}
-  if(mapData.ymax<data.events[i].lat){mapData.ymax=data.events[i].lat;}
-  if(mapData.ymin>data.events[i].lat){mapData.ymin=data.events[i].lat;}}
- var x=mapData.lon/data.events.length;
- var y=mapData.lat/data.events.length;
- var lonlat = new OpenLayers.LonLat(x,y);
+  if (mapData.xmax<data.events[i].lon) {mapData.xmax=data.events[i].lon;}
+  if (mapData.xmin>data.events[i].lon) {mapData.xmin=data.events[i].lon;}
+  if (mapData.ymax<data.events[i].lat) {mapData.ymax=data.events[i].lat;}
+  if (mapData.ymin>data.events[i].lat) {mapData.ymin=data.events[i].lat;}}
+ var x = mapData.lon / data.events.length;
+ var y = mapData.lat / data.events.length;
+ var lonlat = new OpenLayers.LonLat(x, y);
  var zoom = 18;
- var zoomLon = Math.log(360/(mapData.xmax-mapData.xmin))/Math.log(2);
- var zoomLat = Math.log(360/((mapData.ymax-mapData.ymin)*Math.cos(PI*y/180)))/Math.log(2);
- if(zoomLon>zoomLat){zoom = parseInt(zoomLat, 10);}
- else{zoom = parseInt(zoomLon, 10);}
+ var zoomLon = Math.log(360 / (mapData.xmax - mapData.xmin)) / Math.log(2);
+ var zoomLat = Math.log(360 / ((mapData.ymax - mapData.ymin) * Math.cos(PI * y / 180))) / Math.log(2);
+ if (zoomLon>zoomLat) {zoom = parseInt(zoomLat, 10);}
+ else {zoom = parseInt(zoomLon, 10);}
 
- var map=new OpenLayers.Map(htmlInfo.mapId); //makes a "map"-instance
+ var map = new OpenLayers.Map(htmlInfo.mapId); //makes a "map"-instance
  map.addLayer(new OpenLayers.Layer.OSM()); //gets a rendered map
  map.setCenter(lonlat.transform(proj4326,projmerc),zoom); //shows the map
  map.addControl(new OpenLayers.Control.ScaleLine());
@@ -268,17 +268,17 @@ function makeShowerMap(htmlInfo,data){ //htmlInfo and data are JSON's!
 
  var stationLayer=new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
  map.addLayer(stationLayer); // puts the "Stations" layer on the map
- for(i=0;i<data.events.length;i++){
- if(i<2){
- station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
-    {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight:25, graphicWidth:35, graphicYOffset:-25,
-     label:data.events[i].number,labelYOffset:17,fontColor:'#aaf'});}
- else{
- station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
+ for (i=0;i<data.events.length;i++) {
+  if (i<2) {
+  station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
+   {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight:25, graphicWidth:35, graphicYOffset:-25,
+    label:data.events[i].number, labelYOffset:17, fontColor:'#aaf'});}
+  else{
+   station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
     {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight: 25, graphicWidth: 35, graphicYOffset: -25,
-     label:data.events[i].number,labelYOffset:17,fontColor:'#336'});}
- //makes a "showerMerc"-instance
- stationLayer.addFeatures(station); // puts the instance in the layer
+     label:data.events[i].number, labelYOffset:17, fontColor:'#336'});}
+  //makes a "showerMerc"-instance
+  stationLayer.addFeatures(station); // puts the instance in the layer
  } //data the stations on the "Station" layer
 
  var dragShower=new OpenLayers.Control.DragFeature(showerLayer); // makes features in the vector-layer draggeble
@@ -286,10 +286,10 @@ function makeShowerMap(htmlInfo,data){ //htmlInfo and data are JSON's!
  dragShower.activate(); // switches the control on
  writeDist(htmlInfo,showerMerc,data); // writes the distances to the html-form
  map.addControl(new OpenLayers.Control.LayerSwitcher()); //makes the button on the rightside of the map
- map.events.register("mousemove",map,function(e){writeDist(htmlInfo,showerMerc,data);}); // calls writePlace() when the mouse moves
+ map.events.register("mousemove",map,function(e) {writeDist(htmlInfo,showerMerc,data);}); // calls writePlace() when the mouse moves
 }
 
-function plotGraph(htmlInfo,data){
+function plotGraph(htmlInfo,data) {
  var tmin = 999999999;
  var tmax = 0;
  var diagramColor = ["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
@@ -301,16 +301,16 @@ function plotGraph(htmlInfo,data){
 
 // coincidence diagram
 
- for(j=0; j<data.events.length; j++) {
-  for(k=0; k<4; k++) {
-   for(;maxHeight<data.events[j].pulseheights[k];){
+ for (j=0; j<data.events.length; j++) {
+  for (k=0; k<4; k++) {
+   while (maxHeight<data.events[j].pulseheights[k]) {
     maxHeight=maxHeight*2;}}}
 
- for(j=0; j<data.events.length; j++) { // find the smallest and biggest value of nanoseconds
+ for (j=0; j<data.events.length; j++) { // find the smallest and biggest value of nanoseconds
   offset = data.events[j].nanoseconds;
-  if(tmin>offset) {tmin = offset;}
-  for(k=0; k<4; k++) {
-   if(tmax<data.events[j].traces[k].length*2.5+offset) {
+  if (tmin>offset) {tmin = offset;}
+  for (k=0; k<4; k++) {
+   if (tmax<data.events[j].traces[k].length*2.5+offset) {
     tmax = data.events[j].traces[k].length*2.5+offset;}}}
 
  var tracedata=[];
@@ -321,28 +321,28 @@ function plotGraph(htmlInfo,data){
              axes:{xaxis:{min:0, max:tmax-tmin, label:"Time [ns]", numberTicks:3},
                    yaxis:{max:0, label:"Pulseheight [mV]", numberTicks:3,
                           labelRenderer:$.jqplot.CanvasAxisLabelRenderer}},
-             series:[{showMarker:false,color:"#000000"}]
+             series:[{showMarker:false, color:"#000000"}]
  };
 
- for(j=0;j<data.events.length;j++){
-  for(k=0;k<4;k++){
+ for (j=0;j<data.events.length;j++) {
+  for (k=0;k<4;k++) {
    tracedata[k]=[[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
-  for(k=0;k<4;k++){
-   for(i=1;i<data.events[j].traces[k].length;i++){
+  for (k=0;k<4;k++) {
+   for (i=1;i<data.events[j].traces[k].length;i++) {
     tracedata[k].push([(i*2.5+data.events[j].nanoseconds-tmin), data.events[j].traces[k][i]]);}
    eventdata.push(tracedata[k]);}}
 
- for(j=0;j<data.events.length;j++){
-  for(k=1;k<4*data.events.length;k++){
+ for (j=0;j<data.events.length;j++) {
+  for (k=1;k<4*data.events.length;k++) {
    styledata.series.push({showMarker:false});}
-  for(k=0;k<4;k++){
-   styledata.series[j*4+k].color=diagramColor[1+j];}}
+  for (k=0;k<4;k++) {
+   styledata.series[j*4+k].color = diagramColor[1+j];}}
 
  $.jqplot(htmlInfo.chartId, eventdata, styledata);
 
 // a set of event diagrams
 
- for(j=0; j<data.events.length; j++){
+ for (j=0; j<data.events.length; j++) {
 
 // an event diagram
 /*
@@ -350,15 +350,15 @@ function plotGraph(htmlInfo,data){
   tmax=0;*/
 
   maxHeight=125;
-  for(k=0;k<4;k++){
-   for(;maxHeight<data.events[j].pulseheights[k];){
+  for (k=0; k<4; k++) {
+   for (;maxHeight<data.events[j].pulseheights[k];) {
     maxHeight=maxHeight*2;}}
 
 /*
   offset=data.events[j].nanoseconds;
-  if(tmin>offset){tmin=offset;}
-  for(k=0;k<4;k++){
-   if(tmax<data.events[j].traces[k].length*2.5+offset){tmax=data.events[j].traces[k].length*2.5+offset;}
+  if (tmin>offset) {tmin=offset;}
+  for (k=0;k<4;k++) {
+   if (tmax<data.events[j].traces[k].length*2.5+offset) {tmax=data.events[j].traces[k].length*2.5+offset;}
   }*/
 
   tracedata=[];
@@ -371,19 +371,19 @@ function plotGraph(htmlInfo,data){
                            labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
              series: [{showMarker: false, color: "#000000"}]};
 
-  for(k=0;k<4;k++){
+  for (k=0; k<4; k++) {
    tracedata[k]=[[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
-  for(k=0;k<4;k++){
-   for(i=1;i<data.events[j].traces[k].length;i++){
+  for (k=0; k<4; k++) {
+   for (i=1; i<data.events[j].traces[k].length; i++) {
     tracedata[k].push([(i*2.5+data.events[j].nanoseconds-tmin), data.events[j].traces[k][i]]);}
    eventdata.push(tracedata[k]);}
 
   diagramID = htmlInfo.chartId+j;
 
-  for(k=1; k<4*data.events.length; k++){
+  for (k=1; k<4*data.events.length; k++) {
    styledata.series.push({showMarker:false});}
 
-  for(k=0; k<4; k++){
+  for (k=0; k<4; k++) {
    styledata.series[k].color=traceColor[k];}
 
  $.jqplot(diagramID, eventdata, styledata);}
