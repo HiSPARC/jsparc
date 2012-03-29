@@ -71,18 +71,18 @@
  */
 
 function toRad(x) {
- return x*Math.atan(1)/45;
+ return x * Math.atan(1) / 45;
 }
 
 function toDeg(x) {
- return x*45/Math.atan(1);
+ return x * 45 / Math.atan(1);
 }
 
 function distVincenty(lat1, lon1, lat2, lon2) {
-  var a = 6378137, b = 6356752.314245,  f = 1/298.257223563;  // WGS-84 ellipsoid params
-  var L = toRad((lon2-lon1));
-  var U1 = Math.atan((1-f) * Math.tan(toRad(lat1)));
-  var U2 = Math.atan((1-f) * Math.tan(toRad(lat2)));
+  var a = 6378137, b = 6356752.314245,  f = 1 / 298.257223563;  // WGS-84 ellipsoid params
+  var L = toRad((lon2 - lon1));
+  var U1 = Math.atan((1 - f) * Math.tan(toRad(lat1)));
+  var U2 = Math.atan((1 - f) * Math.tan(toRad(lat2)));
   var sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
   var sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
   var sinSigma;
@@ -165,6 +165,7 @@ function invAgase(shower4326, stationIndex, data) {
 
 function NKG(pMerc, k, stationIndex, data) {
  var p4326 = (pMerc);
+ //FIXME: Should the i's on the following line not be 'stationIndex'?
  var r = distVincenty(p4326.y, p4326.x, data.events[i].lat,data.events[i].lon);
  return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
 }
@@ -347,10 +348,10 @@ function plotGraph(htmlInfo,data) {
   tmin=999999999;
   tmax=0;*/
 
-  maxHeight=125;
+  maxHeight = 125;
   for (k=0; k<4; k++) {
-   for (;maxHeight<data.events[j].pulseheights[k];) {
-    maxHeight=maxHeight*2;}}
+   while (maxHeight<data.events[j].pulseheights[k]) {
+    maxHeight = maxHeight * 2;}}
 
 /*
   offset=data.events[j].nanoseconds;
@@ -370,7 +371,7 @@ function plotGraph(htmlInfo,data) {
              series: [{showMarker: false, color: "#000000"}]};
 
   for (k=0; k<4; k++) {
-   tracedata[k]=[[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
+   tracedata[k] = [[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
   for (k=0; k<4; k++) {
    for (i=1; i<data.events[j].traces[k].length; i++) {
     tracedata[k].push([(i*2.5+data.events[j].nanoseconds-tmin), data.events[j].traces[k][i]]);}
