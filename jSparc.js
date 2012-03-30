@@ -233,7 +233,7 @@ function writeDist(htmlInfo,pMerc,data) {
 }
 
 function makeShowerMap(htmlInfo,data) { //htmlInfo and data are JSON's!
- var mapData = {lon:0, lat:0, xmin:90, ymin:180, xmax:-90, ymax:-180};
+ var mapData = {lon: 0, lat: 0, xmin: 90, ymin: 180, xmax: -90, ymax: -180};
  result.pk = data.pk;
  for (i=0; i<data.events.length; i++) {
   mapData.lon = mapData.lon+data.events[i].lon;
@@ -269,13 +269,13 @@ function makeShowerMap(htmlInfo,data) { //htmlInfo and data are JSON's!
  map.addLayer(stationLayer); // puts the "Stations" layer on the map
  for (i=0;i<data.events.length;i++) {
   if (i<2) {
-  station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
-   {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight:25, graphicWidth:35, graphicYOffset:-25,
-    label:data.events[i].number, labelYOffset:17, fontColor:'#aaf'});}
+  station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
+   {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight: 25, graphicWidth: 35, graphicYOffset: -25,
+    label: data.events[i].number, labelYOffset: 17, fontColor: '#aaf'});}
   else{
-   station=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
+   station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon,data.events[i].lat).transform(proj4326,projmerc), {some: 'data'},
     {externalGraphic: '../javascript/openlayers/img/marker'+i+'.png', graphicHeight: 25, graphicWidth: 35, graphicYOffset: -25,
-     label:data.events[i].number, labelYOffset:17, fontColor:'#336'});}
+     label: data.events[i].number, labelYOffset: 17, fontColor: '#336'});}
   //makes a "showerMerc"-instance
   stationLayer.addFeatures(station); // puts the instance in the layer
  } //data the stations on the "Station" layer
@@ -314,12 +314,12 @@ function plotGraph(htmlInfo,data) {
 
  var tracedata = [];
  var eventdata = [];
- var styledata = {legend:{show:false},
-                  title:"Coincidence",
-                  cursor:{tooltipLocation:'sw', zoom:true, clickReset:true},
-                  axes:{xaxis:{min:0, max:tmax-tmin, label:"Time [ns]", numberTicks:3},
-                        yaxis:{max:0, label:"Pulseheight [mV]", numberTicks:3,
-                        labelRenderer:$.jqplot.CanvasAxisLabelRenderer}},
+ var styledata = {legend: {show: false},
+                  title: "Coincidence",
+                  cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
+                  axes: {xaxis: {min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
+                         yaxis: {max: 0, label: "Pulseheight [mV]", numberTicks: 3,
+                                 labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
                   series: [{showMarker: false, color: "#000000"}],
                   grid: {shadow: false}};
 
@@ -328,12 +328,12 @@ function plotGraph(htmlInfo,data) {
    tracedata[k]=[[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
   for (k=0;k<4;k++) {
    for (i=1;i<data.events[j].traces[k].length;i++) {
-    tracedata[k].push([(i*2.5+data.events[j].nanoseconds-tmin), data.events[j].traces[k][i]]);}
+    tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
    eventdata.push(tracedata[k]);}}
 
  for (j=0;j<data.events.length;j++) {
   for (k=1;k<4*data.events.length;k++) {
-   styledata.series.push({showMarker:false});}
+   styledata.series.push({showMarker: false});}
   for (k=0;k<4;k++) {
    styledata.series[j*4+k].color = diagramColor[1+j];
    styledata.series[j*4+k].shadow = false;
@@ -362,27 +362,28 @@ function plotGraph(htmlInfo,data) {
    if (tmax<data.events[j].traces[k].length*2.5+offset) {tmax=data.events[j].traces[k].length*2.5+offset;}
   }*/
 
-  tracedata=[];
-  eventdata=[];
-  styledata={legend: {show: false},
-             title: "Station " + data.events[j].number,
-             cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
-             axes: {xaxis:{min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
-                    yaxis:{max: 0, label: "Pulseheight [mV]", numberTicks: 3,
+  tracedata = [];
+  eventdata = [];
+  styledata = {legend: {show: false},
+               title: "Station " + data.events[j].number,
+               cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
+               axes: {xaxis:{min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
+                      yaxis:{max: 0, label: "Pulseheight [mV]", numberTicks: 3,
+                             labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
                series: [{showMarker: false, color: "#000000"}],
                grid: {shadow: false}};
 
   for (k=0; k<4; k++) {
-   tracedata[k] = [[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
+   tracedata[k] = [[(data.events[j].nanoseconds-tmin), data.events[j].traces[k][0]]];}
   for (k=0; k<4; k++) {
    for (i=1; i<data.events[j].traces[k].length; i++) {
     tracedata[k].push([(i*2.5+data.events[j].nanoseconds-tmin), data.events[j].traces[k][i]]);}
    eventdata.push(tracedata[k]);}
 
-  diagramID = htmlInfo.chartId+j;
+  diagramID = htmlInfo.chartId + j;
 
   for (k=1; k<4*data.events.length; k++) {
-   styledata.series.push({showMarker:false});}
+   styledata.series.push({showMarker: false});}
 
   for (k=0; k<4; k++) {
    styledata.series[k].color = traceColor[k];
