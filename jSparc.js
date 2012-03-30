@@ -320,8 +320,8 @@ function plotGraph(htmlInfo,data) {
                   axes:{xaxis:{min:0, max:tmax-tmin, label:"Time [ns]", numberTicks:3},
                         yaxis:{max:0, label:"Pulseheight [mV]", numberTicks:3,
                         labelRenderer:$.jqplot.CanvasAxisLabelRenderer}},
-                  series:[{showMarker:false, color:"#000000"}]
- };
+                  series: [{showMarker: false, color: "#000000"}],
+                  grid: {shadow: false}};
 
  for (j=0;j<data.events.length;j++) {
   for (k=0;k<4;k++) {
@@ -335,7 +335,9 @@ function plotGraph(htmlInfo,data) {
   for (k=1;k<4*data.events.length;k++) {
    styledata.series.push({showMarker:false});}
   for (k=0;k<4;k++) {
-   styledata.series[j*4+k].color = diagramColor[1+j];}}
+   styledata.series[j*4+k].color = diagramColor[1+j];
+   styledata.series[j*4+k].shadow = false;
+   styledata.series[j*4+k].lineWidth = 2;}}
 
  $.jqplot(htmlInfo.chartId, eventdata, styledata);
 
@@ -367,8 +369,8 @@ function plotGraph(htmlInfo,data) {
              cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
              axes: {xaxis:{min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
                     yaxis:{max: 0, label: "Pulseheight [mV]", numberTicks: 3,
-                           labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
-             series: [{showMarker: false, color: "#000000"}]};
+               series: [{showMarker: false, color: "#000000"}],
+               grid: {shadow: false}};
 
   for (k=0; k<4; k++) {
    tracedata[k] = [[(data.events[j].nanoseconds-tmin),data.events[j].traces[k][0]]];}
@@ -383,7 +385,9 @@ function plotGraph(htmlInfo,data) {
    styledata.series.push({showMarker:false});}
 
   for (k=0; k<4; k++) {
-   styledata.series[k].color=traceColor[k];}
+   styledata.series[k].color = traceColor[k];
+   styledata.series[k].shadow = false;
+   styledata.series[k].lineWidth = 2;}
 
   $.jqplot(diagramID, eventdata, styledata);}
 }
