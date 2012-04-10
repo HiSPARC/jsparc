@@ -6,18 +6,19 @@
   <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
   <link rel="stylesheet" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" type="text/css">
   <style>
-   #datum-id{width:450px; height:25px; padding:5px; position:absolute; margin:0px; left:350px; top:5px;}
-   #result-id{width:450px; height:25px; padding:5px; position:absolute; margin:0px; left:350px; top:460px;}
-   #map-id{width:450px; height:420px; position:absolute; margin:0px; left:350px; top:40px;}
-   #dashboard{width:400px; height:470px; padding:5px; position:absolute; margin:0px; left:800px; top:35px;}
-   #graph-id{width:335px; height:500px; padding:5px; position:absolute; margin:0px; left:5px; top:5px;}
+   #datum-id{width: 450px; height: 25px; padding: 5px; position:absolute; margin: 0px; left: 350px; top: 5px;}
+   #result-id{width: 450px; height: 25px; padding: 5px; position: absolute; margin: 0px; left: 350px; top: 460px;}
+   #map-id{width: 450px; height: 420px; position: absolute; margin: 0px; left: 350px; top: 40px;}
+   #dashboard{width: 400px; height: 470px; padding: 5px; position: absolute; margin: 0px; left: 800px; top: 35px;}
+   #graph-id{width: 335px; height: 500px; padding: 5px; position: absolute; margin: 0px; left: 5px; top: 5px;}
    #choice > td{border-radius: 2px;}
-   body{position:relative; color:#444; font-family:"Trebuchet MS", Arial, Helvetica, sans-serif; font-size:1em; background:#aaf;}
-   input{text-align:right;}
-   input[type="button"]{font-family: "Trebuchet MS",Arial; font-size:1em;}
-   .coincidencegraph{height:225px; width:300px;}
-   .tracegraph{height:225px; width:300px;}
-   table{border:0px;}
+   body{position: relative; color: #444; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-size: 1em; background: #aaf;}
+   input{text-align: right;}
+   input[disabled='disabled']{background-color: #ffffff; color: #444; -webkit-text-fill-color: #444;}
+   input[type="button"]{font-family: "Trebuchet MS",Arial; font-size: 1em;}
+   .coincidencegraph{height: 225px; width: 300px;}
+   .tracegraph{height: 225px; width: 300px;}
+   table{border: 0px;}
   </style>
   <!--[if IE]><script language="javascript" type="text/javascript" src="http://data.hisparc.nl/media/javascript/excanvas.js"></script><![endif]-->
   <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery-1.4.4.min.js"></script>
@@ -127,7 +128,7 @@
       var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
       for (i=0; i<dataeventslength; i++) {
        txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + ";";
-       if (i<2) {txt += " color:#aaaaff;";}
+       if (i<2) {txt += " color:#ddddff;";}
        txt += "'>"}
       txt += "</input></td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
       for (i=0; i<dataeventslength; i++) {
@@ -136,7 +137,7 @@
       txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
       for (j=0; j<4; j++) {
        txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px";
-       if (j<2) {txt += "; color:#aaf"}
+       if (j<2) {txt += "; color:#ddddff"}
        txt += ";'>" + (1 + j) + "</td>";
        for (i=0; i<dataeventslength; i++) {
         if (j<data.events[i].pulseheights.length) {
@@ -203,8 +204,8 @@
    <div id="chartdiv" class="coincidencegraph"></div>
    <table width=335px>
     <tr id="choice" align="center">
-     <td id="choice0" bgcolor="#660000" style="visibility:hidden; color:#aaf;">&nbsp;</td>
-     <td id="choice1" bgcolor="#ff0000" style="display:none; color:#aaf;"></td>
+     <td id="choice0" bgcolor="#660000" style="visibility:hidden; color:#ddf;">&nbsp;</td>
+     <td id="choice1" bgcolor="#ff0000" style="display:none; color:#ddf;"></td>
      <td id="choice2" bgcolor="#ff9900" style="display:none;"></td>
      <td id="choice3" bgcolor="#ffff00" style="display:none;"></td>
      <td id="choice4" bgcolor="#66ff00" style="display:none;"></td>
@@ -215,8 +216,8 @@
    </table>
    <table width=335px>
     <tr id="choice" align="center">
-     <td bgcolor="#414141" style="color:#aaf">Detector 1</td>
-     <td bgcolor="#FF5858" style="color:#aaf">Detector 2</td>
+     <td bgcolor="#414141" style="color:#ddf">Detector 1</td>
+     <td bgcolor="#FF5858" style="color:#ddf">Detector 2</td>
      <td bgcolor="#59FF59">Detector 3</td>
      <td bgcolor="#59FFFF">Detector 4</td>
     </tr>
