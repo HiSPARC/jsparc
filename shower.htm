@@ -135,7 +135,7 @@
        txt += "'>"}
       txt += "</input></td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
       for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=4></td>";
+       txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
        MIPdens[i] = 0;}
       txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
       for (j=0; j<4; j++) {
@@ -158,10 +158,10 @@
        txt += "</select></td>";}
       txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
       for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i]/2).toFixed(3) + " disabled='disabled' size=4></input></td>";}
+       txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i]/2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
       txt += "</tr><tr><td>Calc.</td>";
       for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=4></input></td>";
+       txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
        $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
        infoURL[i]="http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + year + "/" + month + "/" + days + "/";}
       $(txt).appendTo("#coinInfo");
