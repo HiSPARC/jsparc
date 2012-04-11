@@ -70,6 +70,8 @@
  * @returns (Number} distance in metres between points
  */
 
+var c=299792458;
+
 function toRad(x) {
  return x * Math.atan(1) / 45;
 }
@@ -210,7 +212,7 @@ function sendResult() {
  result.session_title = get_coincidence.session_title;
  result.session_pin = get_coincidence.session_pin;
  result.student_name = get_coincidence.student_name;
- $.getJSON('http://data.hisparc.nl/django/jsparc/result/', result, function(data) {
+ $.getJSON(URL + 'result/', result, function(data) {
   $("#analyseTab").hide();
   window.alert("You are number " + data.rank + ".");
   // FIXME: This reload needs to be smarter and remember the Title and PIN (and probably also the Student name)
@@ -392,3 +394,57 @@ function plotGraph(htmlInfo,data) {
 
   $.jqplot(diagramID, eventdata, styledata);}
 }
+
+function toOrthogonal (i,lat,lon,alt) {
+ var coordinate={};
+ var a=6378137.000;
+ var b=6356752.315;
+ coordinate.x=(b+alt)*Math.sin(lat);
+ coordinate.y=(a+alt)*Math.cos(lat)*Math.sin(lon);
+ coordinate.z=(a+alt)*Math.cos(lat)*Math.cos(lon);
+ return coordinate;
+}
+
+function interactionTrace (data) {
+ var x = new Array();
+ var y = new Array();
+ var z = new Array();
+ var t = new Array();
+ var A, B, C, D, E, F, G;
+
+ for(i=0; i<data.events.length; i++) {
+  coordinate=toOrthogonal(i,data.events[i].lon,data.events[i].lat,data.events[i].alt);
+  x[i]=coordinate.x;
+  y[i]=coordinate.y;
+  z[i]=coordinate.z;
+  t[i]=data.events[i].nanoseconds/1e9;}
+ if(i=3){
+  A=2*((x[0]-x[1])*(y[0]-y[2])-(x[0]-x[2])*(y[0]-y[1]));
+  B=2*((x[0]-x[2])*(z[0]-z[1])-(x[0]-x[1])*(z[0]-z[2]));
+  C=2*((x[0]-x[1])*(t[2]-t[0])-(x[0]-x[2])*(t[1]-t[0]))*c*c;
+  D=(x[0]-x[2])*((x[0]-x[1])*(x[0]-x[1])+(y[0]-y[1])*(y[0]-y[1])+(z[0]-z[1])*(z[0]-z[1])+(t[0]-t[1])*(t[0]-t[1])*c*c);
+  D=D-(x[0]-x[1])*((x[0]-x[2])*(x[0]-x[2])+(y[0]-y[2])*(y[0]-y[2])+(z[0]-z[2])*(z[0]-z[2])+(t[0]-t[2])*(t[0]-t[2])*c*c);
+  E=2*((y[0]-y[1])*(z[0]-z[2])-(y[0]-y[2])*(z[0]-z[1]));
+  F=2*((y[0]-y[2])*(t[1]-t[0])-(y[0]-y[1])*(t[2]-t[0]))*c*c;
+  G=(y[0]-x[1])*((x[0]-x[2])*(x[0]-x[2])+(y[0]-y[2])*(y[0]-y[2])+(z[0]-z[2])*(z[0]-z[2])+(t[0]-t[2])*(t[0]-t[2])*c*c);
+  G=G-(y[0]-y[2])*((x[0]-x[1])*(x[0]-x[1])+(y[0]-y[1])*(y[0]-y[1])+(z[0]-z[1])*(z[0]-z[1])+(t[0]-t[1])*(t[0]-t[1])*c*c);
+  travelTime = Math.sqrt((x[0]-x[1])*(x[0]-x[1])+(y[0]-y[1])*(y[0]-y[1])+(z[0]-z[1])*(z[0]-z[1]));
+  travelTime = travelTime+Math.sqrt((x[1]-x[2])*(x[1]-x[2])+(y[1]-y[2])*(y[1]-y[2])+(z[1]-z[2])*(z[1]-z[1]));
+  travelTime = travelTime+Math.sqrt((x[0]-x[2])*(x[0]-x[2])+(y[0]-y[2])*(y[0]-y[2])+(z[0]-z[2])*(z[0]-z[2]));
+  travelTime = travelTime/(4*c);
+  travelTime = travelTime-t[0];
+  alert(c*(travelTime+t[0])+", "+c*(travelTime+t[1])+", "+c*(travelTime+t[2]));
+  ALFA = ((travelTime+t[0])*(B*C+E*F)+B*D+E*G)/(A*A+B*B+E*E);
+  BETA = (D*D+G*G+2*(C*D+F*G)*(travelTime+t[0])+(C+F-c*c*A*A)*(travelTime+t[0])*(travelTime+t[0]))/(A*A+B*B+E*E);
+
+ if((ALFA*ALFA-BETA)<0){alert("Geen oplossing, D="+(ALFA*ALFA-BETA)+" ALFA="+ALFA+" BETA="+BETA)}
+ else{
+  dz1 = -ALFA+Math.sqrt(ALFA*ALFA-BETA);
+  dz2 = -ALFA-Math.sqrt(ALFA*ALFA-BETA);
+  dy1 = dz1*B/A+(travelTime+t[0])*C/A+D/A;
+  dy2 = dz2*B/A+(travelTime+t[0])*C/A+D/A;
+  dx1 = dz1*E/A+(travelTime+t[0])*F/A+G/A;
+  dx2 = dz2*E/A+(travelTime+t[0])*F/A+G/A;
+  alert("("+dx1+","+dy1+","+dz1+") en ("+dx2+","+dy2+","+dz2+")");
+  }}
+ }

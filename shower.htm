@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>jSparc.0.3.6</title>
   <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
   <link rel="stylesheet" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" type="text/css">
@@ -32,7 +33,7 @@
   <script type="text/javascript" src="jSparc.js"></script>
   <script type="text/javascript">
 
-   var URL = "http://data.hisparc.nl/django/jsparc/get_coincidence/";
+   var URL = "http://data.hisparc.nl/django/jsparc/";
    var MIPdens = [];
    var infoURL = [];
    var get_coincidence = {};
@@ -74,13 +75,14 @@
 // start main()
 
     function main(htmlInfo, URL) {
-     $.getJSON(URL, get_coincidence, function(data) {
+     $.getJSON(URL + "get_coincidence/", get_coincidence, function(data) {
 
       // start callback getJSON
 
       stationNumber = data.events.length;
       makeShowerMap(htmlInfo, data);
       plotGraph(htmlInfo, data);
+      // interactionTrace(data);
 
       //  Get Year, Month, Day, Hour, Minute, Second.
 
@@ -237,9 +239,11 @@
   <div id="dashboard">
    <form action="">
    <table>
+    <tbody>
     <tr><td>Title</td><td><input type="text" id="sessionTitle"></input></td></tr>
     <tr><td>Pin</td><td><input type="text" id="sessionPin"></input></td></tr>
     <tr><td>Name</td><td><input type="text" id="studentName"></input></td></tr>
+    </tbody>
    </table>
    </form>
    <input type="button" id="dataButton" value="Get data" onclick="getData()"></input>
