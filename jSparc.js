@@ -318,7 +318,7 @@ function plotGraph(htmlInfo,data) {
  var eventdata = [];
  var styledata = {legend: {show: false},
                   title: "Coincidence",
-                  cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
+                  cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
                   axes: {xaxis: {min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
                          yaxis: {max: 0, label: "Pulseheight [mV]", numberTicks: 3,
                                  labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
@@ -368,7 +368,7 @@ function plotGraph(htmlInfo,data) {
   eventdata = [];
   styledata = {legend: {show: false},
                title: "Station " + data.events[j].number,
-               cursor: {tooltipLocation: 'sw', zoom: true, clickReset: true},
+               cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
                axes: {xaxis:{min: 0, max: tmax-tmin, label: "Time [ns]", numberTicks: 3},
                       yaxis:{max: 0, label: "Pulseheight [mV]", numberTicks: 3,
                              labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
