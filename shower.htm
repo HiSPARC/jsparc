@@ -36,173 +36,189 @@
   <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
   <script type="text/javascript" src="jSparc.js"></script>
   <script type="text/javascript">
-
-   var URL = "http://data.hisparc.nl/django/jsparc/";
-   var MIPdens = [];
-   var infoURL = [];
-   var get_coincidence = {};
-   get_coincidence.session_title = "";
-   get_coincidence.session_pin = "";
-   get_coincidence.student_name = "";
-   var htmlInfo = {mapId: "map-id", distId: "dist", chartId: "chartdiv",
-                   mipId: "MIP", mipCalcId: "MIPcalc", energyId: "showEn",
-                   stationEr: "showEr", showerEr: "measEr"};
-
-   function padZero(number, length) {
-    var str = '' + number;
-    while (str.length < length) {
-     str = '0' + str;}
-    return str;
-   }
-
-   function showEvent(i) {
-    for (u=0; u<8; u++) {
-     $("#chartdiv" + u).hide();}
-    $("#chartdiv" + i).show();
-   }
-
-   function calcMIP() {
-    for (i=0; i<MIPdens.length; i++) {
-     $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
-   }
-
-   function getStatus(i) {
-    window.open(infoURL[i]);
-   }
-
-   $(function() {
-    var diagramColor = ["#000000","#660000","#ff0000","#ff9900","#ffff00","#66ff00","#66ffff","#ff00ff","#cccccc"];
-    var traceColor = ["#414141","#FF5858","#59FF59","#59FFFF"];
-    var monthLength = [31,59,90,120,151,181,212,243,273,304,334,365];
-    $("#sessionHash").val(get_coincidence.session_hash);
-
-// start main()
-
-    function main(htmlInfo, URL) {
-     $.getJSON(URL + "get_coincidence/", get_coincidence, function(data) {
-
-      // start callback getJSON
-
-      stationNumber = data.events.length;
-      makeShowerMap(htmlInfo, data);
-      plotGraph(htmlInfo, data);
-      // interactionTrace(data);
-
-      //  Get Year, Month, Day, Hour, Minute, Second.
-
-      var minutes = parseInt(data.events[0].timestamp / 60, 10);
-      var seconds = data.events[0].timestamp - 60 * minutes;
-      var hours = parseInt(minutes / 60, 10);
-      minutes = minutes - 60 * hours;
-      var days = parseInt(hours / 24, 10);
-      hours = hours - days * 24;
-      var year = parseInt(days / 365, 10);
-      var leapDays = parseInt((year - 2) / 4, 10);
-      var yearlength;
-      if (parseInt((year - 2) / 4)==((year - 2) / 4)) {yearlength = 366;}
-      else {yearlength = 365}
-      days = days - year * 365 - leapDays;
-      if (days < 0) {
-       year = year - 1;
-       days = days + yearlength;}
-      year = year + 1970;
-      for (i=0; days > monthLength[i]; i++) {}
-      var month = i;
-      if ((yearlength === 366) && (month > 2)) {days = 1 + days - monthLength[i - 1];}
-      else {days = days - monthLength[i - 1];}
-      var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
-      $("#datum").val(datumOut);
-
-      // Greenwich Mean Sidereal Time in hours
-
-      var sidDays = data.events[0].timestamp / 86400 - 10957;
-      var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
-      hours = parseInt(GMST, 10);
-      minutes = (GMST - hours) * 60;
-      seconds = (minutes - parseInt(minutes)) * 60;
-      seconds = (parseInt(0.5 + seconds * 10)) / 10;
-      minutes = parseInt(minutes);
-      sidDays = parseInt(hours / 24, 10);
-      hours = hours - 24 * sidDays;
-      GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
-      $("#gmst").val(GMST);
-
-// Write information to dashboard
-
-      var dataeventslength = data.events.length;
-      var tabWidth = 1 + data.events.length;
-      var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
-      for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + ";";
-       if (i<2) {txt += " color:#ddddff;";}
-       txt += "'>"}
-      txt += "</input></td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
-      for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
-       MIPdens[i] = 0;}
-      txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
-      for (j=0; j<4; j++) {
-       txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px";
-       if (j<2) {txt += "; color:#ddddff"}
-       txt += ";'>" + (1 + j) + "</td>";
-       for (i=0; i<dataeventslength; i++) {
-        if (j<data.events[i].pulseheights.length) {
-         if (data.events[i].pulseheights[j] * data.events[i].integrals[j]!==0) {
-          MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-          txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
-         else{txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#ff0000' disabled='disabled' size=5></input></td>";}}
-        else{txt += "<td></td>";}}
-       txt += "</tr>"}
-      txt += "<tr><td></td>";
-      for (i=0; i<dataeventslength; i++) {
-       txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
-       for (j=data.events[i].traces.length; j>0; j--) {
-        txt += "<option value=" + j + ">" + j + "</option>";}
-       txt += "</select></td>";}
-      txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
-      for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i]/2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
-      txt += "</tr><tr><td>Calc.</td>";
-      for (i=0; i<dataeventslength; i++) {
-       txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
-       $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
-       infoURL[i]="http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + year + "/" + month + "/" + days + "/";}
-      $(txt).appendTo("#coinInfo");
-      $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
-      $("#dataButton").hide();
-      showEvent(0);
-     });
-
-// end callback getJSON()
-
-     $("#choice0").bind('click', function(event) {showEvent(0);});
-     $("#choice1").bind('click', function(event) {showEvent(1);});
-     $("#choice2").bind('click', function(event) {showEvent(2);});
-     $("#choice3").bind('click', function(event) {showEvent(3);});
-     $("#choice4").bind('click', function(event) {showEvent(4);});
-     $("#choice5").bind('click', function(event) {showEvent(5);});
-     $("#choice6").bind('click', function(event) {showEvent(6);});
-     $("#choice7").bind('click', function(event) {showEvent(7);});
+    var URL = "http://data.hisparc.nl/django/jsparc/";
+    var MIPdens = [];
+    var infoURL = [];
+    var get_coincidence = {};
+    get_coincidence.session_title = "";
+    get_coincidence.session_pin = "";
+    get_coincidence.student_name = "";
+    var htmlInfo = {
+        mapId: "map-id",
+        distId: "dist",
+        chartId: "chartdiv",
+        mipId: "MIP",
+        mipCalcId: "MIPcalc",
+        energyId: "showEn",
+        stationEr: "showEr",
+        showerEr: "measEr"};
+    
+    function padZero(number, length) {
+        var str = '' + number;
+        while (str.length < length) {
+            str = '0' + str;}
+        return str;
     }
-
-// end main()
-
-    $("#dataButton").bind('click', function(event) {getData();});
-    $(window).keypress(function(e) {
-     if ((e.keyCode===13) && ($("#studentName").val()!=="")) {
-      getData();}
+    
+    function showEvent(i) {
+        for (u = 0; u < 8; u++) {
+            $("#chartdiv" + u).hide();}
+        $("#chartdiv" + i).show();
+    }
+    
+    function calcMIP() {
+        for (i = 0; i < MIPdens.length; i++) {
+            $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
+    }
+    
+    function getStatus(i) {
+        window.open(infoURL[i]);
+    }
+    
+    $(function () {
+        var diagramColor = ["#000000", "#660000", "#ff0000", "#ff9900", "#ffff00", "#66ff00", "#66ffff", "#ff00ff", "#cccccc"];
+        var traceColor = ["#414141", "#FF5858", "#59FF59", "#59FFFF"];
+        var monthLength = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+        $("#sessionHash").val(get_coincidence.session_hash);
+    
+        // start main()
+    
+        function main(htmlInfo, URL) {
+            $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
+    
+                // start callback getJSON
+    
+                stationNumber = data.events.length;
+                makeShowerMap(htmlInfo, data);
+                plotGraph(htmlInfo, data);
+                // interactionTrace(data);
+    
+                //  Get Year, Month, Day, Hour, Minute, Second.
+    
+                var minutes = parseInt(data.events[0].timestamp / 60, 10);
+                var seconds = data.events[0].timestamp - 60 * minutes;
+                var hours = parseInt(minutes / 60, 10);
+                minutes = minutes - 60 * hours;
+                var days = parseInt(hours / 24, 10);
+                hours = hours - days * 24;
+                var year = parseInt(days / 365, 10);
+                var leapDays = parseInt((year - 2) / 4, 10);
+                var yearlength;
+                if (parseInt((year - 2) / 4) == ((year - 2) / 4)) {
+                    yearlength = 366;}
+                else {
+                    yearlength = 365;}
+                days = days - year * 365 - leapDays;
+                if (days < 0) {
+                    year = year - 1;
+                    days = days + yearlength;}
+                year = year + 1970;
+                for (i = 0; days > monthLength[i]; i++) {}
+                var month = i;
+                if ((yearlength === 366) && (month > 2)) {
+                    days = 1 + days - monthLength[i - 1];}
+                else {
+                    days = days - monthLength[i - 1];}
+                var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+                $("#datum").val(datumOut);
+    
+                // Greenwich Mean Sidereal Time in hours
+    
+                var sidDays = data.events[0].timestamp / 86400 - 10957;
+                var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
+                hours = parseInt(GMST, 10);
+                minutes = (GMST - hours) * 60;
+                seconds = (minutes - parseInt(minutes)) * 60;
+                seconds = (parseInt(0.5 + seconds * 10)) / 10;
+                minutes = parseInt(minutes);
+                sidDays = parseInt(hours / 24, 10);
+                hours = hours - 24 * sidDays;
+                GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+                $("#gmst").val(GMST);
+    
+                // Write information to dashboard
+    
+                var dataeventslength = data.events.length;
+                var tabWidth = 1 + data.events.length;
+                var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
+                for (i = 0; i < dataeventslength; i++) {
+                    txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + ";";
+                    if (i < 2) {
+                        txt += " color:#ddddff;";}
+                    txt += "'>"}
+                txt += "</input></td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
+                for (i = 0; i < dataeventslength; i++) {
+                    txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
+                    MIPdens[i] = 0;}
+                txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
+                for (j = 0; j < 4; j++) {
+                    txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px";
+                    if (j < 2) {
+                        txt += "; color:#ddddff"}
+                    txt += ";'>" + (1 + j) + "</td>";
+                    for (i = 0; i < dataeventslength; i++) {
+                        if (j < data.events[i].pulseheights.length) {
+                            if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
+                                MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
+                                txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+                            else {
+                                txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#ff0000' disabled='disabled' size=5></input></td>";}}
+                        else {
+                            txt += "<td></td>";}}
+                    txt += "</tr>"}
+                txt += "<tr><td></td>";
+                for (i = 0; i < dataeventslength; i++) {
+                    txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
+                    for (j = data.events[i].traces.length; j > 0; j--) {
+                        txt += "<option value=" + j + ">" + j + "</option>";}
+                    txt += "</select></td>";}
+                txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
+                for (i = 0; i < dataeventslength; i++) {
+                    txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+                txt += "</tr><tr><td>Calc.</td>";
+                for (i = 0; i < dataeventslength; i++) {
+                    txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
+                    $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
+                    infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + year + "/" + month + "/" + days + "/";}
+                $(txt).appendTo("#coinInfo");
+                $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
+                $("#dataButton").hide();
+                showEvent(0);
+            });
+    
+            // end callback getJSON()
+    
+            $("#choice0").bind('click', function (event) {showEvent(0);});
+            $("#choice1").bind('click', function (event) {showEvent(1);});
+            $("#choice2").bind('click', function (event) {showEvent(2);});
+            $("#choice3").bind('click', function (event) {showEvent(3);});
+            $("#choice4").bind('click', function (event) {showEvent(4);});
+            $("#choice5").bind('click', function (event) {showEvent(5);});
+            $("#choice6").bind('click', function (event) {showEvent(6);});
+            $("#choice7").bind('click', function (event) {showEvent(7);});
+        }
+    
+        // end main()
+    
+        $("#dataButton").bind('click', function (event) {
+            getData();
+        });
+        $(window).keypress(function (e) {
+            if ((e.keyCode === 13) && ($("#studentName").val() !== "")) {
+                getData();}
+        });
+    
+        var Dataflag = true;
+    
+        function getData() {
+            get_coincidence.session_title = $("#sessionTitle").val();
+            get_coincidence.session_pin = $("#sessionPin").val();
+            get_coincidence.student_name = $("#studentName").val();
+            if (Dataflag) {
+                main(htmlInfo, URL);
+                Dataflag = false;}
+        }
     });
-
-    var Dataflag=true;
-    function getData() {
-     get_coincidence.session_title = $("#sessionTitle").val();
-     get_coincidence.session_pin = $("#sessionPin").val();
-     get_coincidence.student_name = $("#studentName").val();
-     if (Dataflag) {
-      main(htmlInfo, URL);
-      Dataflag = false;}
-    }
-   });
   </script>
  </head>
  <body>
