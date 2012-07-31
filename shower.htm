@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>jSparc.0.3.6</title>
+  <title>jSparc v0.4.0</title>
   <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
   <link rel="stylesheet" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" type="text/css">
   <style>
@@ -14,14 +14,14 @@
    #dashboard{width: 400px; height: 470px; padding: 5px; position: absolute; margin: 0px; left: 800px; top: 65px;}
    #graph-id{width: 335px; height: 500px; padding: 5px; position: absolute; margin: 0px; left: 5px; top: 5px;}
    #choice > td{border-radius: 2px;}
-   body{position: relative; color: #444; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-size: 1em; background: #aaf;}
+   body{position: relative; color: #333; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-size: 1em; background: #aaf;}
    input{text-align: right;}
-   input[disabled='disabled']{background-color: #ffffff; color: #444; -webkit-text-fill-color: #444;}
+   input[disabled='disabled']{background-color: #ffffff; color: #333; -webkit-text-fill-color: #333;}
    input[type="button"]{font-family: "Trebuchet MS",Arial; font-size: 1em;}
-   .coincidencegraph{height: 225px; width: 300px;}
-   .tracegraph{height: 225px; width: 300px;}
+   .coincidencegraph{height: 225px; width: 325px;}
+   .tracegraph{height: 225px; width: 325px;}
    table{border: 0px;}
-   .tracegraph, .coincidencegraph, .jqplot-yaxis-label {color: #444;}
+   .tracegraph, .coincidencegraph, .jqplot-yaxis-label {color: #333;}
    .olControlAttribution {position: absolute; font-size: 10px; bottom: 0; right: 0; background: rgba(255,255,255,0.7); font-family: Arial; padding: 2px 4px; border-radius: 5px 0 0 0;}
    .olControlScaleLine {position: absolute; bottom: 0px; left: 0; background: rgba(255,255,255,0.7); font-family: Arial; padding: 2px 4px; border-radius: 0 5px 0 0;}
   </style>
@@ -76,8 +76,8 @@
     }
     
     $(function () {
-        var diagramColor = ["#000000", "#660000", "#ff0000", "#ff9900", "#ffff00", "#66ff00", "#66ffff", "#ff00ff", "#cccccc"];
-        var traceColor = ["#414141", "#FF5858", "#59FF59", "#59FFFF"];
+        var diagramColor = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
+        var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
         var monthLength = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         $("#sessionHash").val(get_coincidence.session_hash);
     
@@ -142,7 +142,7 @@
                 var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
-                    txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[1 + i] + ";";
+                    txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[i] + ";";
                     if (i < 2) {
                         txt += " color:#ddddff;";}
                     txt += "'>"}
@@ -238,10 +238,10 @@
    </table>
    <table width=335px>
     <tr id="choice" align="center">
-     <td bgcolor="#414141" style="color:#ddf">Detector 1</td>
-     <td bgcolor="#FF5858" style="color:#ddf">Detector 2</td>
-     <td bgcolor="#59FF59">Detector 3</td>
-     <td bgcolor="#59FFFF">Detector 4</td>
+     <td bgcolor="#222" style="color:#ddf">Detector 1</td>
+     <td bgcolor="#D22" style="color:#ddf">Detector 2</td>
+     <td bgcolor="#1C2">Detector 3</td>
+     <td bgcolor="#1CC">Detector 4</td>
     </tr>
    </table>
    <div id="chartdiv0" class="tracegraph"></div>

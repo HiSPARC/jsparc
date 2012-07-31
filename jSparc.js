@@ -1,6 +1,6 @@
 /* About: Version
 
-   jSparc-0-3-5
+   jSparc-0-4-0
 
    About: Copyright & License
 
@@ -11,6 +11,8 @@
 
    See http://www.gnu.org/licenses/gpl-2.0.html
    and http://www.opensource.org/licenses/mit-license.php for further information.
+
+   Code available on https://github.com/HiSPARC/jsparc
 
    About: Introduction
 
@@ -143,8 +145,6 @@ function distVincenty(lat1, lon1, lat2, lon2) {
 var showerMerc, shower4326;
 var PI = 4 * Math.atan(1);
 var OpenLayers;
-var diagramColor = ["#000000", "#660000", "#ff0000", "#ff9900", "#ffff00", "#66ff00", "#66ffff", "#ff00ff", "#cccccc"];
-var traceColor = ["#414141", "#FF5858", "#59FF59", "#59FFFF"];
 var alfa = 1.2;
 var eta = 3.97; //3,97 – 1,79⋅((1/cos θ) – 1)
 var r0 = 92;
@@ -273,12 +273,15 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     else {
         zoom = parseInt(zoomLon, 10);}
 
-    var map = new OpenLayers.Map(htmlInfo.mapId); //makes a "map"-instance
-    map.addLayer(new OpenLayers.Layer.OSM()); //gets a rendered map
+    var options = {
+        controls: [
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.ScaleLine()]};
+    var map = new OpenLayers.Map(htmlInfo.mapId, options);
+    var mapLayer = new OpenLayers.Layer.OSM();
+    map.addLayer(mapLayer);
     map.setCenter(lonlat.transform(proj4326, projmerc), zoom); //shows the map
-    map.addControl(new OpenLayers.Control.ScaleLine());
-
-    // map.addControl(new OpenLayers.Control.MousePosition()); //shows the mouse position
 
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
@@ -294,26 +297,15 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     var stationLayer = new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
     map.addLayer(stationLayer); // puts the "Stations" layer on the map
     for (i = 0; i < data.events.length; i++) {
-        if (i < 2) {
-            station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
-                {some: 'data'},
-                {externalGraphic: '../javascript/openlayers/img/marker' + i + '.png',
-                 graphicHeight: 25,
-                 graphicWidth: 35,
-                 graphicYOffset: -25,
-                 label: data.events[i].number,
-                 labelYOffset: 17,
-                 fontColor: '#aaf'});}
-        else {
-            station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
-                {some: 'data'},
-                {externalGraphic: '../javascript/openlayers/img/marker' + i + '.png',
-                 graphicHeight: 25,
-                 graphicWidth: 35,
-                 graphicYOffset: -25,
-                 label: data.events[i].number,
-                 labelYOffset: 17,
-                 fontColor: '#336'});}
+        station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
+            {some: 'data'},
+            {externalGraphic: '../javascript/openlayers/img/marker' + i + '.png',
+             graphicHeight: 25,
+             graphicWidth: 35,
+             graphicYOffset: -25,
+             label: data.events[i].number,
+             labelYOffset: 17,
+             fontColor: ((i < 2) ? '#aaf' : '#336')});
         //makes a "showerMerc"-instance
         stationLayer.addFeatures(station);} // puts the instance in the layer
     //data the stations on the "Station" layer
@@ -322,7 +314,6 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     map.addControl(dragShower); // adds the control to draggeble features
     dragShower.activate(); // switches the control on
     writeDist(htmlInfo, showerMerc, data); // writes the distances to the html-form
-    map.addControl(new OpenLayers.Control.LayerSwitcher()); //makes the button on the rightside of the map
     map.events.register("mousemove", map, function (e) {
         writeDist(htmlInfo, showerMerc, data);}); // calls writePlace() when the mouse moves
 }
@@ -330,11 +321,46 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
 function plotGraph(htmlInfo, data) {
     var tmin = 999999999;
     var tmax = 0;
-    var diagramColor = ["#000000", "#660000", "#ff0000", "#ff9900", "#ffff00", "#66ff00", "#66ffff", "#ff00ff", "#cccccc"];
-    var traceColor = ["#414141", "#FF5858", "#59FF59", "#59FFFF"];
     var maxHeight = 125;
     var diagramID;
     var offset;
+    var plotStyle = {
+        seriesDefaults: {
+            lineWidth: 1.5,
+            shadow: false,
+            showLine: true,
+            showMarker: false,
+            markerOptions: {
+                show: false,
+                size: 0,
+                lineWidth: 0,}},
+        legend: {
+            show: false},
+        cursor: {
+            tooltipLocation: 'se',
+            zoom: true,
+            clickReset: true},
+        axesDefaults: {
+            tickOptions: {
+                showGridline: false,
+                mark: 'outside',
+                markSize: 4,},},
+        axes: {
+            xaxis: {
+                numberTicks: 4,
+                label: "Time [ns]",},
+            yaxis: {
+                numberTicks: 3,
+                max: 0,
+                label: "Pulseheight [mV]",
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,}},
+        grid: {
+            shadow: false,
+            gridLineColor: "#333",
+            background: "#FFF",
+            borderWidth: 1,
+            borderColor: "#333",}};
+
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
     // coincidence diagram
@@ -354,30 +380,22 @@ function plotGraph(htmlInfo, data) {
 
     var tracedata = [];
     var eventdata = [];
-    var styledata = {
-        legend: {
-            show: false},
+    var _plotStyleOptions = {
+        seriesColors: ["#600", "#600", "#600", "#600",
+                       "#f00", "#f00", "#f00", "#f00",
+                       "#f90", "#f90", "#f90", "#f90",
+                       "#ff0", "#ff0", "#ff0", "#ff0",
+                       "#6f0", "#6f0", "#6f0", "#6f0",
+                       "#6ff", "#6ff", "#6ff", "#6ff",
+                       "#f0f", "#f0f", "#f0f", "#f0f",
+                       "#ccc", "#ccc", "#ccc", "#ccc"],
         title: "Coincidence",
-        cursor: {
-            tooltipLocation: 'se',
-            zoom: true,
-            clickReset: true},
         axes: {
             xaxis: {
                 min: 0,
-                max: tmax - tmin,
-                label: "Time [ns]",
-                numberTicks: 3},
-            yaxis: {
-                max: 0,
-                label: "Pulseheight [mV]",
-                numberTicks: 3,
-                labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
-        series: [{
-            showMarker: false,
-            color: "#000000"}],
-        grid: {
-            shadow: false}};
+                max: tmax - tmin,},},};
+
+    var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
     for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < 4; k++) {
@@ -388,16 +406,7 @@ function plotGraph(htmlInfo, data) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
 
-    for (j = 0; j < data.events.length; j++) {
-        for (k = 1; k < 4 * data.events.length; k++) {
-            styledata.series.push({
-                showMarker: false});}
-        for (k = 0; k < 4; k++) {
-            styledata.series[j * 4 + k].color = diagramColor[1 + j];
-            styledata.series[j * 4 + k].shadow = false;
-            styledata.series[j * 4 + k].lineWidth = 2;}}
-
-    $.jqplot(htmlInfo.chartId, eventdata, styledata);
+    $.jqplot(htmlInfo.chartId, eventdata, plotStyleOptions);
 
     // a set of event diagrams
 
@@ -422,30 +431,12 @@ function plotGraph(htmlInfo, data) {
 
         tracedata = [];
         eventdata = [];
-        styledata = {
-            legend: {
-                show: false},
+        var _plotStyleOptions = {
+            seriesColors: ["#222", "#D22", "#1C2", "#1CC",],
             title: "Station " + data.events[j].number,
-            cursor: {
-                tooltipLocation: 'se',
-                zoom: true,
-                clickReset: true},
-            axes: {
-                xaxis: {
-                    min: 0,
-                    max: tmax - tmin,
-                    label: "Time [ns]",
-                    numberTicks: 3},
-                yaxis: {
-                    max: 0,
-                    label: "Pulseheight [mV]",
-                    numberTicks: 3,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
-            series: [{
-                showMarker: false,
-                color: "#000000"}],
-            grid: {
-                shadow: false}};
+            };
+    
+        var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
         for (k = 0; k < 4; k++) {
             tracedata[k] = [
@@ -457,16 +448,8 @@ function plotGraph(htmlInfo, data) {
 
         diagramID = htmlInfo.chartId + j;
 
-        for (k = 1; k < 4 * data.events.length; k++) {
-            styledata.series.push({
-                showMarker: false});}
 
-        for (k = 0; k < 4; k++) {
-            styledata.series[k].color = traceColor[k];
-            styledata.series[k].shadow = false;
-            styledata.series[k].lineWidth = 2;}
-
-        $.jqplot(diagramID, eventdata, styledata);}
+        $.jqplot(diagramID, eventdata, plotStyleOptions);}
 }
 
 function toOrthogonal(i, lat, lon, alt) {
