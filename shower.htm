@@ -5,26 +5,8 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>jSparc v0.4.0</title>
   <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
-  <link rel="stylesheet" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" type="text/css">
-  <style>
-   #datum-id{width: 450px; height: 25px; padding: 5px; position:absolute; margin: 0px; left: 350px; top: 5px;}
-   #result-id{width: 450px; height: 25px; padding: 5px; position: absolute; margin: 0px; left: 350px; top: 460px;}
-   #map-id{width: 450px; height: 420px; position: absolute; margin: 0px; left: 350px; top: 40px;}
-   #logo{width: 189px; height: 63px; padding: 0px; position: absolute; margin: 0px; left: 800px; top: 0px;}
-   #dashboard{width: 400px; height: 470px; padding: 5px; position: absolute; margin: 0px; left: 800px; top: 65px;}
-   #graph-id{width: 335px; height: 500px; padding: 5px; position: absolute; margin: 0px; left: 5px; top: 5px;}
-   #choice > td{border-radius: 2px;}
-   body{position: relative; color: #333; font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-size: 1em; background: #aaf;}
-   input{text-align: right;}
-   input[disabled='disabled']{background-color: #ffffff; color: #333; -webkit-text-fill-color: #333;}
-   input[type="button"]{font-family: "Trebuchet MS",Arial; font-size: 1em;}
-   .coincidencegraph{height: 225px; width: 325px;}
-   .tracegraph{height: 225px; width: 325px;}
-   table{border: 0px;}
-   .tracegraph, .coincidencegraph, .jqplot-yaxis-label {color: #333;}
-   .olControlAttribution {position: absolute; font-size: 10px; bottom: 0; right: 0; background: rgba(255,255,255,0.7); font-family: Arial; padding: 2px 4px; border-radius: 5px 0 0 0;}
-   .olControlScaleLine {position: absolute; bottom: 0px; left: 0; background: rgba(255,255,255,0.7); font-family: Arial; padding: 2px 4px; border-radius: 0 5px 0 0;}
-  </style>
+  <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
   <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="http://data.hisparc.nl/media/javascript/excanvas.js"></script><![endif]-->
   <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery-1.4.4.min.js"></script>
   <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery.jqplot.min.js"></script>
@@ -237,7 +219,7 @@
     </tr>
    </table>
    <table width=335px>
-    <tr id="choice" align="center">
+    <tr align="center">
      <td bgcolor="#222" style="color:#ddf">Detector 1</td>
      <td bgcolor="#D22" style="color:#ddf">Detector 2</td>
      <td bgcolor="#1C2">Detector 3</td>
