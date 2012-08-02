@@ -176,8 +176,7 @@ function invAgase(shower4326, stationIndex, data) {
 
 function NKG(pMerc, k, stationIndex, data) {
     var p4326 = (pMerc);
-    //FIXME: Should the i's on the following line not be 'stationIndex'?
-    var r = distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon);
+    var r = distVincenty(p4326.y, p4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);
     return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
 }
 
@@ -321,7 +320,6 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
 function plotGraph(htmlInfo, data) {
     var tmin = 999999999;
     var tmax = 0;
-    var maxHeight = 125;
     var diagramID;
     var offset;
     var plotStyle = {
@@ -363,12 +361,7 @@ function plotGraph(htmlInfo, data) {
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
-    // coincidence diagram
-
-    for (j = 0; j < data.events.length; j++) {
-        for (k = 0; k < 4; k++) {
-            while (maxHeight < data.events[j].pulseheights[k]) {
-                maxHeight = maxHeight * 2;}}}
+    // Plot the overal coincidence trace diagram
 
     for (j = 0; j < data.events.length; j++) { // find the smallest and biggest value of nanoseconds
         offset = data.events[j].nanoseconds;
@@ -408,46 +401,34 @@ function plotGraph(htmlInfo, data) {
 
     $.jqplot(htmlInfo.chartId, eventdata, plotStyleOptions);
 
-    // a set of event diagrams
+    // Plot the individual station trace diagrams
 
     for (j = 0; j < data.events.length; j++) {
 
-        // an event diagram
         /*
-        tmin=999999999;
-        tmax=0;*/
-
-        maxHeight = 125;
+        offset = data.events[j].nanoseconds;
+        if (tmin > offset) {tmin = offset;}
         for (k = 0; k < 4; k++) {
-            while (maxHeight < data.events[j].pulseheights[k]) {
-                maxHeight = maxHeight * 2;}}
-
-        /*
-        offset=data.events[j].nanoseconds;
-        if (tmin>offset) {tmin=offset;}
-        for (k=0;k<4;k++) {
-        if (tmax<data.events[j].traces[k].length*2.5+offset) {tmax=data.events[j].traces[k].length*2.5+offset;}
+            if (tmax < data.events[j].traces[k].length * 2.5 + offset) {
+                tmax = data.events[j].traces[k].length * 2.5 + offset;}
         }*/
 
         tracedata = [];
         eventdata = [];
         var _plotStyleOptions = {
             seriesColors: ["#222", "#D22", "#1C2", "#1CC",],
-            title: "Station " + data.events[j].number,
-            };
+            title: "Station " + data.events[j].number,};
     
         var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
         for (k = 0; k < 4; k++) {
-            tracedata[k] = [
-                [(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];}
+            tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];}
         for (k = 0; k < 4; k++) {
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}
 
         diagramID = htmlInfo.chartId + j;
-
 
         $.jqplot(diagramID, eventdata, plotStyleOptions);}
 }
@@ -495,7 +476,7 @@ function interactionTrace(data) {
         BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
 
         if ((ALFA * ALFA - BETA) < 0) {
-            alert("No solution, D=" + (ALFA * ALFA - BETA) + " ALFA=" + ALFA + " BETA=" + BETA)}
+            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA)}
         else {
             dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA);
             dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA);
@@ -503,5 +484,5 @@ function interactionTrace(data) {
             dy2 = dz2 * B / A + (travelTime + t[0]) * C / A + D / A;
             dx1 = dz1 * E / A + (travelTime + t[0]) * F / A + G / A;
             dx2 = dz2 * E / A + (travelTime + t[0]) * F / A + G / A;
-            alert("(" + dx1 + "," + dy1 + "," + dz1 + ") and (" + dx2 + "," + dy2 + "," + dz2 + ")");}}
+            alert("(" + dx1 + ", " + dy1 + ", " + dz1 + ") and (" + dx2 + ", " + dy2 + ", " + dz2 + ")");}}
 }

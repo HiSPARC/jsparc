@@ -44,7 +44,8 @@
     
     function showEvent(i) {
         for (u = 0; u < 8; u++) {
-            $("#chartdiv" + u).hide();}
+            if (u != i) {
+                $("#chartdiv" + u).hide();}}
         $("#chartdiv" + i).show();
     }
     
@@ -185,6 +186,7 @@
         $("#dataButton").bind('click', function (event) {
             getData();
         });
+
         $(window).keypress(function (e) {
             if ((e.keyCode === 13) && ($("#studentName").val() !== "")) {
                 getData();}
@@ -206,7 +208,7 @@
  <body>
   <div id="graph-id">
    <div id="chartdiv" class="coincidencegraph"></div>
-   <table width=335px>
+   <table width="335px">
     <tr id="choice" align="center">
      <td id="choice0" bgcolor="#660000" style="visibility:hidden; color:#ddf;">&nbsp;</td>
      <td id="choice1" bgcolor="#ff0000" style="display:none; color:#ddf;"></td>
@@ -218,7 +220,7 @@
      <td id="choice7" bgcolor="#cccccc" style="display:none;"></td>
     </tr>
    </table>
-   <table width=335px>
+   <table width="335px">
     <tr align="center">
      <td bgcolor="#222" style="color:#ddf">Detector 1</td>
      <td bgcolor="#D22" style="color:#ddf">Detector 2</td>
