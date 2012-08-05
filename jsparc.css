@@ -51,8 +51,19 @@
     left: 5px;
     top: 5px;}
 
-#choice > td {
+#choice {
+    width: 335px;}
+
+#tracelegend {
+    width: 335px;}
+
+#choice td {
     cursor: pointer;
+    text-align: center;
+    border-radius: 2px;}
+
+#tracelegend td {
+    text-align: center;
     border-radius: 2px;}
 
 body {
@@ -80,16 +91,17 @@ input[type="button"] {
     width: 325px;}
 
 .tracegraph {
+    display: none;
     height: 225px;
     width: 325px;}
 
 table {
     border: 0px;}
 
-.tracegraph, .coincidencegraph, .jqplot-yaxis-label  {
+.tracegraph, .coincidencegraph, .jqplot-yaxis-label {
     color: #333;}
 
-.olControlAttribution  {
+.olControlAttribution {
     position: absolute;
     font-size: 10px;
     bottom: 0;
@@ -99,7 +111,7 @@ table {
     padding: 2px 4px;
     border-radius: 5px 0 0 0;}
 
-.olControlScaleLine  {
+.olControlScaleLine {
     position: absolute;
     bottom: 0px;
     left: 0;
@@ -108,3 +120,35 @@ table {
     padding: 2px 4px;
     border-radius: 0 5px 0 0;}
 
+#choice0 {
+    background: #600;
+    visibility: hidden;
+    color:#ddf;}
+
+#choice1 {background: #f00;
+    display: none;
+    color:#ddf;}
+
+#choice2 {
+    background: #f90;
+    display: none;}
+
+#choice3 {
+    background: #ff0;
+    display: none;}
+
+#choice4 {
+    background: #6f0;
+    display: none;}
+
+#choice5 {
+    background: #6ff;
+    display: none;}
+
+#choice6 {
+    background: #f0f;
+    display: none;}
+
+#choice7 {
+    background: #ccc;
+    display: none;}

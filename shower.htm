@@ -125,11 +125,12 @@
                 var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
-                    txt += "<td><input type='button' value='" + data.events[i].number + "' onclick='getStatus(" + i + ")' style='background-color:" + diagramColor[i] + ";";
+                    txt += "<td onclick='getStatus(" + i + ")' style='text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
                     if (i < 2) {
                         txt += " color:#ddddff;";}
-                    txt += "'>"}
-                txt += "</input></td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
+                    txt += "'>";
+                    txt += data.events[i].number;}
+                txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
                     MIPdens[i] = 0;}
@@ -208,20 +209,20 @@
  <body>
   <div id="graph-id">
    <div id="chartdiv" class="coincidencegraph"></div>
-   <table width="335px">
-    <tr id="choice" align="center">
-     <td id="choice0" bgcolor="#660000" style="visibility:hidden; color:#ddf;">&nbsp;</td>
-     <td id="choice1" bgcolor="#ff0000" style="display:none; color:#ddf;"></td>
-     <td id="choice2" bgcolor="#ff9900" style="display:none;"></td>
-     <td id="choice3" bgcolor="#ffff00" style="display:none;"></td>
-     <td id="choice4" bgcolor="#66ff00" style="display:none;"></td>
-     <td id="choice5" bgcolor="#66ffff" style="display:none;"></td>
-     <td id="choice6" bgcolor="#ff00ff" style="display:none;"></td>
-     <td id="choice7" bgcolor="#cccccc" style="display:none;"></td>
+   <table id="choice">
+    <tr>
+     <td id="choice0">&nbsp;</td>
+     <td id="choice1"></td>
+     <td id="choice2"></td>
+     <td id="choice3"></td>
+     <td id="choice4"></td>
+     <td id="choice5"></td>
+     <td id="choice6"></td>
+     <td id="choice7"></td>
     </tr>
    </table>
-   <table width="335px">
-    <tr align="center">
+   <table id="tracelegend">
+    <tr>
      <td bgcolor="#222" style="color:#ddf">Detector 1</td>
      <td bgcolor="#D22" style="color:#ddf">Detector 2</td>
      <td bgcolor="#1C2">Detector 3</td>

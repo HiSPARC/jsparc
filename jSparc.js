@@ -429,8 +429,11 @@ function plotGraph(htmlInfo, data) {
             eventdata.push(tracedata[k]);}
 
         diagramID = htmlInfo.chartId + j;
-
+        showEvent(j);
         $.jqplot(diagramID, eventdata, plotStyleOptions);}
+
+    showEvent(0);
+
 }
 
 function toOrthogonal(i, lat, lon, alt) {
