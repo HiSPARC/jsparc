@@ -3,19 +3,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>jSparc v0.4.0</title>
-  <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/css/jquery.jqplot.min.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="http://data.hisparc.nl/media/javascript/openlayers/openlayers.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
+  <title>jSparc v0.4.1</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="scripts/openlayers.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="jSparc.css" />
   <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="http://data.hisparc.nl/media/javascript/excanvas.js"></script><![endif]-->
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery-1.4.4.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jquery.jqplot.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/openlayers/OpenLayers.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.cursor.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.dateAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.categoryAxisRenderer.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.canvasTextRenderer.min.js"></script>
-  <script type="text/javascript" src="http://data.hisparc.nl/media/javascript/jqplotPlugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="scripts/OpenLayers.js"></script>
+  <script type="text/javascript" src="scripts/jquery.jqplot.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.cursor.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasTextRenderer.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.js"></script>
   <script type="text/javascript" src="jSparc.js"></script>
   <script type="text/javascript">
     var URL = "http://data.hisparc.nl/django/jsparc/";
@@ -125,7 +124,7 @@
                 var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
-                    txt += "<td onclick='getStatus(" + i + ")' style='text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
+                    txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
                     if (i < 2) {
                         txt += " color:#ddddff;";}
                     txt += "'>";
@@ -241,7 +240,7 @@
   <div id="datum-id">Date:<input type="text" id="datum" disabled="disabled" size=22></input> GMST:<input type="text" id="gmst" disabled="disabled" size=20></input></div>
   <div id="map-id"></div>
   <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8></input> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></input></div>
-  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media//static/header.png" /></a></div>
+  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
   <div id="dashboard">
    <form action="">
    <table>

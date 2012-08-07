@@ -339,7 +339,14 @@ function plotGraph(htmlInfo, data) {
             zoom: true,
             clickReset: true},
         axesDefaults: {
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            labelOptions: {
+                textColor: '#222',
+                enableFontSupport: true,},
+            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
             tickOptions: {
+                textColor: '#222',
+                enableFontSupport: true,
                 showGridline: false,
                 mark: 'outside',
                 markSize: 4,},},
@@ -350,14 +357,13 @@ function plotGraph(htmlInfo, data) {
             yaxis: {
                 numberTicks: 3,
                 max: 0,
-                label: "Pulseheight [mV]",
-                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,}},
+                label: "Pulseheight [mV]",}},
         grid: {
             shadow: false,
-            gridLineColor: "#333",
+            gridLineColor: "#222",
             background: "#FFF",
             borderWidth: 1,
-            borderColor: "#333",}};
+            borderColor: "#222",}};
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
