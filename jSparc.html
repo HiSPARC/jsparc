@@ -195,12 +195,17 @@
         var Dataflag = true;
     
         function getData() {
-            get_coincidence.session_title = $("#sessionTitle").val();
-            get_coincidence.session_pin = $("#sessionPin").val();
-            get_coincidence.student_name = $("#studentName").val();
-            if (Dataflag) {
-                main(htmlInfo, URL);
-                Dataflag = false;}
+            if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
+                alert("Fill in each field");
+            }
+            else {
+                get_coincidence.session_title = $("#sessionTitle").val();
+                get_coincidence.session_pin = $("#sessionPin").val();
+                get_coincidence.student_name = $("#studentName").val();
+                if (Dataflag) {
+                    main(htmlInfo, URL);
+                    Dataflag = false;}
+            }
         }
     });
   </script>
