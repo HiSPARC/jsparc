@@ -152,10 +152,10 @@ var result = {};
 var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according WGS 1984
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
 
-var detNum[];
+var detNum = [];
 //var data;
 for(j=0;j<data.events.length;j++){
-    detNum[j]=data.events[j].mips.length;} // determine number of detectors per station
+    detNum[j] = data.events[j].mips.length;} // determine number of detectors per station
 
 function toScient(x, dx) {
     dx = Math.round(Math.log(x / dx) / Math.log(10));
