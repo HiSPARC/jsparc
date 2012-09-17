@@ -56,7 +56,49 @@
     function getStatus(i) {
         window.open(infoURL[i]);
     }
+
+    function timestampToDate(timestamp) {
+        var minutes = parseInt(timestamp / 60, 10);
+        var seconds = timestamp - 60 * minutes;
+        var hours = parseInt(minutes / 60, 10);
+        minutes = minutes - 60 * hours;
+        var days = parseInt(hours / 24, 10);
+        hours = hours - days * 24;
+        var year = parseInt(days / 365, 10);
+        var leapDays = parseInt((year - 2) / 4, 10);
+        var yearlength;
+        if (parseInt((year - 2) / 4) == ((year - 2) / 4)) {
+            yearlength = 366;}
+        else {
+            yearlength = 365;}
+        days = days - year * 365 - leapDays;
+        if (days < 0) {
+            year = year - 1;
+            days = days + yearlength;}
+        year = year + 1970;
+        for (i = 0; days > monthLength[i]; i++) {}
+        var month = i;
+        if ((yearlength === 366) && (month > 2)) {
+            days = 1 + days - monthLength[i - 1];}
+        else {
+            days = days - monthLength[i - 1];}
+        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+        return datumOut;
+    }
     
+    function timestampToGMST(timestamp) {
+        var sidDays = timestamp / 86400 - 10957;
+        var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
+        hours = parseInt(GMST, 10);
+        minutes = (GMST - hours) * 60;
+        seconds = (minutes - parseInt(minutes)) * 60;
+        seconds = (parseInt(0.5 + seconds * 10)) / 10;
+        minutes = parseInt(minutes);
+        sidDays = parseInt(hours / 24, 10);
+        hours = hours - 24 * sidDays;
+        GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+    }
+
     $(function () {
         var diagramColor = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
         var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
@@ -75,53 +117,22 @@
                 plotGraph(htmlInfo, data);
                 // interactionTrace(data);
     
+                $("#datum-id").css('visibility', 'visible');
+                $("#result-id").css('visibility', 'visible');
+                $("#tracelegend").css('visibility', 'visible');
+
                 //  Get Year, Month, Day, Hour, Minute, Second.
-    
-                var minutes = parseInt(data.events[0].timestamp / 60, 10);
-                var seconds = data.events[0].timestamp - 60 * minutes;
-                var hours = parseInt(minutes / 60, 10);
-                minutes = minutes - 60 * hours;
-                var days = parseInt(hours / 24, 10);
-                hours = hours - days * 24;
-                var year = parseInt(days / 365, 10);
-                var leapDays = parseInt((year - 2) / 4, 10);
-                var yearlength;
-                if (parseInt((year - 2) / 4) == ((year - 2) / 4)) {
-                    yearlength = 366;}
-                else {
-                    yearlength = 365;}
-                days = days - year * 365 - leapDays;
-                if (days < 0) {
-                    year = year - 1;
-                    days = days + yearlength;}
-                year = year + 1970;
-                for (i = 0; days > monthLength[i]; i++) {}
-                var month = i;
-                if ((yearlength === 366) && (month > 2)) {
-                    days = 1 + days - monthLength[i - 1];}
-                else {
-                    days = days - monthLength[i - 1];}
-                var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
-                $("#datum").val(datumOut);
+                var datum = timestampToDate(data.events[0].timestamp)
+                $("#datum").val(datum);
     
                 // Greenwich Mean Sidereal Time in hours
-    
-                var sidDays = data.events[0].timestamp / 86400 - 10957;
-                var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
-                hours = parseInt(GMST, 10);
-                minutes = (GMST - hours) * 60;
-                seconds = (minutes - parseInt(minutes)) * 60;
-                seconds = (parseInt(0.5 + seconds * 10)) / 10;
-                minutes = parseInt(minutes);
-                sidDays = parseInt(hours / 24, 10);
-                hours = hours - 24 * sidDays;
-                GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+                var GMST = timestampToGMST(data.events[0].timestamp)
                 $("#gmst").val(GMST);
     
                 // Write information to dashboard
     
                 var dataeventslength = data.events.length;
-                var tabWidth = 1 + data.events.length;
+                var tabWidth = 1 + dataeventslength;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
                     txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
@@ -167,10 +178,10 @@
                 $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
                 $("#dataButton").hide();
                 showEvent(0);
+
+                // end callback getJSON()
             });
-    
-            // end callback getJSON()
-    
+
             $("#choice0").bind('click', function (event) {showEvent(0);});
             $("#choice1").bind('click', function (event) {showEvent(1);});
             $("#choice2").bind('click', function (event) {showEvent(2);});
@@ -180,9 +191,9 @@
             $("#choice6").bind('click', function (event) {showEvent(6);});
             $("#choice7").bind('click', function (event) {showEvent(7);});
         }
-    
+
         // end main()
-    
+
         $("#dataButton").bind('click', function (event) {
             getData();
         });
@@ -191,9 +202,9 @@
             if ((e.keyCode === 13) && ($("#studentName").val() !== "")) {
                 getData();}
         });
-    
+
         var Dataflag = true;
-    
+
         function getData() {
             if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
                 alert("Fill in each field");

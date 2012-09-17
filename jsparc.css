@@ -2,7 +2,8 @@
     width: 450px;
     height: 25px;
     padding: 5px;
-    position:absolute;
+    visibility: hidden;
+    position: absolute;
     margin: 0px;
     left: 350px;
     top: 5px;}
@@ -11,6 +12,7 @@
     width: 450px;
     height: 25px;
     padding: 5px;
+    visibility: hidden;
     position: absolute;
     margin: 0px;
     left: 350px;
@@ -55,7 +57,8 @@
     width: 335px;}
 
 #tracelegend {
-    width: 335px;}
+    width: 335px;
+    visibility: hidden;}
 
 #choice td {
     cursor: pointer;
