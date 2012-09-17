@@ -151,7 +151,11 @@ var r0 = 92;
 var result = {};
 var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according WGS 1984
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
+
+var detNum[];
 //var data;
+for(j=0;j<data.events.length;j++){
+    detNum[j]=data.events[j].mips.length;} // determine number of detectors per station
 
 function toScient(x, dx) {
     dx = Math.round(Math.log(x / dx) / Math.log(10));
@@ -373,7 +377,7 @@ function plotGraph(htmlInfo, data) {
         offset = data.events[j].nanoseconds;
         if (tmin > offset) {
             tmin = offset;}
-        for (k = 0; k < 4; k++) {
+        for (k = 0; k < detNum[j]; k++) {
             if (tmax < data.events[j].traces[k].length * 2.5 + offset) {
                 tmax = data.events[j].traces[k].length * 2.5 + offset;}}}
 
@@ -397,10 +401,9 @@ function plotGraph(htmlInfo, data) {
     var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
     for (j = 0; j < data.events.length; j++) {
-        for (k = 0; k < 4; k++) {
+        for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [
-                [(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];}
-        for (k = 0; k < 4; k++) {
+                [(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
@@ -427,9 +430,8 @@ function plotGraph(htmlInfo, data) {
     
         var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
-        for (k = 0; k < 4; k++) {
-            tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];}
-        for (k = 0; k < 4; k++) {
+        for (k = 0; k < detNum[j]; k++) {
+            tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}
