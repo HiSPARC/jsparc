@@ -289,7 +289,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
         {some: 'data'},
-        {externalGraphic: '../javascript/openlayers/img/shower.png',
+        {externalGraphic: 'images/shower.png',
          graphicHeight: 50,
          graphicWidth: 50,
          graphicYOffset: -25});
@@ -302,7 +302,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     for (i = 0; i < data.events.length; i++) {
         station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
             {some: 'data'},
-            {externalGraphic: '../javascript/openlayers/img/marker' + i + '.png',
+            {externalGraphic: 'images/marker' + i + '.png',
              graphicHeight: 25,
              graphicWidth: 35,
              graphicYOffset: -25,

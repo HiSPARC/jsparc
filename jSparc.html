@@ -58,6 +58,7 @@
     }
 
     function timestampToDate(timestamp) {
+        var monthLength = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         var minutes = parseInt(timestamp / 60, 10);
         var seconds = timestamp - 60 * minutes;
         var hours = parseInt(minutes / 60, 10);
@@ -97,12 +98,12 @@
         sidDays = parseInt(hours / 24, 10);
         hours = hours - 24 * sidDays;
         GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+        return GMST;
     }
 
     $(function () {
         var diagramColor = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
         var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
-        var monthLength = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
         $("#sessionHash").val(get_coincidence.session_hash);
     
         // start main()
@@ -111,7 +112,7 @@
             $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
     
                 // start callback getJSON
-    
+                var dataeventslength = data.events.length;
                 stationNumber = data.events.length;
                 makeShowerMap(htmlInfo, data);
                 plotGraph(htmlInfo, data);
@@ -120,7 +121,7 @@
                 $("#datum-id").css('visibility', 'visible');
                 $("#result-id").css('visibility', 'visible');
                 $("#tracelegend").css('visibility', 'visible');
-
+                
                 //  Get Year, Month, Day, Hour, Minute, Second.
                 var datum = timestampToDate(data.events[0].timestamp)
                 $("#datum").val(datum);
@@ -131,7 +132,6 @@
     
                 // Write information to dashboard
     
-                var dataeventslength = data.events.length;
                 var tabWidth = 1 + dataeventslength;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
@@ -173,7 +173,7 @@
                 for (i = 0; i < dataeventslength; i++) {
                     txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
-                    infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + year + "/" + month + "/" + days + "/";}
+                    infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
                 $(txt).appendTo("#coinInfo");
                 $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
                 $("#dataButton").hide();
