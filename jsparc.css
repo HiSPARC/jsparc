@@ -77,6 +77,8 @@ body {
     background: #aaf;}
 
 input {
+    font-family: Arial, Sans-Serif;
+    font-size: 11px;
     text-align: right;}
 
 input[disabled='disabled'] {
