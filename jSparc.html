@@ -3,11 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>jSparc v0.4.1</title>
+  <title>jSparc v0.4.2</title>
   <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="scripts/openlayers.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="jSparc.css" />
-  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="http://data.hisparc.nl/media/javascript/excanvas.js"></script><![endif]-->
+  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
   <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
   <script type="text/javascript" src="scripts/OpenLayers.js"></script>
   <script type="text/javascript" src="scripts/jquery.jqplot.js"></script>
@@ -101,7 +101,7 @@
         return GMST;
     }
 
-    $(function () {
+    $(function() {
         var diagramColor = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
         var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
         $("#sessionHash").val(get_coincidence.session_hash);
@@ -110,9 +110,11 @@
     
         function main(htmlInfo, URL) {
             $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
-    
+
                 // start callback getJSON
+                Dataflag = false;
                 var dataeventslength = data.events.length;
+                detectorNumber(data);
                 stationNumber = data.events.length;
                 makeShowerMap(htmlInfo, data);
                 plotGraph(htmlInfo, data);
@@ -131,15 +133,13 @@
                 $("#gmst").val(GMST);
     
                 // Write information to dashboard
-    
                 var tabWidth = 1 + dataeventslength;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
                     txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
                     if (i < 2) {
                         txt += " color:#ddddff;";}
-                    txt += "'>";
-                    txt += data.events[i].number;}
+                    txt += "'>" + data.events[i].number;}
                 txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
                 for (i = 0; i < dataeventslength; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
@@ -178,18 +178,9 @@
                 $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
                 $("#dataButton").hide();
                 showEvent(0);
-
+                $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
                 // end callback getJSON()
             });
-
-            $("#choice0").bind('click', function (event) {showEvent(0);});
-            $("#choice1").bind('click', function (event) {showEvent(1);});
-            $("#choice2").bind('click', function (event) {showEvent(2);});
-            $("#choice3").bind('click', function (event) {showEvent(3);});
-            $("#choice4").bind('click', function (event) {showEvent(4);});
-            $("#choice5").bind('click', function (event) {showEvent(5);});
-            $("#choice6").bind('click', function (event) {showEvent(6);});
-            $("#choice7").bind('click', function (event) {showEvent(7);});
         }
 
         // end main()
@@ -199,7 +190,7 @@
         });
 
         $(window).keypress(function (e) {
-            if ((e.keyCode === 13) && ($("#studentName").val() !== "")) {
+            if (e.keyCode === 13) {
                 getData();}
         });
 
@@ -214,8 +205,7 @@
                 get_coincidence.session_pin = $("#sessionPin").val();
                 get_coincidence.student_name = $("#studentName").val();
                 if (Dataflag) {
-                    main(htmlInfo, URL);
-                    Dataflag = false;}
+                    main(htmlInfo, URL);}
             }
         }
     });

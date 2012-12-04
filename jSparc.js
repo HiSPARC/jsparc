@@ -1,6 +1,6 @@
 /* About: Version
 
-   jSparc-0-4-0
+   jSparc-0-4-2
 
    About: Copyright & License
 
@@ -151,11 +151,15 @@ var r0 = 92;
 var result = {};
 var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according WGS 1984
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
-
 var detNum = [];
-//var data;
-for(j=0;j<data.events.length;j++){
-    detNum[j] = data.events[j].mips.length;} // determine number of detectors per station
+
+
+function detectorNumber(data) {
+    // determine number of detectors per station
+    for(j=0; j < data.events.length; j++){
+        detNum[j] = data.events[j].mips.length;}
+}
+
 
 function toScient(x, dx) {
     dx = Math.round(Math.log(x / dx) / Math.log(10));
@@ -259,32 +263,25 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
         ymax: -180};
     result.pk = data.pk;
     for (i = 0; i < data.events.length; i++) {
-        mapData.lon = mapData.lon + data.events[i].lon;
-        mapData.lat = mapData.lat + data.events[i].lat;
+        mapData.lon += data.events[i].lon;
+        mapData.lat += data.events[i].lat;
         if (mapData.xmax < data.events[i].lon) {mapData.xmax = data.events[i].lon;}
         if (mapData.xmin > data.events[i].lon) {mapData.xmin = data.events[i].lon;}
         if (mapData.ymax < data.events[i].lat) {mapData.ymax = data.events[i].lat;}
         if (mapData.ymin > data.events[i].lat) {mapData.ymin = data.events[i].lat;}}
     var x = mapData.lon / data.events.length;
     var y = mapData.lat / data.events.length;
-    var lonlat = new OpenLayers.LonLat(x, y);
-    var zoom = 18;
-    var zoomLon = Math.log(360 / (mapData.xmax - mapData.xmin)) / Math.log(2);
-    var zoomLat = Math.log(360 / ((mapData.ymax - mapData.ymin) * Math.cos(PI * y / 180))) / Math.log(2);
-    if (zoomLon > zoomLat) {
-        zoom = parseInt(zoomLat, 10);}
-    else {
-        zoom = parseInt(zoomLon, 10);}
 
     var options = {
         controls: [
-            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.Navigation(
+                    {dragPanOptions: {enableKinetic: true}}),
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.ScaleLine()]};
     var map = new OpenLayers.Map(htmlInfo.mapId, options);
     var mapLayer = new OpenLayers.Layer.OSM();
     map.addLayer(mapLayer);
-    map.setCenter(lonlat.transform(proj4326, projmerc), zoom); //shows the map
+    map.setCenter(new OpenLayers.LonLat(4.950, 52.355).transform(proj4326, projmerc), 5); //shows the map
 
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
@@ -293,12 +290,10 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
          graphicHeight: 50,
          graphicWidth: 50,
          graphicYOffset: -25});
-    //makes a "showerMerc"-instance
     showerLayer.addFeatures(showerMerc); // puts the instance in the layer
     map.addLayer(showerLayer); // puts the layer on the map
 
     var stationLayer = new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
-    map.addLayer(stationLayer); // puts the "Stations" layer on the map
     for (i = 0; i < data.events.length; i++) {
         station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
             {some: 'data'},
@@ -308,10 +303,14 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
              graphicYOffset: -25,
              label: data.events[i].number,
              labelYOffset: 17,
-             fontColor: ((i < 2) ? '#aaf' : '#336')});
-        //makes a "showerMerc"-instance
+             fontColor: ((i < 2) ? '#ddf' : '#333')});
         stationLayer.addFeatures(station);} // puts the instance in the layer
+    map.addLayer(stationLayer); // puts the "Stations" layer on the map
+
     //data the stations on the "Station" layer
+
+    var bounds = stationLayer.getDataExtent();
+    map.zoomToExtent(bounds);
 
     var dragShower = new OpenLayers.Control.DragFeature(showerLayer); // makes features in the vector-layer draggeble
     map.addControl(dragShower); // adds the control to draggeble features
@@ -335,7 +334,7 @@ function plotGraph(htmlInfo, data) {
             markerOptions: {
                 show: false,
                 size: 0,
-                lineWidth: 0,}},
+                lineWidth: 0}},
         legend: {
             show: false},
         cursor: {
@@ -346,28 +345,28 @@ function plotGraph(htmlInfo, data) {
             labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
             labelOptions: {
                 textColor: '#222',
-                enableFontSupport: true,},
+                enableFontSupport: true},
             tickRenderer: $.jqplot.CanvasAxisTickRenderer,
             tickOptions: {
                 textColor: '#222',
                 enableFontSupport: true,
                 showGridline: false,
                 mark: 'outside',
-                markSize: 4,},},
+                markSize: 4}},
         axes: {
             xaxis: {
                 numberTicks: 4,
-                label: "Time [ns]",},
+                label: "Time [ns]"},
             yaxis: {
                 numberTicks: 3,
                 max: 0,
-                label: "Pulseheight [mV]",}},
+                label: "Pulseheight [mV]"}},
         grid: {
             shadow: false,
             gridLineColor: "#222",
             background: "#FFF",
             borderWidth: 1,
-            borderColor: "#222",}};
+            borderColor: "#222"}};
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
@@ -396,7 +395,7 @@ function plotGraph(htmlInfo, data) {
         axes: {
             xaxis: {
                 min: 0,
-                max: tmax - tmin,},},};
+                max: tmax - tmin}}};
 
     var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
@@ -425,8 +424,8 @@ function plotGraph(htmlInfo, data) {
         tracedata = [];
         eventdata = [];
         var _plotStyleOptions = {
-            seriesColors: ["#222", "#D22", "#1C2", "#1CC",],
-            title: "Station " + data.events[j].number,};
+            seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
+            title: "Station " + data.events[j].number};
     
         var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
 
@@ -441,7 +440,6 @@ function plotGraph(htmlInfo, data) {
         $.jqplot(diagramID, eventdata, plotStyleOptions);}
 
     showEvent(0);
-
 }
 
 function toOrthogonal(i, lat, lon, alt) {
