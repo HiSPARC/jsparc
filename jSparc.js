@@ -233,7 +233,7 @@ function sendResult() {
     $.getJSON(URL + 'result/', result, function (data) {
         $("#analyseTab").hide();
         window.alert("You are number " + data.rank + ".");
-        // FIXME: This reload needs to be smarter and remember the Title and PIN (and probably also the Student name)
+        // FIXME: This 'reload' should be smarter and remember the Title and PIN (possible probably also the Student name)
         window.location.reload();
     });
 }
@@ -367,10 +367,11 @@ function plotGraph(htmlInfo, data) {
                 label: "Pulseheight [mV]"}},
         grid: {
             shadow: false,
-            gridLineColor: "#222",
             background: "#FFF",
+            gridLineWidth: 0,
+            gridLineColor: "#111",
             borderWidth: 1,
-            borderColor: "#222"}};
+            borderColor: "#111"}};
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 

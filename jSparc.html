@@ -156,7 +156,7 @@
                                 MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
                                 txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
                             else {
-                                txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#ff0000' disabled='disabled' size=5></input></td>";}}
+                                txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></input></td>";}}
                         else {
                             txt += "<td></td>";}}
                     txt += "</tr>"}
@@ -198,15 +198,13 @@
 
         function getData() {
             if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
-                alert("Fill in each field");
-            }
+                alert("Fill in each field");}
             else {
                 get_coincidence.session_title = $("#sessionTitle").val();
                 get_coincidence.session_pin = $("#sessionPin").val();
                 get_coincidence.student_name = $("#studentName").val();
                 if (Dataflag) {
-                    main(htmlInfo, URL);}
-            }
+                    main(htmlInfo, URL);}}
         }
     });
   </script>

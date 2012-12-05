@@ -81,12 +81,12 @@ input {
     text-align: right;}
 
 input[disabled='disabled'] {
-    background-color: #ffffff;
-    color: #333;
-    -webkit-text-fill-color: #333;}
+    background-color: #fff;
+    color: #222;
+    -webkit-text-fill-color: #222;}
 
 input[type="button"] {
-    font-family: "Trebuchet MS",Arial;
+    font-family: "Trebuchet MS", Arial;
     font-size: 1em;
     cursor: pointer;}
 
@@ -103,14 +103,14 @@ table {
     border: 0px;}
 
 .tracegraph, .coincidencegraph, .jqplot-yaxis-label {
-    color: #333;}
+    color: #111;}
 
 .olControlAttribution {
     position: absolute;
     font-size: 10px;
     bottom: 0;
     right: 0;
-    background: rgba(255,255,255,0.7);
+    background: rgba(255, 255, 255, 0.7);
     font-family: Arial;
     padding: 2px 4px;
     border-radius: 5px 0 0 0;}
@@ -119,7 +119,7 @@ table {
     position: absolute;
     bottom: 0px;
     left: 0;
-    background: rgba(255,255,255,0.7);
+    background: rgba(255, 255, 255, 0.7);
     font-family: Arial;
     padding: 2px 4px;
     border-radius: 0 5px 0 0;}
@@ -127,11 +127,12 @@ table {
 #choice0 {
     background: #600;
     visibility: hidden;
-    color:#ddf;}
+    color: #ddf;}
 
-#choice1 {background: #f00;
+#choice1 {
+    background: #f00;
     display: none;
-    color:#ddf;}
+    color: #ddf;}
 
 #choice2 {
     background: #f90;
