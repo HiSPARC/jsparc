@@ -355,9 +355,13 @@ function plotGraph(htmlInfo, data) {
                 markSize: 4}},
         axes: {
             xaxis: {
+                tickOptions: {
+                    formatString: '%d'},
                 numberTicks: 4,
                 label: "Time [ns]"},
             yaxis: {
+                tickOptions: {
+                    formatString: '%d'},
                 numberTicks: 3,
                 max: 0,
                 label: "Pulseheight [mV]"}},
