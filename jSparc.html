@@ -185,17 +185,6 @@
 
         // end main()
 
-        $("#dataButton").bind('click', function (event) {
-            getData();
-        });
-
-        $(window).keypress(function (e) {
-            if (e.keyCode === 13) {
-                getData();}
-        });
-
-        var Dataflag = true;
-
         function getData() {
             if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
                 alert("Fill in each field");}
@@ -206,6 +195,17 @@
                 if (Dataflag) {
                     main(htmlInfo, URL);}}
         }
+
+        $("#dataButton").bind('click', function (event) {
+            getData();
+        });
+
+        $(window).keypress(function (e) {
+            if (e.keyCode === 13) {
+                getData();}
+        });
+
+        var Dataflag = true;
     });
   </script>
  </head>

@@ -75,6 +75,9 @@ body {
     font-size: 1em;
     background: #ccf;}
 
+img {
+    border: 0px;}
+
 input {
     font-family: Arial, Sans-Serif;
     font-size: 11px;
