@@ -160,6 +160,15 @@ function detectorNumber(data) {
         detNum[j] = data.events[j].mips.length;}
 }
 
+// Function to get the Max value in Array
+Array.max = function(array) {
+    return Math.max.apply(Math, array);
+};
+
+// Function to get the Min value in Array
+Array.min = function(array) {
+    return Math.min.apply(Math, array);
+};
 
 function toScient(x, dx) {
     dx = Math.round(Math.log(x / dx) / Math.log(10));
@@ -230,7 +239,7 @@ function sendResult() {
     result.session_title = get_coincidence.session_title;
     result.session_pin = get_coincidence.session_pin;
     result.student_name = get_coincidence.student_name;
-    $.getJSON(URL + 'result/', result, function (data) {
+    $.getJSON(URL + 'result/', result, function(data) {
         $("#analyseTab").hide();
         window.alert("You are number " + data.rank + ".");
         // FIXME: This 'reload' should be smarter and remember the Title and PIN (possible probably also the Student name)
@@ -355,23 +364,19 @@ function plotGraph(htmlInfo, data) {
                 markSize: 4}},
         axes: {
             xaxis: {
-                tickOptions: {
-                    formatString: '%d'},
-                numberTicks: 4,
+                numberTicks: 5,
                 label: "Time [ns]"},
             yaxis: {
-                tickOptions: {
-                    formatString: '%d'},
                 numberTicks: 3,
                 max: 0,
                 label: "Pulseheight [mV]"}},
         grid: {
             shadow: false,
             background: "#FFF",
-            gridLineWidth: 0,
-            gridLineColor: "#111",
+            gridLineWidth: 1,
+            gridLineColor: "#000",
             borderWidth: 1,
-            borderColor: "#111"}};
+            borderColor: "#000"}};
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
@@ -387,7 +392,15 @@ function plotGraph(htmlInfo, data) {
 
     var tracedata = [];
     var eventdata = [];
-    var _plotStyleOptions = {
+
+    for (j = 0; j < data.events.length; j++) {
+        for (k = 0; k < detNum[j]; k++) {
+            tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
+            for (i = 1; i < data.events[j].traces[k].length; i++) {
+                tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
+            eventdata.push(tracedata[k]);}}
+
+    var _eventPlotStyle = {
         seriesColors: ["#600", "#600", "#600", "#600",
                        "#f00", "#f00", "#f00", "#f00",
                        "#f90", "#f90", "#f90", "#f90",
@@ -400,19 +413,11 @@ function plotGraph(htmlInfo, data) {
         axes: {
             xaxis: {
                 min: 0,
-                max: tmax - tmin}}};
+                max: Math.ceil((tmax - tmin) / 40.0) * 40.0}}};
 
-    var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
+    var eventPlotStyle = $.extend(true, {}, plotStyle, _eventPlotStyle);
 
-    for (j = 0; j < data.events.length; j++) {
-        for (k = 0; k < detNum[j]; k++) {
-            tracedata[k] = [
-                [(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
-            for (i = 1; i < data.events[j].traces[k].length; i++) {
-                tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
-            eventdata.push(tracedata[k]);}}
-
-    $.jqplot(htmlInfo.chartId, eventdata, plotStyleOptions);
+    $.jqplot(htmlInfo.chartId, eventdata, eventPlotStyle);
 
     // Plot the individual station trace diagrams
 
@@ -428,21 +433,30 @@ function plotGraph(htmlInfo, data) {
 
         tracedata = [];
         eventdata = [];
-        var _plotStyleOptions = {
-            seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
-            title: "Station " + data.events[j].number};
-    
-        var plotStyleOptions = $.extend(true, {}, plotStyle, _plotStyleOptions);
-
+        var trace_min = 0;
         for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
+            if (Array.min(data.events[j].traces[k]) < trace_min) {
+                trace_min = Array.min(data.events[j].traces[k]);}
             eventdata.push(tracedata[k]);}
+
+        var _tracePlotStyle = {
+            seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
+            title: "Station " + data.events[j].number,
+            axes: {
+                xaxis: {
+                    min: tracedata[0][0][0]},
+                yaxis: {
+                    min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
+                    max: 0}}};
+    
+        var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
 
         diagramID = htmlInfo.chartId + j;
         showEvent(j);
-        $.jqplot(diagramID, eventdata, plotStyleOptions);}
+        $.jqplot(diagramID, eventdata, tracePlotStyle);}
 
     showEvent(0);
 }
