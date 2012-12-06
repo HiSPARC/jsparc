@@ -296,9 +296,9 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
         {some: 'data'},
         {externalGraphic: 'images/shower.png',
-         graphicHeight: 50,
-         graphicWidth: 50,
-         graphicYOffset: -25});
+         graphicHeight: 66,
+         graphicWidth: 66,
+         graphicYOffset: -33});
     showerLayer.addFeatures(showerMerc); // puts the instance in the layer
     map.addLayer(showerLayer); // puts the layer on the map
 
