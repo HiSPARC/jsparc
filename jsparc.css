@@ -1,7 +1,11 @@
 #datum-id {
-    width: 450px;
+    width: 440px;
     height: 25px;
-    padding: 5px;
+    background-color: #B8B8E6;
+    border-radius: 5px 5px 0px 0px;
+    text-align: center;
+    font-size: .95em;
+    padding: 5px 5px 0px 5px;
     visibility: hidden;
     position: absolute;
     margin: 0px;
@@ -16,15 +20,15 @@
     position: absolute;
     margin: 0px;
     left: 350px;
-    top: 470px;}
+    top: 480px;}
 
 #map-id {
     width: 450px;
-    height: 430px;
+    height: 445px;
     position: absolute;
     margin: 0px;
     left: 350px;
-    top: 40px;}
+    top: 35px;}
 
 #logo {
     width: 189px;
@@ -101,6 +105,14 @@ input[type="button"] {
     display: none;
     height: 225px;
     width: 325px;}
+
+#datum {
+    margin-right: 30px;
+}
+
+#datum, #gmst {
+    font-family: Arial, Sans-Serif;
+}
 
 table {
     border: 0px;}

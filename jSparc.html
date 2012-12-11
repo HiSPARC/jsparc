@@ -58,43 +58,25 @@
     }
 
     function timestampToDate(timestamp) {
-        var monthLength = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
-        var minutes = parseInt(timestamp / 60, 10);
-        var seconds = timestamp - 60 * minutes;
-        var hours = parseInt(minutes / 60, 10);
-        minutes = minutes - 60 * hours;
-        var days = parseInt(hours / 24, 10);
-        hours = hours - days * 24;
-        var year = parseInt(days / 365, 10);
-        var leapDays = parseInt((year - 2) / 4, 10);
-        var yearlength;
-        if (parseInt((year - 2) / 4) == ((year - 2) / 4)) {
-            yearlength = 366;}
-        else {
-            yearlength = 365;}
-        days = days - year * 365 - leapDays;
-        if (days < 0) {
-            year = year - 1;
-            days = days + yearlength;}
-        year = year + 1970;
-        for (i = 0; days > monthLength[i]; i++) {}
-        var month = i;
-        if ((yearlength === 366) && (month > 2)) {
-            days = 1 + days - monthLength[i - 1];}
-        else {
-            days = days - monthLength[i - 1];}
-        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(days, 2) + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
+        var date = new Date(timestamp * 1000)
+        var year = date.getUTCFullYear();
+        var month = date.getUTCMonth() + 1;
+        var day = date.getUTCDate();
+        var hour = date.getUTCHours();
+        var minute = date.getUTCMinutes();
+        var second = date.getUTCSeconds();
+        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " + padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
         return datumOut;
     }
     
     function timestampToGMST(timestamp) {
         var sidDays = timestamp / 86400 - 10957;
         var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
-        hours = parseInt(GMST, 10);
-        minutes = (GMST - hours) * 60;
-        seconds = (minutes - parseInt(minutes)) * 60;
+        var hours = parseInt(GMST, 10);
+        var minutes = (GMST - hours) * 60;
+        var seconds = (minutes - parseInt(minutes)) * 60;
         seconds = (parseInt(0.5 + seconds * 10)) / 10;
-        minutes = parseInt(minutes);
+        var minutes = parseInt(minutes);
         sidDays = parseInt(hours / 24, 10);
         hours = hours - 24 * sidDays;
         GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
@@ -126,11 +108,11 @@
                 
                 //  Get Year, Month, Day, Hour, Minute, Second.
                 var datum = timestampToDate(data.events[0].timestamp)
-                $("#datum").val(datum);
+                $("#datum").html(datum);
     
                 // Greenwich Mean Sidereal Time in hours
                 var GMST = timestampToGMST(data.events[0].timestamp)
-                $("#gmst").val(GMST);
+                $("#gmst").html(GMST);
     
                 // Write information to dashboard
                 var tabWidth = 1 + dataeventslength;
@@ -241,7 +223,7 @@
     </tr>
    </table>
   </div>
-  <div id="datum-id">Date:<input type="text" id="datum" disabled="disabled" size=22></input> GMST:<input type="text" id="gmst" disabled="disabled" size=20></input></div>
+  <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
   <div id="map-id"></div>
   <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8></input> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></input></div>
   <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
