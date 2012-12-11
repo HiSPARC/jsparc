@@ -19,6 +19,7 @@
   <script type="text/javascript">
     var URL = "http://data.hisparc.nl/django/jsparc/";
     var MIPdens = [];
+    var detNum = [];
     var infoURL = [];
     var get_coincidence = {};
     get_coincidence.session_title = "";
@@ -33,7 +34,7 @@
         energyId: "showEn",
         stationEr: "showEr",
         showerEr: "measEr"};
-    
+
     function padZero(number, length) {
         var str = '' + number;
         while (str.length < length) {
@@ -95,8 +96,7 @@
 
                 // start callback getJSON
                 Dataflag = false;
-                var dataeventslength = data.events.length;
-                detectorNumber(data);
+                detNum = detectorNumber(data);
                 stationNumber = data.events.length;
                 makeShowerMap(htmlInfo, data);
                 plotGraph(htmlInfo, data);
@@ -115,15 +115,15 @@
                 $("#gmst").html(GMST);
     
                 // Write information to dashboard
-                var tabWidth = 1 + dataeventslength;
+                var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
-                for (i = 0; i < dataeventslength; i++) {
+                for (i = 0; i < data.events.length; i++) {
                     txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
                     if (i < 2) {
                         txt += " color:#ddddff;";}
                     txt += "'>" + data.events[i].number;}
                 txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
-                for (i = 0; i < dataeventslength; i++) {
+                for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
                     MIPdens[i] = 0;}
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
@@ -132,8 +132,8 @@
                     if (j < 2) {
                         txt += "; color:#ddddff"}
                     txt += ";'>" + (1 + j) + "</td>";
-                    for (i = 0; i < dataeventslength; i++) {
-                        if (j < data.events[i].pulseheights.length) {
+                    for (i = 0; i < data.events.length; i++) {
+                        if (j < detNum[i]) {
                             if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                                 MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
                                 txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
@@ -143,16 +143,16 @@
                             txt += "<td></td>";}}
                     txt += "</tr>"}
                 txt += "<tr><td></td>";
-                for (i = 0; i < dataeventslength; i++) {
+                for (i = 0; i < data.events.length; i++) {
                     txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
-                    for (j = data.events[i].traces.length; j > 0; j--) {
+                    for (j = detNum[i]; j > 0; j--) {
                         txt += "<option value=" + j + ">" + j + "</option>";}
                     txt += "</select></td>";}
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
-                for (i = 0; i < dataeventslength; i++) {
+                for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
                 txt += "</tr><tr><td>Calc.</td>";
-                for (i = 0; i < dataeventslength; i++) {
+                for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
                     infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}

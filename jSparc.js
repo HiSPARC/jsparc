@@ -151,14 +151,7 @@ var r0 = 92;
 var result = {};
 var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according WGS 1984
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
-var detNum = [];
 
-
-function detectorNumber(data) {
-    // determine number of detectors per station
-    for(j=0; j < data.events.length; j++){
-        detNum[j] = data.events[j].mips.length;}
-}
 
 // Function to get the Max value in Array
 Array.max = function(array) {
@@ -169,6 +162,14 @@ Array.max = function(array) {
 Array.min = function(array) {
     return Math.min.apply(Math, array);
 };
+
+function detectorNumber(data) {
+    // Determine number of detectors for each station
+    detectorNumbers = [];
+    for(j=0; j < data.events.length; j++){
+        detectorNumbers[j] = data.events[j].detectors;}
+    return detectorNumbers
+}
 
 function toScient(x, dx) {
     dx = Math.round(Math.log(x / dx) / Math.log(10));
@@ -386,9 +387,8 @@ function plotGraph(htmlInfo, data) {
         offset = data.events[j].nanoseconds;
         if (tmin > offset) {
             tmin = offset;}
-        for (k = 0; k < detNum[j]; k++) {
-            if (tmax < data.events[j].traces[k].length * 2.5 + offset) {
-                tmax = data.events[j].traces[k].length * 2.5 + offset;}}}
+        if (tmax < data.events[j].traces[0].length * 2.5 + offset) {
+            tmax = data.events[j].traces[0].length * 2.5 + offset;}}
 
     var tracedata = [];
     var eventdata = [];
