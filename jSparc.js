@@ -153,13 +153,13 @@ var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according W
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
 
 
-// Function to get the Max value in Array
 Array.max = function(array) {
+    // Get the Max value in Array
     return Math.max.apply(Math, array);
 };
 
-// Function to get the Min value in Array
 Array.min = function(array) {
+    // Get the Min value in Array
     return Math.min.apply(Math, array);
 };
 
@@ -327,7 +327,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     dragShower.activate(); // switches the control on
     writeDist(htmlInfo, showerMerc, data); // writes the distances to the html-form
     map.events.register("mousemove", map, function (e) {
-        writeDist(htmlInfo, showerMerc, data);}); // calls writePlace() when the mouse moves
+        writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the mouse moves
 }
 
 function plotGraph(htmlInfo, data) {
@@ -373,7 +373,7 @@ function plotGraph(htmlInfo, data) {
                 label: "Pulseheight [mV]"}},
         grid: {
             shadow: false,
-            background: "#FFF",
+            background: "#fff",
             gridLineWidth: 1,
             gridLineColor: "#000",
             borderWidth: 1,
@@ -392,28 +392,34 @@ function plotGraph(htmlInfo, data) {
 
     var tracedata = [];
     var eventdata = [];
+    var trace_min = 0;
 
     for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
+            if (Array.min(data.events[j].traces[k]) < trace_min) {
+                trace_min = Array.min(data.events[j].traces[k]);}
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
 
+    var eventColors = [];
+    var _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"]
+    
+    for (j=0; j < data.events.length; j++) {
+        for (k = 0; k < detNum[j]; k++) {
+            eventColors.push(_eventColors[j])}}
+    
     var _eventPlotStyle = {
-        seriesColors: ["#600", "#600", "#600", "#600",
-                       "#f00", "#f00", "#f00", "#f00",
-                       "#f90", "#f90", "#f90", "#f90",
-                       "#ff0", "#ff0", "#ff0", "#ff0",
-                       "#6f0", "#6f0", "#6f0", "#6f0",
-                       "#6ff", "#6ff", "#6ff", "#6ff",
-                       "#f0f", "#f0f", "#f0f", "#f0f",
-                       "#ccc", "#ccc", "#ccc", "#ccc"],
+        seriesColors: eventColors,
         title: "Coincidence",
         axes: {
             xaxis: {
                 min: 0,
-                max: Math.ceil((tmax - tmin) / 40.0) * 40.0}}};
+                max: Math.ceil((tmax - tmin) / 40.0) * 40.0},
+            yaxis: {
+                min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
+                max: 0}}};
 
     var eventPlotStyle = $.extend(true, {}, plotStyle, _eventPlotStyle);
 
@@ -422,14 +428,6 @@ function plotGraph(htmlInfo, data) {
     // Plot the individual station trace diagrams
 
     for (j = 0; j < data.events.length; j++) {
-
-        /*
-        offset = data.events[j].nanoseconds;
-        if (tmin > offset) {tmin = offset;}
-        for (k = 0; k < 4; k++) {
-            if (tmax < data.events[j].traces[k].length * 2.5 + offset) {
-                tmax = data.events[j].traces[k].length * 2.5 + offset;}
-        }*/
 
         tracedata = [];
         eventdata = [];
@@ -447,7 +445,8 @@ function plotGraph(htmlInfo, data) {
             title: "Station " + data.events[j].number,
             axes: {
                 xaxis: {
-                    min: tracedata[0][0][0]},
+                    min: 0,
+                    max: Math.ceil((data.events[j].traces[0].length * 2.5 + data.events[j].nanoseconds - tmin) / 40.0) * 40.0},
                 yaxis: {
                     min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
                     max: 0}}};
