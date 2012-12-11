@@ -2,7 +2,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
  <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title>jSparc v0.4.2</title>
   <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.min.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="scripts/OpenLayers.css" />
@@ -93,8 +93,8 @@
     
         function main(htmlInfo, URL) {
             $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
-
                 // start callback getJSON
+                $("#dataButton").hide();
                 Dataflag = false;
                 detNum = detectorNumber(data);
                 stationNumber = data.events.length;
@@ -158,7 +158,7 @@
                     infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
                 $(txt).appendTo("#coinInfo");
                 $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
-                $("#dataButton").hide();
+
                 showEvent(0);
                 $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
                 // end callback getJSON()

@@ -36,7 +36,7 @@
             pulseheights: ["the pulseheights of the trace 0/3 in mV"],
             integrals: ["the area above the trace in mVns"],
             mips: ["numper of mips for each detector"],
-            traces: [["arrays of data of the traces 0/3"]]],}
+            traces: [["arrays of data of the traces 0/3"]]]}
 
    The variable "htmlInfo" contains information of the script wich calls the
    function and gives the names of input (output) instances, for intance:
@@ -295,25 +295,25 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
 
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
-        {some: 'data'},
-        {externalGraphic: 'images/shower.png',
-         graphicHeight: 66,
-         graphicWidth: 66,
-         graphicYOffset: -33});
+            {some: 'data'},
+            {externalGraphic: 'images/shower.png',
+             graphicHeight: 66,
+             graphicWidth: 66,
+             graphicYOffset: -33});
     showerLayer.addFeatures(showerMerc); // puts the instance in the layer
     map.addLayer(showerLayer); // puts the layer on the map
 
     var stationLayer = new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
     for (i = 0; i < data.events.length; i++) {
         station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
-            {some: 'data'},
-            {externalGraphic: 'images/marker' + i + '.png',
-             graphicHeight: 25,
-             graphicWidth: 35,
-             graphicYOffset: -25,
-             label: data.events[i].number,
-             labelYOffset: 17,
-             fontColor: ((i < 2) ? '#ddf' : '#333')});
+                {some: 'data'},
+                {externalGraphic: 'images/marker' + i + '.png',
+                 graphicHeight: 25,
+                 graphicWidth: 35,
+                 graphicYOffset: -25,
+                 label: data.events[i].number,
+                 labelYOffset: 17,
+                 fontColor: ((i < 2) ? '#ddf' : '#333')});
         stationLayer.addFeatures(station);} // puts the instance in the layer
     map.addLayer(stationLayer); // puts the "Stations" layer on the map
 
