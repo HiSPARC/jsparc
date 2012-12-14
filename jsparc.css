@@ -140,6 +140,20 @@ table {
     padding: 2px 4px;
     border-radius: 0 5px 0 0;}
 
+.det1 {
+    background: #222;
+    color: #ddf;}
+
+.det2 {
+    background: #D22;
+    color: #ddf;}
+
+.det3 {
+    background: #1C2;}
+
+.det4 {
+    background: #1CC;}
+
 #choice0 {
     background: #600;
     visibility: hidden;

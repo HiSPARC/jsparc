@@ -129,10 +129,7 @@
                     MIPdens[i] = 0;}
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
                 for (j = 0; j < 4; j++) {
-                    txt += "<tr><td align='center' bgcolor='" + traceColor[j] + "' style='border-radius:2px";
-                    if (j < 2) {
-                        txt += "; color:#ddddff"}
-                    txt += ";'>" + (1 + j) + "</td>";
+                    txt += "<tr><td align='center' class='det" + (j + 1) + "' style='border-radius:2px;'>" + (1 + j) + "</td>";
                     for (i = 0; i < data.events.length; i++) {
                         if (j < detNum[i]) {
                             if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
@@ -232,10 +229,10 @@
    <div id="chartdiv7" class="tracegraph"></div>
    <table id="tracelegend">
     <tr>
-     <td bgcolor="#222" style="color:#ddf">Detector 1</td>
-     <td bgcolor="#D22" style="color:#ddf">Detector 2</td>
-     <td bgcolor="#1C2">Detector 3</td>
-     <td bgcolor="#1CC">Detector 4</td>
+     <td class="det1">Detector 1</td>
+     <td class="det2">Detector 2</td>
+     <td class="det3">Detector 3</td>
+     <td class="det4">Detector 4</td>
     </tr>
    </table>
   </div>
