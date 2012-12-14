@@ -328,6 +328,8 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     writeDist(htmlInfo, showerMerc, data); // writes the distances to the html-form
     map.events.register("mousemove", map, function (e) {
         writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the mouse moves
+    map.events.register("touchmove", map, function (e) {
+        writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the finger moves
 }
 
 function plotGraph(htmlInfo, data) {
