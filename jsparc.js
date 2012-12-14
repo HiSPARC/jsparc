@@ -242,7 +242,7 @@ function sendResult() {
     result.student_name = get_coincidence.student_name;
     $.getJSON(URL + 'result/', result, function(data) {
         $("#analyseTab").hide();
-        window.alert("You are number " + data.rank + ".");
+        window.alert(data.msg + "\nYou are number " + data.rank + ".");
         // FIXME: This 'reload' should be smarter and remember the Title and PIN (possible probably also the Student name)
         window.location.reload();
     });

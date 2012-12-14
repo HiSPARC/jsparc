@@ -95,6 +95,7 @@
             $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
                 // start callback getJSON
                 $("#dataButton").hide();
+                $("#exampleButton").hide();
                 Dataflag = false;
                 detNum = detectorNumber(data);
                 stationNumber = data.events.length;
@@ -167,6 +168,17 @@
 
         // end main()
 
+        function getExample() {
+            $("#sessionTitle").val('example')
+            $("#sessionPin").val('1337')
+            $("#studentName").val('test')
+            get_coincidence.session_title = $("#sessionTitle").val();
+            get_coincidence.session_pin = $("#sessionPin").val();
+            get_coincidence.student_name = $("#studentName").val();
+            if (Dataflag) {
+                main(htmlInfo, URL);}
+        }
+
         function getData() {
             if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
                 alert("Fill in each field");}
@@ -177,6 +189,10 @@
                 if (Dataflag) {
                     main(htmlInfo, URL);}}
         }
+
+        $("#exampleButton").bind('click', function (event) {
+            getExample();
+        });
 
         $("#dataButton").bind('click', function (event) {
             getData();
@@ -238,6 +254,7 @@
    </table>
    </form>
    <input type="button" id="dataButton" value="Get data" onclick="getData()"></input>
+   <input type="button" id="exampleButton" value="Get example" onclick="exampleButton()"></input>
    <form id="info" action="">
     <table id="coinInfo">
     </table>
