@@ -311,7 +311,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
                  graphicHeight: 25,
                  graphicWidth: 35,
                  graphicYOffset: -25,
-                 label: data.events[i].number,
+                 label: data.events[i].number.toString(),
                  labelYOffset: 17,
                  fontColor: ((i < 2) ? '#ddf' : '#333')});
         stationLayer.addFeatures(station);} // puts the instance in the layer
