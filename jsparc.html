@@ -15,8 +15,10 @@
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasTextRenderer.min.js"></script>
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+  <script type="text/javascript" src="star.js"></script>
   <script type="text/javascript" src="jsparc.js"></script>
   <script type="text/javascript">
+
     var URL = "http://data.hisparc.nl/django/jsparc/";
     var MIPdens = [];
     var detNum = [];
@@ -88,6 +90,7 @@
         var diagramColor = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
         var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
         $("#sessionHash").val(get_coincidence.session_hash);
+        $("#coinInfo1").hide();
     
         // start main()
     
@@ -101,7 +104,6 @@
                 stationNumber = data.events.length;
                 makeShowerMap(htmlInfo, data);
                 plotGraph(htmlInfo, data);
-                // interactionTrace(data);
     
                 $("#datum-id").css('visibility', 'visible');
                 $("#result-id").css('visibility', 'visible');
@@ -114,18 +116,28 @@
                 // Greenwich Mean Sidereal Time in hours
                 var GMST = timestampToGMST(data.events[0].timestamp)
                 $("#gmst").html(GMST);
-    
+
+                var sidDays = data.events[0].timestamp / 86400 - 10957;
                 // Write information to dashboard
                 var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
+                var txt1 = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr>";
                 for (i = 0; i < data.events.length; i++) {
-                    txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
+                    txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:";
+                    txt += diagramColor[i] + ";";
+                    txt1 += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:";
+                    txt1 += diagramColor[i] + ";";
                     if (i < 2) {
-                        txt += " color:#ddddff;";}
-                    txt += "'>" + data.events[i].number;}
+                        txt += " color:#ddddff;";
+                        txt1 += " color:#ddddff;";}
+                    txt += "'>" + data.events[i].number;
+                    txt1 += "'>" + data.events[i].number;}
                 txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
+                txt1 += "</td></tr><tr><td colspan='" + tabWidth + "'>Traveling delay in [ns]</td></tr><tr><td></td></tr><tr>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
+                    txt1 += "<td><input id='nanoseconds" + (i + 1) + "' type='text' value=" + (data.events[i].nanoseconds-data.events[0].nanoseconds);
+                    txt1 += " disabled='disabled' size=5></input></td>";
                     MIPdens[i] = 0;}
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
                 for (j = 0; j < 4; j++) {
@@ -134,13 +146,18 @@
                         if (j < detNum[i]) {
                             if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                                 MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-                                txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+                                txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3);
+                                txt += " disabled='disabled' size=5></input></td>";}
                             else {
-                                txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></input></td>";}}
+                                txt += "<td><input id='MIP" + i + j;
+                                txt += "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></input></td>";}}
                         else {
-                            txt += "<td></td>";}}
-                    txt += "</tr>"}
+                            txt += "<td></td>";
+                            txt1 += "<td></td>";}}
+                    txt += "</tr>";}
+                txt1 += "</tr>";
                 txt += "<tr><td></td>";
+                txt1 += "<tr><td></td></tr>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
                     for (j = detNum[i]; j > 0; j--) {
@@ -154,13 +171,19 @@
                     txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
                     infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
+                txt += "</tr>"
                 $(txt).appendTo("#coinInfo");
-                $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
+                $(txt1).appendTo("#coinInfo1");
+                $('<tr><td colspan="3"><input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input></td></tr>').appendTo('#coinInfo1');
 
                 showEvent(0);
                 $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
+                star=zenithData(data, cat());
+                makeStarMap(htmlInfo, star);
+                $("#star-id").hide();
                 // end callback getJSON()
             });
+
         }
 
         // end main()
@@ -195,6 +218,21 @@
             getData();
         });
 
+        $("#mapFunction").bind('click', function (event) {
+            if($("#map-id").css("display")=="block"){
+                $("#map-id").hide();
+                $("#coinInfo").hide();
+                $("#star-id").show();
+                $("#coinInfo1").show();
+                $("#mapFunction").val("show earth map");}
+            else{
+                $("#map-id").show();
+                $("#coinInfo").show();
+                $("#star-id").hide();
+                $("#coinInfo1").hide();
+                $("#mapFunction").val("show star map");}
+        });
+
         $(window).keypress(function (e) {
             if (e.keyCode === 13) {
                 getData();}
@@ -202,6 +240,10 @@
 
         var Dataflag = true;
     });
+
+// 	                var x = gridpos.x + plot._gridPadding.left + c.tooltipOffset;
+// 	                var y = gridpos.y + plot._gridPadding.top + c.tooltipOffset;
+
   </script>
  </head>
  <body>
@@ -237,8 +279,15 @@
    </table>
   </div>
   <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
+  <div id="star-id"></div>
   <div id="map-id"></div>
-  <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8></input> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></input></div>
+  <div id="result-id">
+   Energy in [eV]:
+   <input type="text" id="showEn" disabled="disabled" size=8></input>
+   <a style="font-family: serif;">&#967;</a><sup>2</sup>:
+   <input type="text" id="showEr" disabled="disabled" size=8></input>
+   <input type="button" id="mapFunction" value="show star map"></input>
+  </div>
   <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
   <div id="dashboard">
    <form action="">
@@ -254,6 +303,8 @@
    <input type="button" id="exampleButton" value="Get example"></input>
    <form id="info" action="">
     <table id="coinInfo">
+    </table>
+    <table id="coinInfo1">
     </table>
    </form>
   </div>

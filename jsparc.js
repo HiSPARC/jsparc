@@ -1,6 +1,6 @@
 /* About: Version
 
-   jSparc-0-4-2
+   jSparc-0-4-3
 
    About: Copyright & License
 
@@ -70,23 +70,18 @@
  * @param   {Number} lat2, lon2: second point in decimal degrees
  * @returns (Number} distance in metres between points
  */
+
 var c = 299792458;
+var toRad=Math.atan(1)/45;
 
-function toRad(x) {
-    return x * Math.atan(1) / 45;
-}
-
-function toDeg(x) {
-    return x * 45 / Math.atan(1);
-}
 
 function distVincenty(lat1, lon1, lat2, lon2) {
     var a = 6378137,
         b = 6356752.314245,
         f = 1 / 298.257223563; // WGS-84 ellipsoid params
-    var L = toRad((lon2 - lon1));
-    var U1 = Math.atan((1 - f) * Math.tan(toRad(lat1)));
-    var U2 = Math.atan((1 - f) * Math.tan(toRad(lat2)));
+    var L = toRad*(lon2 - lon1);
+    var U1 = Math.atan((1 - f) * Math.tan(toRad*lat1));
+    var U2 = Math.atan((1 - f) * Math.tan(toRad*lat2));
     var sinU1 = Math.sin(U1),
         cosU1 = Math.cos(U1);
     var sinU2 = Math.sin(U2),
@@ -136,11 +131,11 @@ function distVincenty(lat1, lon1, lat2, lon2) {
     //  var fwdAz = Math.atan2(cosU2*sinLambda,  cosU1*sinU2-sinU1*cosU2*cosLambda);
     //  var revAz = Math.atan2(cosU1*sinLambda, -sinU1*cosU2+cosU1*sinU2*cosLambda);
 
-    //  return {distance:s;initialBearing:toDeg(fwdAz);finalBearing:toDeg(revAz)};
+    //  return {distance:s;initialBearing:(fwdAz/toRad);finalBearing:(revAz/toRad)};
 }
 
 /* End of Vincenty Inverse Solution of Geodesics on the Ellipsoid (c) Chris Veness 2002-2010       */
-/* Code clean up by N.G.Schultheiss using http://jslint.com/                                           */
+/* Code clean up by N.G.Schultheiss using http://jslint.com/                                       */
 
 var showerMerc, shower4326;
 var PI = 4 * Math.atan(1);
@@ -151,7 +146,6 @@ var r0 = 92;
 var result = {};
 var proj4326 = new OpenLayers.Projection("EPSG:4326"); // projection according WGS 1984
 var projmerc = new OpenLayers.Projection("EPSG:900913"); // projection according Mercator
-
 
 Array.max = function(array) {
     // Get the Max value in Array
@@ -263,6 +257,7 @@ function writeDist(htmlInfo, pMerc, data) {
         $("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon));}
 }
 
+
 function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     var mapData = {
         lon: 0,
@@ -279,8 +274,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
         if (mapData.xmin > data.events[i].lon) {mapData.xmin = data.events[i].lon;}
         if (mapData.ymax < data.events[i].lat) {mapData.ymax = data.events[i].lat;}
         if (mapData.ymin > data.events[i].lat) {mapData.ymin = data.events[i].lat;}}
-    var x = mapData.lon / data.events.length;
-    var y = mapData.lat / data.events.length;
+    var shower = {x:(mapData.lon / data.events.length),y:(mapData.lat / data.events.length)}
 
     var options = {
         controls: [
@@ -294,7 +288,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     map.setCenter(new OpenLayers.LonLat(4.950, 52.355).transform(proj4326, projmerc), 5); //shows the map
 
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
-    showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(x, y).transform(proj4326, projmerc),
+    showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(shower.x, shower.y).transform(proj4326, projmerc),
             {some: 'data'},
             {externalGraphic: 'images/shower.png',
              graphicHeight: 66,
@@ -330,6 +324,8 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
         writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the mouse moves
     map.events.register("touchmove", map, function (e) {
         writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the finger moves
+
+    return shower;
 }
 
 function plotGraph(htmlInfo, data) {
@@ -408,7 +404,7 @@ function plotGraph(htmlInfo, data) {
     var eventColors = [];
     var _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"]
     
-    for (j=0; j < data.events.length; j++) {
+    for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
             eventColors.push(_eventColors[j])}}
     
@@ -462,56 +458,68 @@ function plotGraph(htmlInfo, data) {
     showEvent(0);
 }
 
-function toOrthogonal(i, lat, lon, alt) {
-    var coordinate = {};
-    var a = 6378137.000;
-    var b = 6356752.315;
-    coordinate.x = (b + alt) * Math.sin(lat);
-    coordinate.y = (a + alt) * Math.cos(lat) * Math.sin(lon);
-    coordinate.z = (a + alt) * Math.cos(lat) * Math.cos(lon);
-    return coordinate;
-}
+function toZenith(RA,Dec,Lon,Lat,ST){
+    var sinDec=Math.sin(Dec*toRad);
+    var cosDec=Math.cos(Dec*toRad);
+    var sinLat=Math.sin(Lat*toRad);
+    var cosLat=Math.cos(Lat*toRad);
+    var ha=ST-Lon-RA;
+    var cosZenith=(sinDec*sinLat+cosDec*cosLat*Math.cos(ha*toRad)).toFixed(4);
+    var zenith=Math.acos(cosZenith)/toRad;
+    var azimuth;
+    if (cosLat*Math.sin(zenith*toRad).toFixed(4)==0) azimuth=0;
+    else azimuth=(Math.acos((sinDec-sinLat*cosZenith)/(cosLat*Math.sin(zenith*toRad)))).toFixed(4)/toRad;
+    if (Math.sin(ha*toRad) > 0) azimuth  = 360 - azimuth;
+    var out={"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
+    return out}
 
-function interactionTrace(data) {
-    var x = new Array();
-    var y = new Array();
-    var z = new Array();
-    var t = new Array();
-    var A, B, C, D, E, F, G;
-
+function zenithData(data, star){
+    var x,y,r;
+    var mapData = {
+        lon: 0,
+        lat: 0};
     for (i = 0; i < data.events.length; i++) {
-        coordinate = toOrthogonal(i, data.events[i].lon, data.events[i].lat, data.events[i].alt);
-        x[i] = coordinate.x;
-        y[i] = coordinate.y;
-        z[i] = coordinate.z;
-        t[i] = data.events[i].nanoseconds / 1e9;}
-    if (i = 3) {
-        A = 2 * ((x[0] - x[1]) * (y[0] - y[2]) - (x[0] - x[2]) * (y[0] - y[1]));
-        B = 2 * ((x[0] - x[2]) * (z[0] - z[1]) - (x[0] - x[1]) * (z[0] - z[2]));
-        C = 2 * ((x[0] - x[1]) * (t[2] - t[0]) - (x[0] - x[2]) * (t[1] - t[0])) * c * c;
-        D = (x[0] - x[2]) * ((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]) + (t[0] - t[1]) * (t[0] - t[1]) * c * c);
-        D = D - (x[0] - x[1]) * ((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]) + (t[0] - t[2]) * (t[0] - t[2]) * c * c);
-        E = 2 * ((y[0] - y[1]) * (z[0] - z[2]) - (y[0] - y[2]) * (z[0] - z[1]));
-        F = 2 * ((y[0] - y[2]) * (t[1] - t[0]) - (y[0] - y[1]) * (t[2] - t[0])) * c * c;
-        G = (y[0] - x[1]) * ((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]) + (t[0] - t[2]) * (t[0] - t[2]) * c * c);
-        G = G - (y[0] - y[2]) * ((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]) + (t[0] - t[1]) * (t[0] - t[1]) * c * c);
-        travelTime = Math.sqrt((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]));
-        travelTime = travelTime + Math.sqrt((x[1] - x[2]) * (x[1] - x[2]) + (y[1] - y[2]) * (y[1] - y[2]) + (z[1] - z[2]) * (z[1] - z[1]));
-        travelTime = travelTime + Math.sqrt((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]));
-        travelTime = travelTime / (4 * c);
-        travelTime = travelTime - t[0];
-        alert(c * (travelTime + t[0]) + ", " + c * (travelTime + t[1]) + ", " + c * (travelTime + t[2]));
-        ALFA = ((travelTime + t[0]) * (B * C + E * F) + B * D + E * G) / (A * A + B * B + E * E);
-        BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
+        mapData.lon += data.events[i].lon;
+        mapData.lat += data.events[i].lat;}
+    var Lon=mapData.lon / data.events.length;
+    var Lat=mapData.lat / data.events.length;
+    var ST=0;
+    for (i = 0; i < star.length; i++){
+       for(j = 0; j < star[i].length; j++){
+           var uitvoer = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
+           star[i][j][1] = uitvoer.zenith;
+           star[i][j][0] = uitvoer.azimuth;
+           if(star[i][j][1] > 45){
+               star[i].splice(j,1);
+               j--;}
+           else {
+               r = star[i][j][1];
+               x = r*Math.sin(toRad*star[i][j][0]);
+               y = r*Math.cos(toRad*star[i][j][0]);
+               star[i][j][0] = -x;
+               star[i][j][1] = y;}}}
+    return star}
 
-        if ((ALFA * ALFA - BETA) < 0) {
-            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA)}
-        else {
-            dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA);
-            dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA);
-            dy1 = dz1 * B / A + (travelTime + t[0]) * C / A + D / A;
-            dy2 = dz2 * B / A + (travelTime + t[0]) * C / A + D / A;
-            dx1 = dz1 * E / A + (travelTime + t[0]) * F / A + G / A;
-            dx2 = dz2 * E / A + (travelTime + t[0]) * F / A + G / A;
-            alert("(" + dx1 + ", " + dy1 + ", " + dz1 + ") and (" + dx2 + ", " + dy2 + ", " + dz2 + ")");}}
-}
+function makeStarMap(htmlInfo, star){
+    var plot1 = $.jqplot ('star-id', star,
+        { title:'Starmap',
+          axes:{xaxis:{label:"Oost / West",ticks:[-45,-30,-15,0,15,30,45],labelRenderer: $.jqplot.CanvasAxisLabelRenderer},
+                yaxis:{label:"Zuid / Noord",ticks:[-45,-30,-15,0,15,30,45], renderer:$.jqplot.LogAxisRenderer,labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
+          series:[{showLine:false, color:"#000000",
+                   markerOptions: { size: 2, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 3, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 4, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 5, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 6, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 7, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 8, style:"filledCircle" }},
+                  {showLine:false, color:"#000000",
+                   markerOptions: { size: 9, style:"filledCircle" }}
+                 ]
+        })}

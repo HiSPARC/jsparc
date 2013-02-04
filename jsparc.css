@@ -23,6 +23,16 @@
     top: 480px;}
 
 #map-id {
+    display: block;
+    width: 450px;
+    height: 445px;
+    position: absolute;
+    margin: 0px;
+    left: 350px;
+    top: 35px;}
+
+#star-id {
+    display: block;
     width: 450px;
     height: 445px;
     position: absolute;
@@ -40,6 +50,7 @@
     top: 0px;}
 
 #dashboard {
+    display: "block";
     height: 470px;
     padding: 5px;
     position: absolute;
