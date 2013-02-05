@@ -91,6 +91,7 @@
         var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
         $("#sessionHash").val(get_coincidence.session_hash);
         $("#coinInfo1").hide();
+        $("#direction").hide();
     
         // start main()
     
@@ -121,7 +122,7 @@
                 // Write information to dashboard
                 var tabWidth = 1 + data.events.length;
                 var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
-                var txt1 = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr>";
+                var txt1 = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:";
                     txt += diagramColor[i] + ";";
@@ -132,8 +133,10 @@
                         txt1 += " color:#ddddff;";}
                     txt += "'>" + data.events[i].number;
                     txt1 += "'>" + data.events[i].number;}
+                    txt1 += "</td></tr><tr><td>dRA</td><td><input type='text' id='dRA' disabled='disabled' size=5></td></tr>";
+                    txt1 += "<tr><td>dDec</td><td><input type='text' id='dDec' disabled='disabled' size=5></td></tr>";
                 txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
-                txt1 += "</td></tr><tr><td colspan='" + tabWidth + "'>Traveling delay in [ns]</td></tr><tr><td></td></tr><tr>";
+                txt1 += "<tr><td colspan='" + tabWidth + "'>Traveling delay in [ns]</td></tr><tr><td></td></tr><tr><td>Data</td>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
                     txt1 += "<td><input id='nanoseconds" + (i + 1) + "' type='text' value=" + (data.events[i].nanoseconds-data.events[0].nanoseconds);
@@ -157,12 +160,17 @@
                     txt += "</tr>";}
                 txt1 += "</tr>";
                 txt += "<tr><td></td>";
-                txt1 += "<tr><td></td></tr>";
+                txt1 += "<tr><td></td></tr><tr><td>Calc.</td>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
+                    txt1 += "<td><input id='nanoCalc" + i + 1 + "' type='text' disabled='disabled' size=5></input></td>";
                     for (j = detNum[i]; j > 0; j--) {
                         txt += "<option value=" + j + ">" + j + "</option>";}
                     txt += "</select></td>";}
+                txt1 += "</tr><tr><td><a style='font-family: serif;'>&#967;</a><sup>2</sup>:</td>";
+                txt1 += "<td><input type='text' id='dirEr' disabled='disabled' size=5></input></td></tr>";
+                txt1 += "<tr><td>RA</td><td><input type='text' id='RA' disabled='disabled' size=5></input></td></tr>";
+                txt1 += "<tr><td>Dec</td><td><input type='text' id='dirEr' disabled='disabled' size=5></input></td></tr>";
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
@@ -224,14 +232,19 @@
                 $("#coinInfo").hide();
                 $("#star-id").show();
                 $("#coinInfo1").show();
+//                $("#direction").show();
                 $("#mapFunction").val("show earth map");}
             else{
                 $("#map-id").show();
                 $("#coinInfo").show();
                 $("#star-id").hide();
                 $("#coinInfo1").hide();
+//                $("#direction").hide();
                 $("#mapFunction").val("show star map");}
         });
+
+//        $("#jqplot-event-canvas").bind('click', function (event) {alert("?")});
+
 
         $(window).keypress(function (e) {
             if (e.keyCode === 13) {
@@ -241,7 +254,7 @@
         var Dataflag = true;
     });
 
-// 	                var x = gridpos.x + plot._gridPadding.left + c.tooltipOffset;
+// 	                var x = gridpos.x + plot._gridPadding.left + c.tooltipOffset; // use jqplot.cursor.js
 // 	                var y = gridpos.y + plot._gridPadding.top + c.tooltipOffset;
 
   </script>
@@ -279,7 +292,7 @@
    </table>
   </div>
   <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
-  <div id="star-id"></div>
+  <div id="star-id"><!--img src="images/direction.png" alt="" id="direction" /--></div>
   <div id="map-id"></div>
   <div id="result-id">
    Energy in [eV]:

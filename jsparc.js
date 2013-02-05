@@ -503,8 +503,9 @@ function zenithData(data, star){
 function makeStarMap(htmlInfo, star){
     var plot1 = $.jqplot ('star-id', star,
         { title:'Starmap',
-          axes:{xaxis:{label:"Oost / West",ticks:[-45,-30,-15,0,15,30,45],labelRenderer: $.jqplot.CanvasAxisLabelRenderer},
-                yaxis:{label:"Zuid / Noord",ticks:[-45,-30,-15,0,15,30,45], renderer:$.jqplot.LogAxisRenderer,labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
+          axes:{xaxis:{label:"delta Right Ascension [degrees]",ticks:[-60,-45,-30,-15,0,15,30,45,60],labelRenderer: $.jqplot.CanvasAxisLabelRenderer},
+                yaxis:{label:"delta Declination [degrees]",ticks:[-60,-45,-30,-15,0,15,30,45,60],
+                       renderer:$.jqplot.LogAxisRenderer,labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
           series:[{showLine:false, color:"#000000",
                    markerOptions: { size: 2, style:"filledCircle" }},
                   {showLine:false, color:"#000000",

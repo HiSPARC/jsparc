@@ -40,6 +40,14 @@
     left: 350px;
     top: 35px;}
 
+#direction {
+    width: 45px;
+    height: 45px;
+    position: relative;
+    margin: 0px;
+    left: 50px;
+    top: 50px;}
+
 #logo {
     width: 189px;
     height: 63px;
