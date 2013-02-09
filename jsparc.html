@@ -260,8 +260,8 @@
        $(function() {
            $("#direction").draggable({
            drag: function(event, ui) {
-               $("#dRA").val(ui.position.left);
-               $("#dDec").val(ui.position.top);
+               $("#dRA").val(((ui.position.left-245)/3).toFixed(1));
+               $("#dDec").val(((213-ui.position.top)/3).toFixed(1));
            }});
        });
 
