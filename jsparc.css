@@ -38,15 +38,17 @@
     position: absolute;
     margin: 0px;
     left: 350px;
-    top: 35px;}
+    top: 35px;
+    z-index: 1;}
 
 #direction {
-    width: 45px;
-    height: 45px;
+    width: 25px;
+    height: 25px;
     position: relative;
     margin: 0px;
-    left: 50px;
-    top: 50px;}
+    left: 239px;
+    top: 202px;
+    z-index: 2;}
 
 #logo {
     width: 189px;

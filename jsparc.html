@@ -17,6 +17,7 @@
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript" src="star.js"></script>
   <script type="text/javascript" src="jsparc.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
   <script type="text/javascript">
 
     var URL = "http://data.hisparc.nl/django/jsparc/";
@@ -139,7 +140,7 @@
                 txt1 += "<tr><td colspan='" + tabWidth + "'>Traveling delay in [ns]</td></tr><tr><td></td></tr><tr><td>Data</td>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
-                    txt1 += "<td><input id='nanoseconds" + (i + 1) + "' type='text' value=" + (data.events[i].nanoseconds-data.events[0].nanoseconds);
+                    txt1 += "<td><input id='nanoseconds" + i + "' type='text' value=" + (data.events[i].nanoseconds-data.events[0].nanoseconds);
                     txt1 += " disabled='disabled' size=5></input></td>";
                     MIPdens[i] = 0;}
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
@@ -182,13 +183,14 @@
                 txt += "</tr>"
                 $(txt).appendTo("#coinInfo");
                 $(txt1).appendTo("#coinInfo1");
-                $('<tr><td colspan="3"><input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input></td></tr>').appendTo('#coinInfo1');
+                $('<tr><td></td><td colspan="3"><input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input></td></tr>').appendTo('#coinInfo1');
 
                 showEvent(0);
                 $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
                 star=zenithData(data, cat());
                 makeStarMap(htmlInfo, star);
                 $("#star-id").hide();
+                $("#direction").hide();
                 // end callback getJSON()
             });
 
@@ -232,14 +234,14 @@
                 $("#coinInfo").hide();
                 $("#star-id").show();
                 $("#coinInfo1").show();
-//                $("#direction").show();
+                $("#direction").show();
                 $("#mapFunction").val("show earth map");}
             else{
                 $("#map-id").show();
                 $("#coinInfo").show();
                 $("#star-id").hide();
                 $("#coinInfo1").hide();
-//                $("#direction").hide();
+                $("#direction").hide();
                 $("#mapFunction").val("show star map");}
         });
 
@@ -253,6 +255,15 @@
 
         var Dataflag = true;
     });
+
+
+       $(function() {
+           $("#direction").draggable({
+           drag: function(event, ui) {
+               $("#dRA").val(ui.position.left);
+               $("#dDec").val(ui.position.top);
+           }});
+       });
 
 // 	                var x = gridpos.x + plot._gridPadding.left + c.tooltipOffset; // use jqplot.cursor.js
 // 	                var y = gridpos.y + plot._gridPadding.top + c.tooltipOffset;
@@ -292,7 +303,7 @@
    </table>
   </div>
   <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
-  <div id="star-id"><!--img src="images/direction.png" alt="" id="direction" /--></div>
+  <div id="star-id"><img src="images/direction.png" alt="" id="direction" /></div>
   <div id="map-id"></div>
   <div id="result-id">
    Energy in [eV]:
