@@ -524,3 +524,12 @@ function makeStarMap(htmlInfo, star){
                    markerOptions: { size: 9, style:"filledCircle" }}
                  ]
         })}
+
+function toOrthogonal(lat, lon, alt) {
+    var coordinate = {};
+    var a = 6378137.000;
+    var b = 6356752.315;
+    coordinate.x = (b + alt) * Math.sin(lat);
+    coordinate.y = (a + alt) * Math.cos(lat) * Math.sin(lon);
+    coordinate.z = (a + alt) * Math.cos(lat) * Math.cos(lon);
+    return coordinate; }
