@@ -190,8 +190,15 @@
                 star=zenithData(data, cat());
                 makeStarMap(htmlInfo, star);
                 $("#star-id").hide();
-                $("#direction").hide();
+                $("#horizon").hide();
                 // end callback getJSON()
+
+                $("#direction").draggable({ containment: "#horizon"});
+                $("#direction").draggable({
+                    drag: function(event, ui) {
+                        $("#dRA").val(((ui.position.left-135)/3).toFixed(1));
+                        $("#dDec").val(((135-ui.position.top)/3).toFixed(1));
+                        timeCalc(htmlInfo, data, (ui.position.left-135)/3, (135-ui.position.top)/3);}});
             });
 
         }
@@ -234,6 +241,7 @@
                 $("#coinInfo").hide();
                 $("#star-id").show();
                 $("#coinInfo1").show();
+                $("#horizon").show();
                 $("#direction").show();
                 $("#mapFunction").val("show earth map");}
             else{
@@ -241,6 +249,7 @@
                 $("#coinInfo").show();
                 $("#star-id").hide();
                 $("#coinInfo1").hide();
+                $("#horizon").hide();
                 $("#direction").hide();
                 $("#mapFunction").val("show star map");}
         });
@@ -251,13 +260,8 @@
         });
 
         var Dataflag = true;
-
-        $("#direction").draggable({ containment: "#horizon"});
-        $("#direction").draggable({
-            drag: function(event, ui) {
-                $("#dRA").val(((ui.position.left-135)/3).toFixed(1));
-                $("#dDec").val(((135-ui.position.top)/3).toFixed(1));}});
     });
+
   </script>
  </head>
  <body>
