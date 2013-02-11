@@ -534,16 +534,6 @@ function toOrthogonal(lat, lon, alt) {
     coordinate.z = (a + alt) * Math.cos(lat) * Math.cos(lon);
     return coordinate; }
 
-function timeCalc(htmlInfo,data,a,b){ 
-    $('#dirEr').val(a*b)}
+function timeCalc(htmlInfo,data,dRA,dDec){ 
+    $('#dirEr').val((dRA*dDec).toFixed(1))}
 
-//function timeCalc(htmlInfo, data, dRA, dDec) {}
-//    var meanx, meany, meanz, meanLat, meanLon;
-//    meanLat = 0;
-//    meanLon = 0;
-//    for(var i=0; i<data.events.length; i++) {
-//        meanLat = data.events[i].lon;
-//        meanLon = data.events[i].lat;}
-//    meanLat = meanLat / data.events.length;
-//    meanLon = meanLon / data.events.length;
-//    }
