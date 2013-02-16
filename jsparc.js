@@ -7,7 +7,7 @@
    Copyright (c) 2010 - 2011 Niek Schultheiss / HiSPARC
    jSparc is currently available for use in all personal or commercial projects
    under both the MIT and GPL version 2.0 licenses. This means that you can
-   choose the license that best suits your project and use it accordingly.
+   choose the license that best snetCoords your project and use it accordingly.
 
    See http://www.gnu.org/licenses/gpl-2.0.html
    and http://www.opensource.org/licenses/mit-license.php for further information.
@@ -486,9 +486,9 @@ function zenithData(data, star){
     var ST=0;
     for (i = 0; i < star.length; i++){
        for(j = 0; j < star[i].length; j++){
-           var uitvoer = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
-           star[i][j][1] = uitvoer.zenith;
-           star[i][j][0] = uitvoer.azimuth;
+           var netCoordvoer = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
+           star[i][j][1] = netCoordvoer.zenith;
+           star[i][j][0] = netCoordvoer.azimuth;
            if(star[i][j][1] > 45){
                star[i].splice(j,1);
                j--;}
@@ -525,15 +525,62 @@ function makeStarMap(htmlInfo, star){
                  ]
         })}
 
-function toOrthogonal(lat, lon, alt) {
-    var coordinate = {};
-    var a = 6378137.000;
-    var b = 6356752.315;
-    coordinate.x = (b + alt) * Math.sin(lat);
-    coordinate.y = (a + alt) * Math.cos(lat) * Math.sin(lon);
-    coordinate.z = (a + alt) * Math.cos(lat) * Math.cos(lon);
-    return coordinate; }
+function WGS84toECEF(lat, lon, alt){
+    var a=6378137;
+    var b=6356752.315;
+    lon=toRad*lon;
+    lat=toRad*lat;
+    var x=(a+alt)*Math.cos(lat)*Math.sin(lon);
+    var y=(a+alt)*Math.cos(lat)*Math.cos(lon);
+    var z=(b+alt)*Math.sin(lat);
+    var coordinate={"x":x,"y":y,"z":z,"lat":lat};
+    return coordinate;
+}
 
-function timeCalc(htmlInfo,data,dRA,dDec){ 
-    $('#dirEr').val((dRA*dDec).toFixed(1))}
+function netLoc(data, height){
+    var netCoord = new Array;
+    for(var i = 0; i < data.events.length; i++){
+        netCoord.push(WGS84toECEF(data.events[i].lat, data.events[i].lon, (data.events[i].alt+height)));
+    }
+    return netCoord;
+}
+
+function showerDirection(data){
+    var showerDir = {};
+    var norm;
+    var latitude;
+    showerDir.x = 0;
+    showerDir.y = 0;
+    showerDir.z = 0;
+    showerDir.lat = 0;
+    var netCoord = netLoc(data, 20000);
+    for(var i = 0; i< data.events.length; i++){
+        showerDir.x += eval(netCoord[i].x);
+        showerDir.y += eval(netCoord[i].y);
+        showerDir.z += eval(netCoord[i].z); 
+        showerDir.lat += eval(netCoord[i].lat);
+    }
+    showerDir.x = showerDir.x / data.events.length;   
+    showerDir.y = showerDir.y / data.events.length;   
+    showerDir.z = showerDir.z / data.events.length;
+    showerDir.lat = showerDir.lat / data.events.length;
+    norm = 1/(Math.sqrt(showerDir.z*showerDir.z+showerDir.y*showerDir.y))
+    showerDir.yLon = showerDir.z*norm;
+    showerDir.zLon = -showerDir.y*norm;
+    showerDir.xLat = Math.cos(showerDir.lat);
+    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat);
+    showerDir.zLat = -showerDir.z*norm*Math.sin(showerDir.lat);
+    return showerDir;
+}
+
+function timeCalc(htmlInfo, data, dRA, dDec){ 
+    var netCoord = netLoc(data, 0);
+    var showerDir = showerDirection(data);
+    var dx = -20000*showerDir.xLat*Math.tan(dDec*toRad);
+    var dy = -20000*(showerDir.yLat*Math.tan(dDec*toRad)+showerDir.z*Math.tan(dRA*toRad));
+    var dz = -20000*(showerDir.zLat*Math.tan(dDec*toRad)-showerDir.y*Math.tan(dRA*toRad));
+    $('#dirEr').val(dx);
+    $('#RA').val(dy);
+    $('#Dec').val(dz);
+}
 
