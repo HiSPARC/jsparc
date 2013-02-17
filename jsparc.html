@@ -17,7 +17,7 @@
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript" src="jsparc.js"></script>
   <script type="text/javascript">
-    var URL = "http://data.hisparc.nl/django/jsparc/";
+    var URL = "http://data.hisparc.nl/jsparc/";
     var MIPdens = [];
     var detNum = [];
     var infoURL = [];
@@ -153,7 +153,7 @@
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
-                    infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
+                    infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
                 $(txt).appendTo("#coinInfo");
                 $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
 
