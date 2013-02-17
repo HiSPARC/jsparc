@@ -7,7 +7,7 @@
    Copyright (c) 2010 - 2011 Niek Schultheiss / HiSPARC
    jSparc is currently available for use in all personal or commercial projects
    under both the MIT and GPL version 2.0 licenses. This means that you can
-   choose the license that best snetCoords your project and use it accordingly.
+   choose the license that best suits your project and use it accordingly.
 
    See http://www.gnu.org/licenses/gpl-2.0.html
    and http://www.opensource.org/licenses/mit-license.php for further information.
