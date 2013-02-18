@@ -565,8 +565,8 @@ function WGS84toECEF(lat, lon, alt){
     var b=6356752.315;
     lon=toRad*lon;
     lat=toRad*lat;
-    var x=(a+alt)*Math.cos(lat)*Math.sin(lon);
-    var y=(a+alt)*Math.cos(lat)*Math.cos(lon);
+    var x=(a+alt)*Math.cos(lat)*Math.cos(lon);
+    var y=(a+alt)*Math.cos(lat)*Math.sin(lon);
     var z=(b+alt)*Math.sin(lat);
     var coordinate={"x":x,"y":y,"z":z,"lat":lat};
     return coordinate;
@@ -583,7 +583,7 @@ function netLoc(data, height){
 function showerDirection(data){
     var showerDir = {};
     var norm;
-    var latitude;
+ //   var latitude;
     showerDir.x = 0;
     showerDir.y = 0;
     showerDir.z = 0;
@@ -599,24 +599,36 @@ function showerDirection(data){
     showerDir.y = showerDir.y / data.events.length;   
     showerDir.z = showerDir.z / data.events.length;
     showerDir.lat = showerDir.lat / data.events.length;
-    norm = 1/(Math.sqrt(showerDir.z*showerDir.z+showerDir.y*showerDir.y))
-    showerDir.yLon = showerDir.z*norm;
-    showerDir.zLon = -showerDir.y*norm;
-    showerDir.xLat = Math.cos(showerDir.lat);
+    norm = 1/(Math.sqrt(showerDir.x*showerDir.x+showerDir.y*showerDir.y))
+    showerDir.xLon = showerDir.y*norm;
+    showerDir.yLon = -showerDir.x*norm;
+    showerDir.zLat = Math.cos(showerDir.lat);
     showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat);
-    showerDir.zLat = -showerDir.z*norm*Math.sin(showerDir.lat);
+    showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.lat);
     return showerDir;
 }
 
 function timeCalc(htmlInfo, data, dRA, dDec){ 
     var netCoord = netLoc(data, 0);
     var showerDir = showerDirection(data);
-    var dx = -20000*showerDir.xLat*Math.tan(dDec*toRad);
-    var dy = -20000*(showerDir.yLat*Math.tan(dDec*toRad)+showerDir.z*Math.tan(dRA*toRad));
-    var dz = -20000*(showerDir.zLat*Math.tan(dDec*toRad)-showerDir.y*Math.tan(dRA*toRad));
-    $('#dirEr').val(dx);
-    $('#RA').val(dy);
-    $('#Dec').val(dz);
+    var z = (showerDir.z+20000*showerDir.zLat*Math.tan(dDec*toRad)).toFixed(0);
+    var y = (showerDir.y+20000*(showerDir.yLat*Math.tan(dDec*toRad)-showerDir.xLon*Math.tan(dRA*toRad))).toFixed(0);
+    var x = (showerDir.x+20000*(showerDir.xLat*Math.tan(dDec*toRad)-showerDir.yLon*Math.tan(dRA*toRad))).toFixed(0);
+    var dx = x-netCoord[0].x;
+    var dy = y-netCoord[0].y;
+    var dz = z-netCoord[0].z;
+    var time = Math.sqrt(dx*dx+dy*dy+dz*dz)/c;
+ //   $('#nanoCalc0').val(0);
+    for(var i=0; i<netCoord.length; i++){
+        dx = x-netCoord[i].x;
+        dy = y-netCoord[i].y;
+        dz = z-netCoord[i].z;
+        dtime = 1000000000*(Math.sqrt(dx*dx+dy*dy+dz*dz)/c-time);
+        $('#nanoCalc' + i).val(dtime.toFixed(0));
+    }
+    $('#dirEr').val(x);
+    $('#RA').val(y);
+    $('#Dec').val(z);
 }
 
 

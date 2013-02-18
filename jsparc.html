@@ -164,7 +164,7 @@
                 txt1 += "<tr><td></td></tr><tr><td>Calc.</td>";
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
-                    txt1 += "<td><input id='nanoCalc" + i + 1 + "' type='text' disabled='disabled' size=5></input></td>";
+                    txt1 += "<td><input id='nanoCalc" + i + "' type='text' disabled='disabled' size=5></input></td>";
                     for (j = detNum[i]; j > 0; j--) {
                         txt += "<option value=" + j + ">" + j + "</option>";}
                     txt += "</select></td>";}
