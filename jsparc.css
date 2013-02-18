@@ -148,7 +148,10 @@ input[type="button"] {
 table {
     border: 0px;}
 
-.tracegraph, .coincidencegraph, .jqplot-yaxis-label {
+#mapFunction {
+    float: right;}
+
+.tracegraph, .coincidencegraph, #star-id, .jqplot-yaxis-label {
     color: #111;}
 
 .olControlAttribution {

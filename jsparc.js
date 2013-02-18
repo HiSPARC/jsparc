@@ -459,71 +459,105 @@ function plotGraph(htmlInfo, data) {
 }
 
 function toZenith(RA,Dec,Lon,Lat,ST){
-    var sinDec=Math.sin(Dec*toRad);
-    var cosDec=Math.cos(Dec*toRad);
-    var sinLat=Math.sin(Lat*toRad);
-    var cosLat=Math.cos(Lat*toRad);
-    var ha=ST-Lon-RA;
-    var cosZenith=(sinDec*sinLat+cosDec*cosLat*Math.cos(ha*toRad)).toFixed(4);
-    var zenith=Math.acos(cosZenith)/toRad;
+    var sinDec = Math.sin(Dec * toRad);
+    var cosDec = Math.cos(Dec * toRad);
+    var sinLat = Math.sin(Lat * toRad);
+    var cosLat = Math.cos(Lat * toRad);
+    var ha = ST - Lon - RA;
+    var cosZenith = (sinDec * sinLat + cosDec * cosLat * Math.cos(ha * toRad)).toFixed(4);
+    var zenith = Math.acos(cosZenith) / toRad;
     var azimuth;
-    if (cosLat*Math.sin(zenith*toRad).toFixed(4)==0) azimuth=0;
-    else azimuth=(Math.acos((sinDec-sinLat*cosZenith)/(cosLat*Math.sin(zenith*toRad)))).toFixed(4)/toRad;
-    if (Math.sin(ha*toRad) > 0) azimuth  = 360 - azimuth;
-    var out={"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
+    if (cosLat * Math.sin(zenith * toRad).toFixed(4) == 0) {azimuth = 0;}
+    else {azimuth = (Math.acos((sinDec - sinLat * cosZenith) / (cosLat * Math.sin(zenith * toRad)))).toFixed(4) / toRad;}
+    if (Math.sin(ha*toRad) > 0) {azimuth = 360 - azimuth;}
+    var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
     return out}
 
-function zenithData(data, star){
-    var x,y,r;
+function zenithData(data, star) {
+    var x, y, r;
     var mapData = {
         lon: 0,
         lat: 0};
     for (i = 0; i < data.events.length; i++) {
         mapData.lon += data.events[i].lon;
         mapData.lat += data.events[i].lat;}
-    var Lon=mapData.lon / data.events.length;
-    var Lat=mapData.lat / data.events.length;
-    var ST=0;
+    var Lon = mapData.lon / data.events.length;
+    var Lat = mapData.lat / data.events.length;
+    var ST = 0;
     for (i = 0; i < star.length; i++){
        for(j = 0; j < star[i].length; j++){
            var netCoordvoer = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
            star[i][j][1] = netCoordvoer.zenith;
            star[i][j][0] = netCoordvoer.azimuth;
            if(star[i][j][1] > 45){
-               star[i].splice(j,1);
+               star[i].splice(j, 1);
                j--;}
            else {
                r = star[i][j][1];
-               x = r*Math.sin(toRad*star[i][j][0]);
-               y = r*Math.cos(toRad*star[i][j][0]);
+               x = r * Math.sin(toRad * star[i][j][0]);
+               y = r * Math.cos(toRad * star[i][j][0]);
                star[i][j][0] = -x;
                star[i][j][1] = y;}}}
     return star}
 
-function makeStarMap(htmlInfo, star){
-    var plot1 = $.jqplot ('star-id', star,
-        { title:'Starmap',
-          axes:{xaxis:{label:"delta Right Ascension [degrees]",ticks:[-60,-45,-30,-15,0,15,30,45,60],labelRenderer: $.jqplot.CanvasAxisLabelRenderer},
-                yaxis:{label:"delta Declination [degrees]",ticks:[-60,-45,-30,-15,0,15,30,45,60],
-                       renderer:$.jqplot.LogAxisRenderer,labelRenderer: $.jqplot.CanvasAxisLabelRenderer}},
-          series:[{showLine:false, color:"#000000",
-                   markerOptions: { size: 2, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 3, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 4, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 5, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 6, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 7, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 8, style:"filledCircle" }},
-                  {showLine:false, color:"#000000",
-                   markerOptions: { size: 9, style:"filledCircle" }}
-                 ]
-        })}
+
+function makeStarMap(htmlInfo, star) {
+    var starStyle = {
+        title: 'Starmap',
+        seriesDefaults: {
+            shadow: false,
+            showLine: false,
+            color: "#111",
+            showMarker: true,
+            markerOptions: {
+                shadow: false,
+                size: 6,
+                style: "filledCircle",
+                lineWidth: 0}},
+        series: [{markerOptions: {size: 2}},
+                 {markerOptions: {size: 3}},
+                 {markerOptions: {size: 4}},
+                 {markerOptions: {size: 5}},
+                 {markerOptions: {size: 6}},
+                 {markerOptions: {size: 7}},
+                 {markerOptions: {size: 8}},
+                 {markerOptions: {size: 9}}],
+        legend: {
+            show: false},
+        cursor: {
+            tooltipLocation: 'se',
+            zoom: false},
+        axesDefaults: {
+            min: -60,
+            max: 60,
+            numberTicks: 9,
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            labelOptions: {
+                textColor: '#222',
+                enableFontSupport: true},
+            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+            tickOptions: {
+                textColor: '#222',
+                enableFontSupport: true,
+                showGridline: true,
+                mark: 'outside',
+                markSize: 4}},
+        axes: {
+            xaxis:{
+                label: "delta Right Ascension [degrees]"},
+            yaxis: {
+                label: "delta Declination [degrees]"}},
+        grid: {
+            shadow: false,
+            background: "#fff",
+            gridLineWidth: 1,
+            gridLineColor: "#ddd",
+            borderWidth: 1,
+            borderColor: "#000"}};
+
+    var plot1 = $.jqplot('star-id', star, starStyle)
+
+}
 
 function WGS84toECEF(lat, lon, alt){
     var a=6378137;
@@ -583,4 +617,5 @@ function timeCalc(htmlInfo, data, dRA, dDec){
     $('#RA').val(dy);
     $('#Dec').val(dz);
 }
+
 

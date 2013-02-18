@@ -20,7 +20,7 @@
   <script type="text/javascript" src="jsparc.js"></script>
   <script type="text/javascript">
 
-    var URL = "http://data.hisparc.nl/django/jsparc/";
+    var URL = "http://data.hisparc.nl/jsparc/";
     var MIPdens = [];
     var detNum = [];
     var infoURL = [];
@@ -179,7 +179,7 @@
                 for (i = 0; i < data.events.length; i++) {
                     txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
-                    infoURL[i] = "http://data.hisparc.nl/django/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
+                    infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
                 txt += "</tr>"
                 $(txt).appendTo("#coinInfo");
                 $(txt1).appendTo("#coinInfo1");
@@ -243,7 +243,7 @@
                 $("#coinInfo1").show();
                 $("#horizon").show();
                 $("#direction").show();
-                $("#mapFunction").val("show earth map");}
+                $("#mapFunction").val("Show Earth Map");}
             else{
                 $("#map-id").show();
                 $("#coinInfo").show();
@@ -251,7 +251,7 @@
                 $("#coinInfo1").hide();
                 $("#horizon").hide();
                 $("#direction").hide();
-                $("#mapFunction").val("show star map");}
+                $("#mapFunction").val("Show Star Map");}
         });
 
         $(window).keypress(function (e) {
@@ -305,7 +305,7 @@
    <input type="text" id="showEn" disabled="disabled" size=8></input>
    <a style="font-family: serif;">&#967;</a><sup>2</sup>:
    <input type="text" id="showEr" disabled="disabled" size=8></input>
-   <input type="button" id="mapFunction" value="show star map"></input>
+   <input type="button" id="mapFunction" value="Show Star Map"></input>
   </div>
   <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
   <div id="dashboard">
