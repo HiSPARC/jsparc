@@ -33,7 +33,7 @@
 
 #star-id {
     display: block;
-    width: 433px;
+    width: 425px;
     height: 445px;
     position: absolute;
     margin: 0px;
@@ -45,7 +45,7 @@
     display: block;
     position: absolute;
     top: 100px;
-    left: 443px;
+    left: 435px;
     width: 300px;
     height: 300px;
     z-index: 2;}

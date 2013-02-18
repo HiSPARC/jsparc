@@ -471,7 +471,8 @@ function toZenith(RA,Dec,Lon,Lat,ST){
     else {azimuth = (Math.acos((sinDec - sinLat * cosZenith) / (cosLat * Math.sin(zenith * toRad)))).toFixed(4) / toRad;}
     if (Math.sin(ha*toRad) > 0) {azimuth = 360 - azimuth;}
     var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
-    return out}
+    return out
+}
 
 function zenithData(data, star) {
     var x, y, r;
