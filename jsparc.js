@@ -487,9 +487,9 @@ function zenithData(data, star) {
     var ST = 0;
     for (i = 0; i < star.length; i++){
        for(j = 0; j < star[i].length; j++){
-           var netCoordvoer = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
-           star[i][j][1] = netCoordvoer.zenith;
-           star[i][j][0] = netCoordvoer.azimuth;
+           var netCoordInput = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
+           star[i][j][1] = netCoordInput.zenith;
+           star[i][j][0] = netCoordInput.azimuth;
            if(star[i][j][1] > 45){
                star[i].splice(j, 1);
                j--;}
