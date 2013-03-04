@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Simulation</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="jsim.css" />
+  <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $("#changeMap").click( function (event) {
+           for(i = 0; i < 4; i++) {
+                var change=$("#x"+i).val();
+                $("#detector"+i).css("left", eval(change));
+                change=$("#y"+i).val();
+                $("#detector"+i).css("top", eval(change));
+                change="rotate("+$("#fie"+i).val()+"deg)";
+                $("#detector"+i).css("transform", change);
+                $("#detector"+i).css("-moz-transform", change);
+                $("#detector"+i).css("-webkit-transform", change);
+            }
+        });
+    });
+  </script>
+
+ </head>
+ <body>
+  <div id="detectorMap">
+   <img id="detector0" src="images/detector0.png" alt="0" />
+   <img id="detector1" src="images/detector1.png" alt="1" />
+   <img id="detector2" src="images/detector2.png" alt="2" />
+   <img id="detector3" src="images/detector3.png" alt="3" />
+  </div>
+  <table>
+    <tr>
+      <td>detector</td><td>x [m]</td><td>y [m]</td><td>&#966; [<sup>o</sup>]</td>
+    </tr>
+    <tr>
+      <td>Master 0</td>
+      <td><input id="x0" type=text value=5 size=5 /></td>
+      <td><input id="y0" type=text value=0 size=5 /></td>
+      <td><input id="fie0" type=text value=0 size=5 /></td>
+    </tr>
+    <tr>
+      <td>Master 1</td>
+      <td><input id="x1" type=text value=-5 size=5  /></td>
+      <td><input id="y1" type=text value=0 size=5 /></td>
+      <td><input id="fie1" type=text value=180 size=5 /></td>
+    </tr>
+    <tr>
+      <td>Slave 0</td>
+      <td><input id="x2" type=text value=7.5 size=5  /></td>
+      <td><input id="y2" type=text value=3 size=5 /></td>
+      <td><input id="fie2" type=text value=90 size=5 /></td>
+    </tr>
+    <tr>
+      <td>Slave 1</td>
+      <td><input id="x3" type=text value=7.5 size=5  /></td>
+      <td><input id="y3" type=text value=8 size=5 /></td>
+      <td><input id="fie3" type=text value=90 size=5 /></td>
+    </tr>
+  </table>
+  <input type="button" id="changeMap" value="Change map"></input>
+ </body>
+</html>
