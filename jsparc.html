@@ -32,11 +32,12 @@
         mapId: "map-id",
         distId: "dist",
         chartId: "chartdiv",
-        mipId: "MIP",
-        mipCalcId: "MIPcalc",
-        energyId: "showEn",
-        stationEr: "showEr",
-        showerEr: "measEr"};
+        mipId: "mip",
+        mipCalcId: "mipCalc",
+        energyId: "mipRes",
+        stationEr: "mipEr",
+        dirEr: "dirEr",
+        mipErEr: "measEr"};
 
     function padZero(number, length) {
         var str = '' + number;
@@ -54,7 +55,7 @@
     
     function calcMIP() {
         for (i = 0; i < MIPdens.length; i++) {
-            $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
+            $('#mip' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
     }
     
     function getStatus(i) {
@@ -150,10 +151,10 @@
                         if (j < detNum[i]) {
                             if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                                 MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-                                txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3);
+                                txt += "<td><input id='mip" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3);
                                 txt += " disabled='disabled' size=5></input></td>";}
                             else {
-                                txt += "<td><input id='MIP" + i + j;
+                                txt += "<td><input id='mip" + i + j;
                                 txt += "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></input></td>";}}
                         else {
                             txt += "<td></td>";
@@ -168,16 +169,16 @@
                     for (j = detNum[i]; j > 0; j--) {
                         txt += "<option value=" + j + ">" + j + "</option>";}
                     txt += "</select></td>";}
-                txt1 += "</tr><tr><td><a style='font-family: serif;'>&#967;</a><sup>2</sup>:</td>";
+                txt1 += "</tr><tr><td><a style='font-family: serif;'>&#963;</a>:</td>";
                 txt1 += "<td><input type='text' id='dirEr' disabled='disabled' size=5></input></td></tr>";
                 txt1 += "<tr><td>RA</td><td><input type='text' id='RA' disabled='disabled' size=5></input></td></tr>";
                 txt1 += "<tr><td>Dec</td><td><input type='text' id='Dec' disabled='disabled' size=5></input></td></tr>";
                 txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
                 for (i = 0; i < data.events.length; i++) {
-                    txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+                    txt += "<td><input type='text' id='mip" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
                 txt += "</tr><tr><td>Calc.</td>";
                 for (i = 0; i < data.events.length; i++) {
-                    txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
+                    txt += "<td><input type='text' id='mipCalc" + i + "' disabled='disabled' size=5></input></td>";
                     $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
                     infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
                 txt += "</tr>"
@@ -302,9 +303,9 @@
   <div id="map-id"></div>
   <div id="result-id">
    Energy in [eV]:
-   <input type="text" id="showEn" disabled="disabled" size=8></input>
+   <input type="text" id="mipRes" disabled="disabled" size=8></input>
    <a style="font-family: serif;">&#967;</a><sup>2</sup>:
-   <input type="text" id="showEr" disabled="disabled" size=8></input>
+   <input type="text" id="mipEr" disabled="disabled" size=8></input>
    <input type="button" id="mapFunction" value="Show Star Map"></input>
   </div>
   <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
