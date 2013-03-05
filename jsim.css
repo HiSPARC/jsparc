@@ -1,36 +1,32 @@
+body {
+    position: relative;
+    color: #333;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    background: #ccf;}
+
 #detectorMap {
-    width: 200px;
-    height: 200px;
+    display: block;
+    width: 450px;
+    height: 445px;
     position: absolute;
     margin: 0px;
-    left: 600px;
-    top: 10px;}
+    left: 350px;
+    top: 35px;
+    background-color : #f0f0f0}
 
-#detector2 {
-    width: 40px;
-    height: 10px;
+#gps {
+    width: 6px;
+    height: 6px;
     position: absolute;
     margin: 0px;
-    left: 100px;
-    top: 150px;
-    transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);}
+    left: 222px;
+    top: 222px;}
 
-#detector3 {
-    width: 40px;
-    height: 10px;
-    position: absolute;
-    margin: 0px;
-    left: 200px;
-    top: 150px;
-    transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);}
 
 #detector0 {
-    width: 40px;
-    height: 10px;
+    width: 52px;
+    height: 52px;
     position: absolute;
     margin: 0px;
     left: 150px;
@@ -40,8 +36,8 @@
     -webkit-transform: rotate(90deg);}
 
 #detector1 {
-    width: 40px;
-    height: 10px;
+    width: 52px;
+    height: 52px;
     position: absolute;
     margin: 0px;
     left: 150px;
@@ -49,3 +45,25 @@
     transform: rotate(90deg);
     -moz-transform: rotate(90deg);
     -webkit-transform: rotate(90deg);}
+
+#detector2 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector3 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}

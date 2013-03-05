@@ -4,21 +4,37 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title>Simulation</title>
-  <link rel="stylesheet" type="text/css" media="screen" href="jsim.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
   <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
   <script type="text/javascript">
+
+    function normCoord(objName){
+        var param = {}
+        param.width = ($("#" + objName).width());
+        param.height = ($("#" + objName).height());
+        return param;
+    }
+
+    function setDetLoc(param){
+        var maxWidth = 0.5*param.width;
+        var maxHeight = 0.5*param.height;
+        for(i = 0; i < 4; i++) {
+            var change=225+maxWidth*$("#x"+i).val()/10-26;
+            $("#detector"+i).css("left", eval(change));
+            change=225-maxHeight*$("#y"+i).val()/10-26;
+            $("#detector"+i).css("top", eval(change));
+            change="rotate("+$("#fie"+i).val()+"deg)";
+            $("#detector"+i).css("transform", change);
+            $("#detector"+i).css("-moz-transform", change);
+            $("#detector"+i).css("-webkit-transform", change);
+        }
+
+    }
+
     $(document).ready(function(){
+        setDetLoc(normCoord("detectorMap"));      
         $("#changeMap").click( function (event) {
-           for(i = 0; i < 4; i++) {
-                var change=$("#x"+i).val();
-                $("#detector"+i).css("left", eval(change));
-                change=$("#y"+i).val();
-                $("#detector"+i).css("top", eval(change));
-                change="rotate("+$("#fie"+i).val()+"deg)";
-                $("#detector"+i).css("transform", change);
-                $("#detector"+i).css("-moz-transform", change);
-                $("#detector"+i).css("-webkit-transform", change);
-            }
+            setDetLoc(normCoord("detectorMap"));
         });
     });
   </script>
@@ -26,6 +42,7 @@
  </head>
  <body>
   <div id="detectorMap">
+   <img id="gps" src="images/gps.png" alt="gps" />
    <img id="detector0" src="images/detector0.png" alt="0" />
    <img id="detector1" src="images/detector1.png" alt="1" />
    <img id="detector2" src="images/detector2.png" alt="2" />
@@ -33,33 +50,84 @@
   </div>
   <table>
     <tr>
-      <td>detector</td><td>x [m]</td><td>y [m]</td><td>&#966; [<sup>o</sup>]</td>
+      <td>det.</td><td>x [m]</td><td>y [m]</td><td>&#966; [<sup>o</sup>]</td>
     </tr>
     <tr>
-      <td>Master 0</td>
-      <td><input id="x0" type=text value=5 size=5 /></td>
-      <td><input id="y0" type=text value=0 size=5 /></td>
-      <td><input id="fie0" type=text value=0 size=5 /></td>
+      <td align='center' class='det1' style='border-radius:2px;'>1</td>
+      <td><input id="x0" type=text value=0 size=5 /></td>
+      <td><input id="y0" type=text value=8 size=5 /></td>
+      <td><input id="fie0" type=text value=90 size=5 /></td>
     </tr>
     <tr>
-      <td>Master 1</td>
-      <td><input id="x1" type=text value=-5 size=5  /></td>
-      <td><input id="y1" type=text value=0 size=5 /></td>
-      <td><input id="fie1" type=text value=180 size=5 /></td>
+      <td align='center' class='det2' style='border-radius:2px;'>2</td>
+      <td><input id="x1" type=text value=0 size=5  /></td>
+      <td><input id="y1" type=text value=3 size=5 /></td>
+      <td><input id="fie1" type=text value=90 size=5 /></td>
     </tr>
     <tr>
-      <td>Slave 0</td>
-      <td><input id="x2" type=text value=7.5 size=5  /></td>
-      <td><input id="y2" type=text value=3 size=5 /></td>
-      <td><input id="fie2" type=text value=90 size=5 /></td>
+      <td align='center' class='det3' style='border-radius:2px;'>3</td>
+      <td><input id="x2" type=text value=-5 size=5  /></td>
+      <td><input id="y2" type=text value=0 size=5 /></td>
+      <td><input id="fie2" type=text value=0 size=5 /></td>
     </tr>
     <tr>
-      <td>Slave 1</td>
-      <td><input id="x3" type=text value=7.5 size=5  /></td>
-      <td><input id="y3" type=text value=8 size=5 /></td>
-      <td><input id="fie3" type=text value=90 size=5 /></td>
+      <td align='center' class='det4' style='border-radius:2px;'>4</td>
+      <td><input id="x3" type=text value=5 size=5  /></td>
+      <td><input id="y3" type=text value=0 size=5 /></td>
+      <td><input id="fie3" type=text value=180 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=4><input type="button" id="changeMap" value="Change map"></input><td>
+    </tr>
+    <tr>
+       <td colspan=2>energy</td><td><input id="energy" type=text value=1e15 size=5  /></td>
+    </tr>
+    <tr>
+      <td colspan=2></td><td>zenit</td><td>azimut</td>
+    </tr>
+    <tr>
+      <td colspan=2>direction</td>
+      <td><input id="zenit" type=text value=0 size=5 /></td>
+      <td><input id="azimut" type=text value=0 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=2></td><td>x [m]</td><td>y [m]</td>
+    </tr>
+    <tr>
+      <td colspan=2>shower core</td>
+      <td><input id="zenit" type=text value=0 size=5 /></td>
+      <td><input id="azimut" type=text value=0 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=4><input type="button" id="simShow" value="Simulate shower"></input></td>
+    </tr>
+    <tr>
+      <td></td><td>[MIP]</td><td>[ns]</td><td></td>
+    </tr>
+    <tr>
+      <td align='center' class='det1' style='border-radius:2px;'>1</td>
+      <td><input id="mip0" type=text size=5 /></td>
+      <td><input id="nano0" type=text size=5 /></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align='center' class='det2' style='border-radius:2px;'>2</td>
+      <td><input id="mip1" type=text size=5 /></td>
+      <td><input id="nano1" type=text size=5 /></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align='center' class='det3' style='border-radius:2px;'>3</td>
+      <td><input id="mip2" type=text size=5 /></td>
+      <td><input id="nano2" type=text size=5 /></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align='center' class='det4' style='border-radius:2px;'>4</td>
+      <td><input id="mip3" type=text size=5 /></td>
+      <td><input id="nano3" type=text size=5 /></td>
+      <td></td>
     </tr>
   </table>
-  <input type="button" id="changeMap" value="Change map"></input>
  </body>
 </html>
