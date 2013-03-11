@@ -8,6 +8,37 @@
   <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
   <script type="text/javascript">
 
+    var c = 299792458, toRad=Math.atan(1)/45;
+
+    function toShowerTime(theta, phi, x, y, z) {
+        var sinTheta = Math.sin(theta * toRad), cosTheta = Math.cos(theta*toRad);
+        var sinPhi = Math.sin(phi * toRad), cosPhi = Math.cos(phi*toRad);
+        return (1e9 * (sinPhi * sinTheta * x + cosPhi * sinTheta * y +cosTheta * z)/c).toFixed(1);
+    }
+
+    function calcK(energy) {
+        var r0 = 92, alfa = 1.2, eta = 3.97;
+        return Math.pow((energy/2.15e17),(0.985))/(Math.pow((600 / r0), (-alfa))*Math.pow((1 + (600 / r0)), (alfa - eta)));
+    }
+
+    function calcMIP(k, r) {
+        var r0 = 92, alfa = 1.2, eta = 3.97;
+        return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
+    }
+
+    function calcMIPs() {
+        var r, a, x, y, dx, dy;
+            for (i = 0; i < 4; i++) {
+                a = $("#alfa"+i).val() * toRad;
+                r = $("#r"+i).val();
+                x = r * Math.sin(a);
+                y = r * Math.cos(a);
+                dx = x - $("#r").val() * Math.sin($("#alfa").val() * toRad); 
+                dy= y - $("#r").val() * Math.cos($("#alfa").val() * toRad);
+                $("#mip"+i).val(((calcMIP(calcK($("#energy").val()), Math.sqrt(dx*dx+dy*dy)))/2).toFixed(4));
+            }
+    }
+
     function normCoord(objName){
         var param = {}
         param.width = ($("#" + objName).width());
@@ -15,15 +46,34 @@
         return param;
     }
 
+    function calcTime(){
+        var r, alfa, theta, phi, x, y, z;
+        for(i = 0; i < 4; i++) {
+            r = $("#r"+i).val();
+            alfa = $("#alfa"+i).val() * toRad;
+            x = r * Math.sin(alfa);
+            y = r * Math.cos(alfa);
+            z = 0;
+            theta = $("#theta").val();
+            phi = $("#phi").val();
+            $("#nano"+i).val(toShowerTime(theta, phi, x, y, z));
+        }
+    }
+
     function setDetLoc(param){
         var maxWidth = 0.5*param.width;
         var maxHeight = 0.5*param.height;
+        var r, alfa, x, y, change;
         for(i = 0; i < 4; i++) {
-            var change=225+maxWidth*$("#x"+i).val()/10-26;
+            r = $("#r"+i).val();
+            alfa = $("#alfa"+i).val() * toRad;
+            x = maxWidth * r * Math.sin(alfa);
+            y = maxWidth * r * Math.cos(alfa);
+            change=225+x/10-26;
             $("#detector"+i).css("left", eval(change));
-            change=225-maxHeight*$("#y"+i).val()/10-26;
+            change=225-y/10-26;
             $("#detector"+i).css("top", eval(change));
-            change="rotate("+$("#fie"+i).val()+"deg)";
+            change="rotate("+$("#beta"+i).val()+"deg)";
             $("#detector"+i).css("transform", change);
             $("#detector"+i).css("-moz-transform", change);
             $("#detector"+i).css("-webkit-transform", change);
@@ -32,9 +82,17 @@
     }
 
     $(document).ready(function(){
-        setDetLoc(normCoord("detectorMap"));      
+        setDetLoc(normCoord("detectorMap")); 
+        calcMIPs();
+        calcTime();
         $("#changeMap").click( function (event) {
             setDetLoc(normCoord("detectorMap"));
+            calcMIPs();
+            calcTime();
+        });
+        $("#simShow").click( function (event) {
+            calcMIPs();
+            calcTime();
         });
     });
   </script>
@@ -50,56 +108,56 @@
   </div>
   <table>
     <tr>
-      <td>det.</td><td>x [m]</td><td>y [m]</td><td>&#966; [<sup>o</sup>]</td>
+      <td>det.</td><td>r [m]</td><td>&#945; [<sup>o</sup>]</td><td>&#946; [<sup>o</sup>]</td>
     </tr>
     <tr>
       <td align='center' class='det1' style='border-radius:2px;'>1</td>
-      <td><input id="x0" type=text value=0 size=5 /></td>
-      <td><input id="y0" type=text value=8 size=5 /></td>
-      <td><input id="fie0" type=text value=90 size=5 /></td>
+      <td><input id="r0" type=text value=8 size=5 /></td>
+      <td><input id="alfa0" type=text value=0 size=5 /></td>
+      <td><input id="beta0" type=text value=0 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det2' style='border-radius:2px;'>2</td>
-      <td><input id="x1" type=text value=0 size=5  /></td>
-      <td><input id="y1" type=text value=3 size=5 /></td>
-      <td><input id="fie1" type=text value=90 size=5 /></td>
+      <td><input id="r1" type=text value=3 size=5  /></td>
+      <td><input id="alfa1" type=text value=0 size=5 /></td>
+      <td><input id="beta1" type=text value=0 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det3' style='border-radius:2px;'>3</td>
-      <td><input id="x2" type=text value=-5 size=5  /></td>
-      <td><input id="y2" type=text value=0 size=5 /></td>
-      <td><input id="fie2" type=text value=0 size=5 /></td>
+      <td><input id="r2" type=text value=5 size=5  /></td>
+      <td><input id="alfa2" type=text value=270 size=5 /></td>
+      <td><input id="beta2" type=text value=270 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det4' style='border-radius:2px;'>4</td>
-      <td><input id="x3" type=text value=5 size=5  /></td>
-      <td><input id="y3" type=text value=0 size=5 /></td>
-      <td><input id="fie3" type=text value=180 size=5 /></td>
+      <td><input id="r3" type=text value=5 size=5  /></td>
+      <td><input id="alfa3" type=text value=90 size=5 /></td>
+      <td><input id="beta3" type=text value=90 size=5 /></td>
     </tr>
     <tr>
-      <td colspan=4><input type="button" id="changeMap" value="Change map"></input><td>
+      <td colspan=4><input type="button" id="changeMap" value="Change map" style='width:200px;'></input><td>
     </tr>
     <tr>
-       <td colspan=2>energy</td><td><input id="energy" type=text value=1e15 size=5  /></td>
+       <td colspan=2>energy</td><td><input id="energy" type=text value=5e12 size=5  /></td>
     </tr>
     <tr>
-      <td colspan=2></td><td>zenit</td><td>azimut</td>
+      <td colspan=2></td><td>&#952; [<sup>o</sup>]</td><td>&#934; [<sup>o</sup>]</td>
     </tr>
     <tr>
       <td colspan=2>direction</td>
-      <td><input id="zenit" type=text value=0 size=5 /></td>
-      <td><input id="azimut" type=text value=0 size=5 /></td>
+      <td><input id="theta" type=text value=0 size=5 /></td>
+      <td><input id="phi" type=text value=0 size=5 /></td>
     </tr>
     <tr>
-      <td colspan=2></td><td>x [m]</td><td>y [m]</td>
+      <td colspan=2></td><td>r [m]</td><td>&#945; [<sup>o</sup>]</td>
     </tr>
     <tr>
       <td colspan=2>shower core</td>
-      <td><input id="zenit" type=text value=0 size=5 /></td>
-      <td><input id="azimut" type=text value=0 size=5 /></td>
+      <td><input id="r" type=text value=0 size=5 /></td>
+      <td><input id="alfa" type=text value=0 size=5 /></td>
     </tr>
     <tr>
-      <td colspan=4><input type="button" id="simShow" value="Simulate shower"></input></td>
+      <td colspan=4><input type="button" id="simShow" value="Simulate shower" style='width:200px;'></input></td>
     </tr>
     <tr>
       <td></td><td>[MIP]</td><td>[ns]</td><td></td>

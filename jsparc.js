@@ -1,10 +1,10 @@
 /* About: Version
 
-   jSparc-0-4-3
+   jSparc-0-4-4
 
    About: Copyright & License
 
-   Copyright (c) 2010 - 2011 Niek Schultheiss / HiSPARC
+   Copyright (c) 2010 - 2013 Niek Schultheiss / HiSPARC
    jSparc is currently available for use in all personal or commercial projects
    under both the MIT and GPL version 2.0 licenses. This means that you can
    choose the license that best suits your project and use it accordingly.
@@ -155,28 +155,16 @@ function invNKG(shower4326, stationIndex, data, htmlInfo) {
     return S * Math.pow((r / r0), (alfa)) * Math.pow((1 + (r / r0)), (eta - alfa));
 }
 
-function invAgase(shower4326, stationIndex, data, htmlInfo) {
-    var S = $("#" + htmlInfo.mipId+ stationIndex).val(), r;
-    if (data.events[stationIndex].lat !== "") {
-        r = distVincenty(shower4326.y, shower4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);}
-    return S * Math.pow((r / r0), (-1.2)) * Math.pow((1 + (r / r0)), (-2.64)) * Math.pow((1 + r * r / 1000000), (-0.6));
-}
-
 function NKG(pMerc, k, stationIndex, data) {
     var p4326 = (pMerc), r = distVincenty(p4326.y, p4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);
     return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
-}
-
-function agase(pMerc, k, stationIndex, data) {
-    var p4326 = (pMerc), r = distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon);
-    return k * Math.pow((r / r0), (1.2)) * Math.pow((1 + (r / r0)), (2.64)) * Math.pow((1 + r * r / 1000000), (0.6));
 }
 
 function energy(k) {
     return 2.15e17 * Math.pow((k * Math.pow((600 / r0), (-alfa)) * Math.pow((1 + (600 / r0)), (alfa - eta))), 1.015);
 }
 
-function calcDev(measurement, calculation){
+function calcSigma(measurement, calculation){
     var deviation=0;
     var delta
     for (i = 0; i < measurement.length; i++) {
@@ -449,7 +437,7 @@ function toZenith(RA,Dec,Lon,Lat,ST){
     else {azimuth = (Math.acos((sinDec - sinLat * cosZenith) / (cosLat * Math.sin(zenith * toRad)))).toFixed(4) / toRad;}
     if (Math.sin(ha*toRad) > 0) {azimuth = 360 - azimuth;}
     var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
-    return out
+    return out;
 }
 
 function zenithData(data, star) {
@@ -563,7 +551,7 @@ function showerDirection(data){
     showerDir.y = showerDir.y / data.events.length;   
     showerDir.z = showerDir.z / data.events.length;
     showerDir.lat = showerDir.lat / data.events.length;
-    norm = 1/(Math.sqrt(showerDir.x*showerDir.x+showerDir.y*showerDir.y))
+    norm = 1/(Math.sqrt(showerDir.x * showerDir.x + showerDir.y * showerDir.y))
     showerDir.xLon = -showerDir.y*norm;
     showerDir.yLon = showerDir.x*norm;
     showerDir.zLat = Math.cos(showerDir.lat);
@@ -584,8 +572,8 @@ function timeCalc(htmlInfo, data, dRA, dDec){
         calculation[i] = 1e9*(Math.sqrt(dx*dx+dy*dy+dz*dz)/c-time).toFixed(9);
         $('#nanoCalc' + i).val((calculation[i]).toFixed(0));
     }
-    var chiSq = calcDev(measurement, calculation);
-    $('#dirEr').val(chiSq.toFixed(0));
+    var Sigma = calcSigma(measurement, calculation);
+    $('#dirEr').val(Sigma.toFixed(1));
     $('#RA').val(calculation[2]);
     $('#Dec').val(calculation[1]);
 }
