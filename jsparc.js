@@ -165,40 +165,27 @@ function energy(k) {
 }
 
 function calcSigma(measurement, calculation){
-    var deviation=0;
-    var delta
-    for (i = 0; i < measurement.length; i++) {
-        delta = measurement[i]-calculation[i];
-        deviation += delta * delta;
-    }
+    var deviation=0, delta
+    for (i = 0; i < measurement.length; i++) {delta = measurement[i]-calculation[i]; deviation += delta * delta;}
     return Math.sqrt(deviation / measurement.length);
 }
 
 function calcChiSq(measurement, calculation){
     var chiSq = 0, delta;
     for (i = 0; i < measurement.length; i++) {
-        if(measurement[i] != 0){
-        delta = measurement[i]-calculation[i];
-        chiSq += delta * delta / measurement[i];}
+        if(measurement[i] != 0){delta = measurement[i]-calculation[i]; chiSq += delta * delta / measurement[i];}
     }
     return chiSq;
 }
 
 function calcError(htmlInfo, data) {
     var chiSq = 0, delta, measurement = new Array, calculation = new Array;
-    for (i = 0; i < data.events.length; i++) {
-        measurement[i] = $("#" + htmlInfo.mipId + i).val();
-        calculation[i] = $("#" + htmlInfo.mipCalcId + i).val();
-    }
-    chiSq = calcChiSq(measurement, calculation);
-    $("#" + htmlInfo.stationEr).val(chiSq.toFixed(4));
-    result.error = chiSq;
+    for (i = 0; i < data.events.length; i++) {measurement[i] = $("#" + htmlInfo.mipId + i).val(); calculation[i] = $("#" + htmlInfo.mipCalcId + i).val();}
+    chiSq = calcChiSq(measurement, calculation); $("#" + htmlInfo.stationEr).val(chiSq.toFixed(4)); result.error = chiSq;
 /*    for (j = 0; j < 4; j++) {
         for (i = 0; i < data.events.length; i++) {
-            if ($("#" + htmlInfo.mipId + i + j).val() === "no data") {
-                delta = 0;}
-            else {
-                delta = $("#" + htmlInfo.mipId + i + j).val();}
+            if ($("#" + htmlInfo.mipId + i + j).val() === "no data") {delta = 0;}
+            else {delta = $("#" + htmlInfo.mipId + i + j).val();}
             delta = delta - $("#" + htmlInfo.mipCalcId + i).val();
             chiSq += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}}
     $("#" + htmlInfo.showerEr).val(chiSq.toFixed(4));*/
@@ -206,11 +193,9 @@ function calcError(htmlInfo, data) {
 
 function calcEnergy(htmlInfo, showerMerc, data) {
     var k = invNKG(showerMerc, 0, data, htmlInfo), mipData = new Array();
-    for (i = 0; i < data.events.length; i++) {
-        $("#" + htmlInfo.mipCalcId + i).val(NKG(showerMerc, k, i, data).toFixed(3));}
+    for (i = 0; i < data.events.length; i++) {$("#" + htmlInfo.mipCalcId + i).val(NKG(showerMerc, k, i, data).toFixed(3));}
     $("#" + htmlInfo.energyId).val(toScient(energy(k), (energy(k) / 100)));
-    result.logEnergy = Math.log(energy(k)) / Math.log(10);
-    calcError(htmlInfo, data);
+    result.logEnergy = Math.log(energy(k)) / Math.log(10); calcError(htmlInfo, data);
 }
 
 function sendResult() {
@@ -233,11 +218,9 @@ function transPlace(pMerc) {
 
 function writeDist(htmlInfo, pMerc, data) {
     var p4326 = transPlace(pMerc);
-    result.lon = p4326.x;
-    result.lat = p4326.y;
+    result.lon = p4326.x; result.lat = p4326.y;
     calcEnergy(htmlInfo, p4326, data);
-    for (i = 0; i < data.events.length; i++) {
-        $("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon));}
+    for (i = 0; i < data.events.length; i++) {$("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon));}
 }
 
 
@@ -245,8 +228,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     var mapData = {lon: 0, lat: 0, xmin: 90, ymin: 180, xmax: -90, ymax: -180};
     result.pk = data.pk;
     for (i = 0; i < data.events.length; i++) {
-        mapData.lon += data.events[i].lon;
-        mapData.lat += data.events[i].lat;
+        mapData.lon += data.events[i].lon; mapData.lat += data.events[i].lat;
         if (mapData.xmax < data.events[i].lon) {mapData.xmax = data.events[i].lon;}
         if (mapData.xmin > data.events[i].lon) {mapData.xmin = data.events[i].lon;}
         if (mapData.ymax < data.events[i].lat) {mapData.ymax = data.events[i].lat;}
@@ -255,21 +237,14 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
 
     var options = {
         controls: [
-            new OpenLayers.Control.Navigation(
-                    {dragPanOptions: {enableKinetic: true}}),
-            new OpenLayers.Control.Attribution(),
-            new OpenLayers.Control.ScaleLine()]};
+            new OpenLayers.Control.Navigation({dragPanOptions: {enableKinetic: true}}),
+            new OpenLayers.Control.Attribution(), new OpenLayers.Control.ScaleLine()]};
     var map = new OpenLayers.Map(htmlInfo.mapId, options), mapLayer = new OpenLayers.Layer.OSM();
-    map.addLayer(mapLayer);
-    map.setCenter(new OpenLayers.LonLat(4.950, 52.355).transform(proj4326, projmerc), 5); //shows the map
+    map.addLayer(mapLayer); map.setCenter(new OpenLayers.LonLat(4.950, 52.355).transform(proj4326, projmerc), 5); //shows the map
 
     var showerLayer = new OpenLayers.Layer.Vector("Shower"); //makes a vectorlayer for the shower
     showerMerc = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(shower.x, shower.y).transform(proj4326, projmerc),
-            {some: 'data'},
-            {externalGraphic: 'images/shower.png',
-             graphicHeight: 66,
-             graphicWidth: 66,
-             graphicYOffset: -33});
+            {some: 'data'}, {externalGraphic: 'images/shower.png', graphicHeight: 66, graphicWidth: 66, graphicYOffset: -33});
     showerLayer.addFeatures(showerMerc); // puts the instance in the layer
     map.addLayer(showerLayer); // puts the layer on the map
 
@@ -277,14 +252,10 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     for (i = 0; i < data.events.length; i++) {
         station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
                 {some: 'data'},
-                {externalGraphic: 'images/marker' + i + '.png',
-                 graphicHeight: 25,
-                 graphicWidth: 35,
-                 graphicYOffset: -25,
-                 label: data.events[i].number.toString(),
-                 labelYOffset: 17,
-                 fontColor: ((i < 2) ? '#ddf' : '#333')});
-        stationLayer.addFeatures(station);} // puts the instance in the layer
+                {externalGraphic: 'images/marker' + i + '.png', graphicHeight: 25, graphicWidth: 35, graphicYOffset: -25,
+                 label: data.events[i].number.toString(), labelYOffset: 17, fontColor: ((i < 2) ? '#ddf' : '#333')});
+        stationLayer.addFeatures(station); // puts the instance in the layer
+    }
     map.addLayer(stationLayer); // puts the "Stations" layer on the map
 
     //data the stations on the "Station" layer
@@ -296,10 +267,8 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     map.addControl(dragShower); // adds the control to draggeble features
     dragShower.activate(); // switches the control on
     writeDist(htmlInfo, showerMerc, data); // writes the distances to the html-form
-    map.events.register("mousemove", map, function (e) {
-        writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the mouse moves
-    map.events.register("touchmove", map, function (e) {
-        writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the finger moves
+    map.events.register("mousemove", map, function (e) {writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the mouse moves
+    map.events.register("touchmove", map, function (e) {writeDist(htmlInfo, showerMerc, data);}); // calls writeDist() when the finger moves
 
     return shower;
 }
@@ -308,47 +277,19 @@ function plotGraph(htmlInfo, data) {
     var tmin = 999999999, tmax = 0, diagramID, offset;
     var plotStyle = {
         seriesDefaults: {
-            lineWidth: 1.5,
-            shadow: false,
-            showLine: true,
-            showMarker: false,
-            markerOptions: {
-                show: false,
-                size: 0,
-                lineWidth: 0}},
-        legend: {
-            show: false},
-        cursor: {
-            tooltipLocation: 'se',
-            zoom: true,
-            clickReset: true},
+            lineWidth: 1.5, shadow: false, showLine: true, showMarker: false,
+            markerOptions: {show: false, size: 0, lineWidth: 0}},
+        legend: {show: false},
+        cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
         axesDefaults: {
             labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-            labelOptions: {
-                textColor: '#222',
-                enableFontSupport: true},
+            labelOptions: {textColor: '#222', enableFontSupport: true},
             tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-            tickOptions: {
-                textColor: '#222',
-                enableFontSupport: true,
-                showGridline: false,
-                mark: 'outside',
-                markSize: 4}},
+            tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: false, mark: 'outside', markSize: 4}},
         axes: {
-            xaxis: {
-                numberTicks: 5,
-                label: "Time [ns]"},
-            yaxis: {
-                numberTicks: 3,
-                max: 0,
-                label: "Pulseheight [mV]"}},
-        grid: {
-            shadow: false,
-            background: "#fff",
-            gridLineWidth: 1,
-            gridLineColor: "#000",
-            borderWidth: 1,
-            borderColor: "#000"}};
+            xaxis: {numberTicks: 5, label: "Time [ns]"},
+            yaxis: {numberTicks: 3, max: 0, label: "Pulseheight [mV]"}},
+        grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#000", borderWidth: 1, borderColor: "#000"}};
 
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
@@ -356,18 +297,15 @@ function plotGraph(htmlInfo, data) {
 
     for (j = 0; j < data.events.length; j++) { // find the smallest and biggest value of nanoseconds
         offset = data.events[j].nanoseconds;
-        if (tmin > offset) {
-            tmin = offset;}
-        if (tmax < data.events[j].traces[0].length * 2.5 + offset) {
-            tmax = data.events[j].traces[0].length * 2.5 + offset;}}
+        if (tmin > offset) {tmin = offset;}
+        if (tmax < data.events[j].traces[0].length * 2.5 + offset) {tmax = data.events[j].traces[0].length * 2.5 + offset;}}
 
     var tracedata = [], eventdata = [], trace_min = 0;
 
     for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
-            if (Array.min(data.events[j].traces[k]) < trace_min) {
-                trace_min = Array.min(data.events[j].traces[k]);}
+            if (Array.min(data.events[j].traces[k]) < trace_min) {trace_min = Array.min(data.events[j].traces[k]);}
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
@@ -383,12 +321,8 @@ function plotGraph(htmlInfo, data) {
         seriesColors: eventColors,
         title: "Coincidence",
         axes: {
-            xaxis: {
-                min: 0,
-                max: Math.ceil((tmax - tmin) / 40.0) * 40.0},
-            yaxis: {
-                min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
-                max: 0}}};
+            xaxis: {min: 0, max: Math.ceil((tmax - tmin) / 40.0) * 40.0},
+            yaxis: {min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0, max: 0}}};
 
     var eventPlotStyle = $.extend(true, {}, plotStyle, _eventPlotStyle);
 
@@ -398,8 +332,7 @@ function plotGraph(htmlInfo, data) {
 
     for (j = 0; j < data.events.length; j++) {
 
-        tracedata = [];
-        eventdata = [];
+        tracedata = [];  eventdata = [];
         var trace_min = 0;
         for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
@@ -413,12 +346,8 @@ function plotGraph(htmlInfo, data) {
             seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
             title: "Station " + data.events[j].number,
             axes: {
-                xaxis: {
-                    min: 0,
-                    max: Math.ceil((data.events[j].traces[0].length * 2.5 + data.events[j].nanoseconds - tmin) / 40.0) * 40.0},
-                yaxis: {
-                    min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
-                    max: 0}}};
+                xaxis: {min: 0, max: Math.ceil((data.events[j].traces[0].length * 2.5 + data.events[j].nanoseconds - tmin) / 40.0) * 40.0},
+                yaxis: {min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0, max: 0}}};
     
         var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
 
@@ -442,15 +371,12 @@ function toZenith(RA,Dec,Lon,Lat,ST){
 
 function zenithData(data, star) {
     var x, y, r, mapData = {lon: 0, lat: 0};
-    for (i = 0; i < data.events.length; i++) {
-        mapData.lon += data.events[i].lon;
-        mapData.lat += data.events[i].lat;}
+    for (i = 0; i < data.events.length; i++) {mapData.lon += data.events[i].lon; mapData.lat += data.events[i].lat;}
     var Lon = mapData.lon / data.events.length, Lat = mapData.lat / data.events.length, ST = 0;
     for (i = 0; i < star.length; i++){
        for(j = 0; j < star[i].length; j++){
            var netCoordInput = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
-           star[i][j][1] = netCoordInput.zenith;
-           star[i][j][0] = netCoordInput.azimuth;
+           star[i][j][1] = netCoordInput.zenith; star[i][j][0] = netCoordInput.azimuth;
            if(star[i][j][1] > 45) {star[i].splice(j, 1); j--;}
            else {
                r = star[i][j][1];
@@ -465,98 +391,48 @@ function makeStarMap(htmlInfo, star) {
     var starStyle = {
         title: 'Starmap',
         seriesDefaults: {
-            shadow: false,
-            showLine: false,
-            color: "#111",
-            showMarker: true,
-            markerOptions: {
-                shadow: false,
-                size: 6,
-                style: "filledCircle",
-                lineWidth: 0}},
-        series: [{markerOptions: {size: 2}},
-                 {markerOptions: {size: 3}},
-                 {markerOptions: {size: 4}},
-                 {markerOptions: {size: 5}},
-                 {markerOptions: {size: 6}},
-                 {markerOptions: {size: 7}},
-                 {markerOptions: {size: 8}},
-                 {markerOptions: {size: 9}}],
-        legend: {
-            show: false},
-        cursor: {
-            tooltipLocation: 'se',
-            zoom: false},
+            shadow: false, showLine: false, color: "#111", showMarker: true,
+            markerOptions: {shadow: false, size: 6, style: "filledCircle", lineWidth: 0}},
+        series: [{markerOptions: {size: 2}}, {markerOptions: {size: 3}}, {markerOptions: {size: 4}}, {markerOptions: {size: 5}},
+                 {markerOptions: {size: 6}}, {markerOptions: {size: 7}}, {markerOptions: {size: 8}}, {markerOptions: {size: 9}}],
+        legend: {show: false},
+        cursor: {tooltipLocation: 'se', zoom: false},
         axesDefaults: {
-            min: -60,
-            max: 60,
-            numberTicks: 9,
-            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-            labelOptions: {
-                textColor: '#222',
-                enableFontSupport: true},
-            tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-            tickOptions: {
-                textColor: '#222',
-                enableFontSupport: true,
-                showGridline: true,
-                mark: 'outside',
-                markSize: 4}},
+            min: -60, max: 60, numberTicks: 9, labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            labelOptions: {textColor: '#222', enableFontSupport: true}, tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+            tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: true, mark: 'outside', markSize: 4}},
         axes: {
-            xaxis:{
-                label: "delta Right Ascension [degrees]"},
-            yaxis: {
-                label: "delta Declination [degrees]"}},
-        grid: {
-            shadow: false,
-            background: "#fff",
-            gridLineWidth: 1,
-            gridLineColor: "#ddd",
-            borderWidth: 1,
-            borderColor: "#000"}};
-
+            xaxis:{label: "delta Right Ascension [degrees]"},
+            yaxis: {label: "delta Declination [degrees]"}},
+        grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#ddd", borderWidth: 1, borderColor: "#000"}};
     var plot1 = $.jqplot('star-id', star, starStyle)
-
 }
 
 function WGS84toECEF(lat, lon, alt){
     var a=6378137, b=6356752.315;
-    lon=toRad*lon;
-    lat=toRad*lat;
+    lon=toRad*lon; lat=toRad*lat;
     var x=(a+alt)*Math.cos(lat)*Math.cos(lon), y=(a+alt)*Math.cos(lat)*Math.sin(lon), z=(b+alt)*Math.sin(lat), coordinate={"x":x,"y":y,"z":z,"lat":lat};
     return coordinate;
 }
 
 function netLoc(data, height){
     var netCoord = new Array;
-    for(var i = 0; i < data.events.length; i++){
-        netCoord.push(WGS84toECEF(data.events[i].lat, data.events[i].lon, (data.events[i].alt+height)));
-    }
+    for(var i = 0; i < data.events.length; i++){netCoord.push(WGS84toECEF(data.events[i].lat, data.events[i].lon, (data.events[i].alt+height)));}
     return netCoord;
 }
 
 function showerDirection(data){
     var showerDir = {}, norm, netCoord = netLoc(data, 20000);
-    showerDir.x = 0;
-    showerDir.y = 0;
-    showerDir.z = 0;
-    showerDir.lat = 0;
+    showerDir.x = 0; showerDir.y = 0; showerDir.z = 0; showerDir.lat = 0;
     for(var i = 0; i< data.events.length; i++){
-        showerDir.x += eval(netCoord[i].x);
-        showerDir.y += eval(netCoord[i].y);
-        showerDir.z += eval(netCoord[i].z); 
-        showerDir.lat += eval(netCoord[i].lat);
+        showerDir.x += eval(netCoord[i].x); showerDir.y += eval(netCoord[i].y);
+        showerDir.z += eval(netCoord[i].z); showerDir.lat += eval(netCoord[i].lat);
     }
-    showerDir.x = showerDir.x / data.events.length;   
-    showerDir.y = showerDir.y / data.events.length;   
-    showerDir.z = showerDir.z / data.events.length;
-    showerDir.lat = showerDir.lat / data.events.length;
-    norm = 1/(Math.sqrt(showerDir.x * showerDir.x + showerDir.y * showerDir.y))
-    showerDir.xLon = -showerDir.y*norm;
-    showerDir.yLon = showerDir.x*norm;
-    showerDir.zLat = Math.cos(showerDir.lat);
-    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat);
-    showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.lat);
+    showerDir.x = showerDir.x / data.events.length; showerDir.y = showerDir.y / data.events.length;   
+    showerDir.z = showerDir.z / data.events.length; showerDir.lat = showerDir.lat / data.events.length;
+    norm = 1/(Math.sqrt(showerDir.x * showerDir.x + showerDir.y * showerDir.y));
+    showerDir.xLon = -showerDir.y*norm; showerDir.yLon = showerDir.x*norm; showerDir.zLat = Math.cos(showerDir.lat);
+    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat); showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.lat);
     return showerDir;
 }
 
