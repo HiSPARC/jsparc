@@ -4,11 +4,83 @@
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <title>Simulation</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.min.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
   <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.cursor.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasTextRenderer.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript">
 
-    var c = 299792458, toRad=Math.atan(1)/45;
+    var c = 299792458, toRad = Math.atan(1)/45;
+
+    function traceSim(timeSample, trigger, height){
+        var triggerSample = parseInt(trigger/2.5+0.5);
+        var signal = 0, factor = 1/0.917, delta = 0, slewrate=100;
+        if(timeSample < triggerSample) {signal = 0;}
+        else {
+            if(timeSample < (triggerSample+height/slewrate)) {
+                signal = -height;
+                while(timeSample < (triggerSample+height/slewrate)){
+                    signal += slewrate;
+                    timeSample++;
+                }
+            }
+            else {
+                for(k = parseInt(triggerSample+height/slewrate); k < timeSample; k++) {factor = factor*0.917;}
+                signal = -height * factor;
+            }
+        }
+        return signal;
+    }
+
+    function genJSON(){
+        var timeMax = 0, arrTime;
+        var txt = '{'
+        txt += '"timestamp":"0",';
+        txt += '"nanoseconds":"0", "events":[';
+        txt += '{"status":"on",';
+        txt += '"timestamp":"0",';
+        txt += '"number":"",';
+        txt += '"nanoseconds":"'+$('#nano'+i).val()+'","mips":[';
+        for(i = 0; i < 4; i++) {
+            txt += $("#mip"+i).val();
+            if(i<3) txt += ','
+        }
+        txt += ']';
+        txt += ',"traces":[';
+        for(i = 0; i < 4; i++) {
+            arrTime = $("#nano"+i).val();
+            if(timeMax<arrTime) timeMax = arrTime;
+        }
+        timeMax = timeMax / 2.5 + 100;
+        for(i = 0; i < 4; i++){
+            txt += '[';
+            for(j = -10; j < timeMax; j++){
+                txt += traceSim(j, $('#nano'+i).val(), ($("#mip"+i).val()*$("#MIP-peak").val()));
+                if(j < (timeMax-1)) txt += ',';
+            }
+            txt += ']';
+            if(i < 3) txt += ',';
+        }
+        txt += ']}]}'
+        var obj = eval("("+txt+")");
+        return obj;
+    }
+
+    function normTime(times) {
+        var minTime = 100;
+        for(j = 0; j < times.length; j++) {
+            if(times[j] < minTime) { minTime = times[j]; }
+        }
+        for(j = 0; j<times.length; j++) {
+            times[j] = times[j] - minTime;
+        }
+        return times;
+    }
 
     function toShowerTime(theta, phi, x, y, z) {
         var sinTheta = Math.sin(theta * toRad), cosTheta = Math.cos(theta*toRad);
@@ -47,7 +119,7 @@
     }
 
     function calcTime(){
-        var r, alfa, theta, phi, x, y, z;
+        var r, alfa, theta, phi, x, y, z, times = new Array();
         for(i = 0; i < 4; i++) {
             r = $("#r"+i).val();
             alfa = $("#alfa"+i).val() * toRad;
@@ -56,7 +128,11 @@
             z = 0;
             theta = $("#theta").val();
             phi = $("#phi").val();
-            $("#nano"+i).val(toShowerTime(theta, phi, x, y, z));
+            times[i] = -toShowerTime(theta, phi, x, y, z);
+        }
+        times = normTime(times);
+        for(i = 0; i < 4; i++) {
+            $("#nano"+i).val(times[i].toFixed(1));
         }
     }
 
@@ -78,10 +154,55 @@
             $("#detector"+i).css("-moz-transform", change);
             $("#detector"+i).css("-webkit-transform", change);
         }
+    }
 
+    function plotEventGraph(data){
+        var plotStyle = {
+            seriesDefaults: {
+                lineWidth: 1.5, shadow: false, showLine: true, showMarker: false,
+                markerOptions: {show: false, size: 0, lineWidth: 0}},
+            legend: {show: false},
+            cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
+            axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                labelOptions: {textColor: '#222', enableFontSupport: true},
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: false, mark: 'outside', markSize: 4}},
+            axes: {
+                xaxis: {numberTicks: 5, label: "Time [ns]"},
+                yaxis: {numberTicks: 3, max: 0, label: "Pulseheight [mV]"}},
+            grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#000", borderWidth: 1, borderColor: "#000"}};
+
+        $.jqplot.config.enablePlugins = true; // on the page before plot creation.
+
+        var tracedata = [];  eventdata = [];
+        var trace_min = 0;
+        for (k = 0; k < data.events[0].traces.length; k++) {
+            tracedata[k] = [[data.events[0].nanoseconds, data.events[0].traces[k][0]]];
+            for (i = 1; i < data.events[0].traces[k].length; i++) {
+                tracedata[k].push([(i * 2.5), data.events[0].traces[k][i]]);
+                if(data.events[0].traces[k][i] < trace_min) {trace_min = data.events[0].traces[k][i]};
+            }
+            eventdata.push(tracedata[k]);
+        }
+
+        var _tracePlotStyle = {
+            seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
+            title: "Station " + data.events[0].number,
+            axes: {
+                xaxis: {min: -10, max: Math.ceil(data.events[0].traces[0].length * 2.5)},
+                yaxis: {min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0, max: 0}
+            }
+        };
+
+        var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
+
+        diagramID = "chartdiv";
+        $.jqplot(diagramID, eventdata, tracePlotStyle);
     }
 
     $(document).ready(function(){
+        $("#chartdiv").show();
         setDetLoc(normCoord("detectorMap")); 
         calcMIPs();
         calcTime();
@@ -93,6 +214,9 @@
         $("#simShow").click( function (event) {
             calcMIPs();
             calcTime();
+            var data = genJSON();
+            $('#chartdiv').empty();
+            plotEventGraph(data);
         });
     });
   </script>
@@ -165,7 +289,7 @@
     <tr>
       <td align='center' class='det1' style='border-radius:2px;'>1</td>
       <td><input id="mip0" type=text size=5 /></td>
-      <td><input id="nano0" type=text size=5 /></td>
+      <td><input id="nano0" type=text size=5 vakue=0 /></td>
       <td></td>
     </tr>
     <tr>
@@ -187,5 +311,14 @@
       <td></td>
     </tr>
   </table>
+  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
+  <div id="dashboard">
+    <table>
+      <tr>
+        <td>MIP-peak [mv]</td><td><input type="text" value="150" size="5" id="MIP-peak"/></td>
+      </tr>
+    </table>
+    <div id="chartdiv" class="tracegraph"></div>
+  </div>
  </body>
 </html>
