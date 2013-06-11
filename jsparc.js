@@ -1,6 +1,6 @@
 /* About: Version
 
-   jSparc-0-4-2
+   jSparc-0-4-3
 
    About: Copyright & License
 
