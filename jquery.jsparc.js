@@ -29,7 +29,8 @@
         function get_csv(url) {
             /* Asynchronously download data of type csv
             
-            The csv will be converted to an array
+            The csv data will be converted to an array
+            Comment headers will be removed
 
             */
             return $.ajax({url: url,
