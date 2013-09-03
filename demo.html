@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+    <head>
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-1.10.3.custom.css" />
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="jquery.jSparc.js"></script>
+        <script>
+            var jsparc;
+            $(document).ready(function () {
+                jsparc = $.jsparc();
+                jsparc.make_station_select($("#station_choice"));
+                jsparc.make_datepicker($("#startdate_choice"));
+                jsparc.make_datepicker($("#enddate_choice"));
+                $('#get_dataset').on('click', function() {jsparc.get_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#date_choice *:checked').val())});
+            });
+        </script>
+    </head>
+    <body>
+        <p>Choose station: <span id="station_choice"></span></p>
+        <p>Choose start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01', or '2013-08-01 12:00'</span></p>
+        <p>Choose end date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02', or '2013-08-05 13:12'</span></p>
+        <ul id="date_choice">
+            <li><input name="data_type" type="radio" value="events" checked="checked"> Events</li>
+            <li><input name="data_type" type="radio" value="weather"> Weather</li>
+        </ul>
+        <p id="get_dataset">Get Data!</p>
+    </body>
+</html>
