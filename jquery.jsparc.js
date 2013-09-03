@@ -16,6 +16,13 @@
         // good: ajax -> complete, done
         // what?: ajax -> promise
 
+        function get_multiple_json(urls) {
+            /* Asynchronously download multiple urls of type json
+            */
+            return $.when.apply(null,
+                                urls.map(function (url) {return get_json(url);}));
+        }
+
         function get_json(url) {
             /* Asynchronously download data of type json
             */
@@ -34,16 +41,10 @@
                            dataType: 'text'});
         }
 
-/*
-Add multiple ajax -> one done
-Compare to check if already downloaded
-*/
-
         function get_dataset(station_number, startdate, enddate, type) {
             /* Store the result of downlaoding data to the datasets
             */
             var url = data_download(station_number, startdate, enddate, type);
-            var hash = md5(station_number, startdate, enddate, type);
             for (var i in datasets) {
                 if (datasets[i].url == url) { 
                     alert('That dataset is already available');
