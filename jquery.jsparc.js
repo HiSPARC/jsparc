@@ -1,7 +1,7 @@
 (function($) {
     function jSparc() {
-        var API_URL = 'http://data.hisparc.nl/api/',
-            DATA_URL = 'http://data.hisparc.nl/data/',
+        var API_URL = 'http://data.hisparc.nl/api',
+            DATA_URL = 'http://data.hisparc.nl/data',
             datasets = [],
             jsparc = this;
 
@@ -127,50 +127,50 @@
 
         // API
         function api_stations() {
-            return [API_URL + 'stations/';}
+            return [API_URL, 'stations', ''].join('/');}
 
         function api_stations_in_subcluster(subcluster_number) {
-            return [API_URL + 'subclusters', subcluster_number, ''].join('/');}
+            return [API_URL, 'subclusters', subcluster_number, ''].join('/');}
 
         function api_subclusters() {
-            return API_URL + 'subclusters/';}
+            return [API_URL, 'subclusters', ''].join('/');}
 
         function api_subclusters_in_cluster(cluster_number) {
-            return [API_URL + 'clusters', cluster_number, ''].join('/');}
+            return [API_URL, 'clusters', cluster_number, ''].join('/');}
 
         function api_clusters() {
-            return API_URL + 'clusters/';}
+            return [API_URL, 'clusters', ''].join('/');}
 
         function api_clusters_in_country(country_number) {
-            return [API_URL + 'countries', country_number, ''].join('/');}
+            return [API_URL, 'countries', country_number, ''].join('/');}
 
         function api_countries() {
-            return API_URL + 'countries/';}
+            return [API_URL, 'countries', ''].join('/');}
 
         function api_stations_with_data(year, month, day) {
-            return [API_URL + 'stations/data', year, month, day, ''].join('/');}
+            return [API_URL, 'stations/data', year, month, day, ''].join('/');}
 
         function api_stations_with_weather(year, month, day) {
-            return [API_URL + 'stations/weather', year, month, day, ''].join('/');}
+            return [API_URL, 'stations/weather', year, month, day, ''].join('/');}
 
         function api_station_info(station_number) {
-            return [API_URL + 'station', station_number, ''].join('/');}
+            return [API_URL, 'station', station_number, ''].join('/');}
 
         function api_has_data(station_number, year, month, day) {
-            return [API_URL + 'station', station_number, 'data', year, month, day, ''].join('/');}
+            return [API_URL, 'station', station_number, 'data', year, month, day, ''].join('/');}
 
         function api_has_weather(station_number, year, month, day) {
-            return [API_URL + 'station', station_number, 'weather', year, month, day, ''].join('/');}
+            return [API_URL, 'station', station_number, 'weather', year, month, day, ''].join('/');}
 
         function api_configuration(station_number, year, month, day) {
-            return [API_URL + 'station', station_number, 'config', year, month, day, ''].join('/');}
+            return [API_URL, 'station', station_number, 'config', year, month, day, ''].join('/');}
 
         function api_number_of_events(station_number, year, month, day, hour) {
-            return [API_URL + 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
+            return [API_URL, 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
 
         // Data Download
         function data_download(station_number, startdate, enddate, type) {
-            return [DATA_URL, station_number, type, ''].join('/') + '?' + 'start=' + startdate + '&' + 'end=' + enddate;}
+            return [DATA_URL, station_number, type].join('/') + '?' + 'start=' + startdate + '&' + 'end=' + enddate;}
 
         function parse_csv(csv) {
             /* Convert downloaded csv to 2D Array
