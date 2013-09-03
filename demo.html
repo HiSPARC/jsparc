@@ -16,9 +16,9 @@
                    $('#loading').hide();
                  });
                 jsparc = $.jsparc();
-                jsparc.make_station_select($("#station_choice"));
-                jsparc.make_datepicker($("#startdate_choice"));
-                jsparc.make_datepicker($("#enddate_choice"));
+                jsparc.make_station_select($('#station_choice'));
+                jsparc.make_datepicker($('#startdate_choice'));
+                jsparc.make_datepicker($('#enddate_choice'));
                 $('#get_dataset').on('click', function() {jsparc.get_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#date_choice *:checked').val())});
             });
         </script>
