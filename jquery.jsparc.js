@@ -6,15 +6,11 @@
             jsparc = this;
 
         // Public functions
-        jsparc.get_station_list = get_station_list;
-        jsparc.get_station_info = get_station_list;
-        jsparc.get_dataset = get_dataset;
         jsparc.make_station_select = make_station_select;
-
-        // AJAX
-        // bad: ajax -> fail
-        // good: ajax -> complete, done
-        // what?: ajax -> promise
+        jsparc.make_datepicker = make_datepicker;
+        jsparc.get_dataset = get_dataset;
+        jsparc.remove_dataset = remove_dataset;
+        jsparc.datasets = function() {return datasets};
 
         function get_multiple_json(urls) {
             /* Asynchronously download multiple urls of type json
@@ -37,7 +33,7 @@
 
             */
             return $.ajax({url: url,
-                           converters: {"text json": parse_csv}
+                           converters: {"text json": parse_csv},
                            dataType: 'text'});
         }
 
@@ -71,11 +67,23 @@
             update_dataset_list();
         }
 
+        function make_datepicker(target) {
+            /* Create an date input field
+            
+            Possible choices are limited to dates between start of
+            HiSPARC (9/1/2004) and yesterday.
+
+            Requires jQuery UI
+
+            */
+            target.datepicker({minDate: new Date(2004, 1, 9), maxDate: -1, dateFormat: 'yy-mm-dd'})
+                  .datepicker("setDate", -1);
+        }
+
         function make_station_select(target) {
             /* Create a select menu to choose a station
             */
             var url = api_stations();
-            get_json(url_clusters)
             get_json(url)
             .done(function(station_json) {
                 var select = $('<select>');
@@ -187,8 +195,11 @@
             return data;
         }
 
-        function padZero(number, length) {
+        function pad_zero(number, length) {
             /* Prepend a number with zero's until its length is length
+            
+            e.g. pad_zero(5, 5) -> '00005'
+
             */
             var str = '' + number;
             while (str.length < length) {
