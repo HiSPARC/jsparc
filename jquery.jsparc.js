@@ -34,7 +34,7 @@
             */
             return $.ajax({url: url,
                            converters: {"text json": parse_csv},
-                           dataType: 'text'});
+                           dataType: 'json'});
         }
 
         function get_dataset(station_number, startdate, enddate, type) {
