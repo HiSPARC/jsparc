@@ -105,14 +105,13 @@
             /* Create a readable overview list of the available datasets
             */
             var list = $('<ol>');
-            var item = $('<li>');
-            var del = $('<span>').attr('class', 'delete');
-            for (var i in datasets) {
-                if (datasets[i].data.length > 0) {
-                    item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
-                              '\nDate:' + datasets[i].startdate + '-' + datasets[i].startdate)
-                    item.append(del);
-                    list.append(item);}
+            for (var i in datasets) {            
+                var item = $('<li>');
+                var del = $('<span>').attr('class', 'delete');
+                item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
+                          '. Date: ' + datasets[i].startdate + ' - ' + datasets[i].startdate)
+                item.append(del);
+                list.append(item);
             }
             target.html(list);
         }
