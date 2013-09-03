@@ -10,6 +10,11 @@
         <script>
             var jsparc;
             $(document).ready(function () {
+                $(document).bind('ajaxSend', function(){
+                   $('#loading').show();
+                 }).bind('ajaxComplete', function(){
+                   $('#loading').hide();
+                 });
                 jsparc = $.jsparc();
                 jsparc.make_station_select($("#station_choice"));
                 jsparc.make_datepicker($("#startdate_choice"));
@@ -27,5 +32,6 @@
             <li><input name="data_type" type="radio" value="weather"> Weather</li>
         </ul>
         <p id="get_dataset">Get Data!</p>
+        <p id="loading" style="display: none;">Loading!</p>
     </body>
 </html>
