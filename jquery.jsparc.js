@@ -42,30 +42,30 @@
             /* Store the result of downlaoding data to the datasets
             */
             var url = data_download(station_number, startdate, enddate, type);
-            for (var i in datasets) {
-                if (datasets[i].url == url) { 
-                    alert('That dataset is already available');
-                    return;}}
-            get_csv(url)
-            .done(function(data) {
-                datasets.push({data: data,
-                               station_number: station_number,
-                               startdate: startdate,
-                               enddate: enddate,
-                               type: type,
-                               url: url});
-                update_dataset_list();
-            });
+            if (datasets[url]) { 
+                alert('That dataset is already available');
+                return;}
+            return get_csv(url)
+                   .done(function(data) {
+                       datasets[url] = ({data: data,
+                                         station_number: station_number,
+                                         startdate: startdate,
+                                         enddate: enddate,
+                                         type: type,
+                                         url: url});
+                       update_dataset_list();
+                   });
         }
 
         function remove_dataset(url) {
             /* Remove a specific dataset
             */
-            for (var i in datasets) {
-                if (datasets[i].url == url) { 
-                    datasets.pop(i);
-                    return;}}
+            delete datasets[url];
             update_dataset_list();
+        }
+
+        function remove_dataset_from_list(span) {
+            remove_dataset($(span).parent().attr('name'));
         }
 
         function make_datepicker(target) {
@@ -85,35 +85,39 @@
             /* Create a select menu to choose a station
             */
             var url = api_stations();
-            get_json(url)
-            .done(function(station_json) {
-                var select = $('<select>');
-                var number, name;
-                for (var i in station_json) {
-                    number = station_json[i].number;
-                    name = station_json[i].name;
-                    select.append($('<option>').attr('value', number).text(number + ' - ' + name));}
-                target.html(select);
-            });
+            return get_json(url)
+                   .done(function(station_json) {
+                       var select = $('<select>');
+                       var number, name;
+                       for (var i in station_json) {
+                           number = station_json[i].number;
+                           name = station_json[i].name;
+                           select.append($('<option>').attr('value', number).text(number + ' - ' + name));}
+                       target.html(select);
+                   });
         }
 
         function set_dataset_list_controls(target) {
-            target.on("click", "li.delete", remove_dataset)
+            var target = target || $('#dataset_list');
+            target.on("click", "span.delete", function() {remove_dataset_from_list(this)})
         }
 
         function update_dataset_list(target) {
             /* Create a readable overview list of the available datasets
             */
+            var target = target || $('#dataset_list');
             var list = $('<ol>');
             for (var i in datasets) {            
                 var item = $('<li>');
-                var del = $('<span>').attr('class', 'delete');
+                var del = $('<span>').attr('class', 'delete').text('x');
                 item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
                           '. Date: ' + datasets[i].startdate + ' - ' + datasets[i].startdate)
+                    .attr('name', datasets[i].url);
                 item.append(del);
                 list.append(item);
             }
             target.html(list);
+            set_dataset_list_controls(target);
         }
 
         function update_dataset_select(target) {
