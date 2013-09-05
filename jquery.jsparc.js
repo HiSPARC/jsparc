@@ -4,7 +4,7 @@
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
             JSPARC_URL = "http://data.hisparc.nl/jsparc";
-            datasets = [],
+            datasets = {},
             events_columns = ['date', 'time',
                               'timestamp', 'nanoseconds',
                               'pulseheights(4x)',
@@ -58,6 +58,9 @@
 
         function download_dataset(station_number, startdate, enddate, type) {
             /* Store the result of downlaoding data to the datasets
+            
+            The url will be used as key to reference the data
+
             */
             var url = data_download(station_number, startdate, enddate, type);
             if (datasets[url]) { 
