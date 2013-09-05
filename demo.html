@@ -6,7 +6,7 @@
         <style type="text/css">
             #loading {position: absolute; top: 5px; right: 5px; font-weight: bold;}
             #dataset_list {width: 500px;}
-            #dataset_list ol {list-style: none; width:}
+            #dataset_list ol {list-style: none;}
             #dataset_list li {margin: 1px 0; padding: 5px; background-color: #91D1F1;}
             span.delete {margin-left: 10px; font-weight: bold;}
         </style>
@@ -26,7 +26,7 @@
                 jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'));
                 jsparc.make_datepicker($('#enddate_choice'));
-                $('#get_dataset').on('click', function() {jsparc.get_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#date_choice *:checked').val())});
+                $('#download_dataset').on('click', function() {jsparc.download_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#date_choice *:checked').val())});
             });
         </script>
     </head>
@@ -39,7 +39,7 @@
             <li><input name="data_type" type="radio" value="events" checked="checked"> Events</li>
             <li><input name="data_type" type="radio" value="weather"> Weather</li>
         </ul>
-        <input type='button' value="Get Data!" id="get_dataset">
+        <input type='button' value="Get Data!" id="download_dataset">
         <p id="loading" style="display: none;">Loading!</p>
         <p id="dataset_list"></p>
     </body>

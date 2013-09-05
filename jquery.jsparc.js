@@ -1,16 +1,32 @@
 (function($) {
     function jSparc() {
-        var API_URL = 'http://data.hisparc.nl/api',
+        var jsparc = this,
+            API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
+            JSPARC_URL = "http://data.hisparc.nl/jsparc";
             datasets = [],
-            jsparc = this;
+            events_columns = ['date', 'time',
+                              'timestamp', 'nanoseconds',
+                              'pulseheights(4x)',
+                              'integral(4x)',
+                              'number_of_mips(4x)',
+                              'arrival_times(4x)'],
+            weather_columns = ['date', 'time', 'timestamp',
+                               'temperature_inside', 'temperature_outside',
+                               'humidity_inside', 'humidity_outside',
+                               'atmospheric_pressure',
+                               'wind_direction', 'wind_speed',
+                               'solar_radiation', 'uv_index',
+                               'evapotranspiration', 'rain_rate',
+                               'heat_index', 'dew_point', 'wind_chill'];
 
         // Public functions
         jsparc.make_station_select = make_station_select;
         jsparc.make_datepicker = make_datepicker;
-        jsparc.get_dataset = get_dataset;
+        jsparc.download_dataset = download_dataset;
         jsparc.remove_dataset = remove_dataset;
         jsparc.datasets = function() {return datasets};
+
 
         function get_multiple_json(urls) {
             /* Asynchronously download multiple urls of type json
@@ -23,7 +39,8 @@
             /* Asynchronously download data of type json
             */
             return $.ajax({url: url,
-                           dataType: 'json'});
+                           dataType: 'json',
+                           type: 'GET'});
         }
 
         function get_csv(url) {
@@ -35,10 +52,11 @@
             */
             return $.ajax({url: url,
                            converters: {"text json": parse_csv},
-                           dataType: 'json'});
+                           dataType: 'json',
+                           type: 'GET'});
         }
 
-        function get_dataset(station_number, startdate, enddate, type) {
+        function download_dataset(station_number, startdate, enddate, type) {
             /* Store the result of downlaoding data to the datasets
             */
             var url = data_download(station_number, startdate, enddate, type);
@@ -182,7 +200,26 @@
 
         // Data Download
         function data_download(station_number, startdate, enddate, type) {
-            return [DATA_URL, station_number, type].join('/') + '?' + 'start=' + startdate + '&' + 'end=' + enddate;}
+            return [DATA_URL, station_number, type].join('/') + '?start=' + startdate + '&end=' + enddate;}
+
+        // jSparc
+        function jsparc_get_coincidence(get_coincidence) {
+            /* Create url with query to get a coincidence from a jSparc session
+            
+            get_coincidence should be an object with the following keys:
+            session_title, session_pin, student_name
+
+            */
+            return [JSPARC_URL, 'get_coincidence', null].join('/') +  '?' + $.param(get_coincidence);}
+
+        function jsparc_result(result) {
+            /* Create url with query to send the jSparc results to the server
+            
+            result should be an object with the following keys:
+            session_title, session_pin, student_name, pk, logEnergy, error, lon, lat
+
+            */
+            return [JSPARC_URL, 'result', null].join('/')  + '?' + $.param(result);}
 
 
         // Helper functions
