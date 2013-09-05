@@ -31,8 +31,7 @@
         function get_multiple_json(urls) {
             /* Asynchronously download multiple urls of type json
             */
-            return $.when.apply(null,
-                                urls.map(function (url) {return get_json(url);}));
+            return $.when.apply(null, urls.map(function (url) {return get_json(url);}));
         }
 
         function get_json(url) {
@@ -86,7 +85,43 @@
         }
 
         function remove_dataset_from_list(span) {
+            /* Remove the clicked dataset
+            */
             remove_dataset($(span).parent().attr('name'));
+        }
+
+        function sort_events(data) {
+            /* Sort event data by extended timestamps
+            */
+            return data.sort(sortfunction)
+        }
+
+        function sortfunction(a, b) {
+            /* Sort by extended timestamps
+ 
+            First sort by timestamp, if they are the same, use the nanoseconds
+
+            */
+            return (a[2] == b[2]) ? a[3] - b[3] : a[2] - b[2]
+        }
+
+        function combine_datasets(urls) {
+            /* Concat several array into one
+            */
+            var datatype = datasets[urls[0]].type;
+            for (i in urls) {
+                if (urls[i].indexOf(datatype) == -1) {
+                    return false}} // Not all of same type!
+
+            var combined_dataset = [];
+            combined_dataset = combined_dataset.concat.apply([], urls.map(function (url) {return datasets[url].data;}))
+            return combined_dataset
+        }
+
+        function make_ext_timestamp(timestamp, nanoseconds) {
+            /* Combine timestamp and nanoseconds to one value
+            */
+            return timestamp * 1e9 + nanoseconds
         }
 
         function make_datepicker(target) {
@@ -132,7 +167,7 @@
                 var item = $('<li>');
                 var del = $('<span>').attr('class', 'delete').text('x');
                 item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
-                          '. Date: ' + datasets[i].startdate + ' - ' + datasets[i].startdate)
+                          '. Date: ' + datasets[i].startdate + ' - ' + datasets[i].enddate)
                     .attr('name', datasets[i].url);
                 item.append(del);
                 list.append(item);
