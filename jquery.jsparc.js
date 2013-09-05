@@ -109,7 +109,7 @@
             /* Concat several array into one
             */
             var datatype = datasets[urls[0]].type;
-            for (i in urls) {
+            for (var i = 0; i < urls.length; i++) {
                 if (urls[i].indexOf(datatype) == -1) {
                     return false}} // Not all of same type!
 
@@ -145,7 +145,7 @@
                    .done(function(station_json) {
                        var select = $('<select>');
                        var number, name;
-                       for (var i in station_json) {
+                       for (var i = 0; i < station_json.length; i++) {
                            number = station_json[i].number;
                            name = station_json[i].name;
                            select.append($('<option>').attr('value', number).text(number + ' - ' + name));}
@@ -271,7 +271,7 @@
             var lines = csv.split(eol);
             while (lines[0][0] == comments) {
                 lines.splice(0, 1);}
-            for (var i in lines) {
+            for (var i = 0; i < lines.length; i++) {
                 data.push(lines[i].split(delimiter));}
             return data;
         }
