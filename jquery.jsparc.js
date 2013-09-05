@@ -5,20 +5,31 @@
             DATA_URL = 'http://data.hisparc.nl/data',
             JSPARC_URL = "http://data.hisparc.nl/jsparc";
             datasets = {},
-            events_columns = ['date', 'time',
-                              'timestamp', 'nanoseconds',
-                              'pulseheights(4x)',
-                              'integral(4x)',
-                              'number_of_mips(4x)',
-                              'arrival_times(4x)'],
-            weather_columns = ['date', 'time', 'timestamp',
-                               'temperature_inside', 'temperature_outside',
-                               'humidity_inside', 'humidity_outside',
-                               'atmospheric_pressure',
-                               'wind_direction', 'wind_speed',
-                               'solar_radiation', 'uv_index',
-                               'evapotranspiration', 'rain_rate',
-                               'heat_index', 'dew_point', 'wind_chill'];
+            events_columns = {'date': 0,
+                              'time': 1,
+                              'timestamp': 2,
+                              'nanoseconds': 3,
+                              'pulseheights': [4, 5, 6, 7],
+                              'integral': [8, 9, 10, 11],
+                              'number_of_mips': [12, 13, 14, 15],
+                              'arrival_times': [16, 17, 18, 19]},
+            weather_columns = {'date': 0 ,
+                               'time': 1,
+                               'timestamp': 2,
+                               'temperature_inside': 3,
+                               'temperature_outside': 4,
+                               'humidity_inside': 5,
+                               'humidity_outside': 6,
+                               'atmospheric_pressure': 7,
+                               'wind_direction': 8,
+                               'wind_speed': 9,
+                               'solar_radiation': 10,
+                               'uv_index': 11,
+                               'evapotranspiration': 12,
+                               'rain_rate': 13,
+                               'heat_index': 14,
+                               'dew_point': 15,
+                               'wind_chill': 16};
 
         // Public functions
         jsparc.make_station_select = make_station_select;
@@ -93,16 +104,31 @@
         function sort_events(data) {
             /* Sort event data by extended timestamps
             */
-            return data.sort(sortfunction)
+            return data.sort(sort_extendedtimestamps);
         }
 
-        function sortfunction(a, b) {
+        function sort_weather(data) {
+            /* Sort weather data by timestamps
+            */
+            return data.sort(sort_timestamps);
+        }
+
+        function sort_extendedtimestamps(a, b) {
             /* Sort by extended timestamps
  
             First sort by timestamp, if they are the same, use the nanoseconds
 
             */
-            return (a[2] == b[2]) ? a[3] - b[3] : a[2] - b[2]
+            t = events_columns['timestamp'];
+            n = events_columns['nanoseconds'];
+            return (a[t] == b[t]) ? a[n] - b[n] : a[t] - b[t];
+        }
+
+        function sort_extendedtimestamps(a, b) {
+            /* Sort by timestamp
+             */
+            t = weather_columns['timestamp'];
+            return a[t] - b[t];
         }
 
         function combine_datasets(urls) {
@@ -114,14 +140,36 @@
                     return false}} // Not all of same type!
 
             var combined_dataset = [];
-            combined_dataset = combined_dataset.concat.apply([], urls.map(function (url) {return datasets[url].data;}))
-            return combined_dataset
+            combined_dataset = combined_dataset.concat.apply([], urls.map(function (url) {return datasets[url].data;}));
+            return combined_dataset;
         }
 
         function make_ext_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
             */
-            return timestamp * 1e9 + nanoseconds
+            return timestamp * 1e9 + nanoseconds;
+        }
+
+        function get_column(column_name, data, type) {
+            /* Get a column from a dataset
+            */
+            var column = [];
+            if (type == 'events') {
+                var col = events_columns[column_name];}
+            else if (type == 'weather') {
+                var col = weather_columns[column_name];}
+
+            if (col.length) {
+                for (var i = 0; i < data.length; i++) {
+                    var values = [];
+                    for (var j = 0; j < col.length; j++) {
+                        values[i] = data[i][j];}
+                    column[i] = values}}
+            else {
+                for (var i = 0; i < data.length; i++) {
+                    column[i] = data[i][col];}}
+
+            return column;
         }
 
         function make_datepicker(target) {
@@ -155,7 +203,7 @@
 
         function set_dataset_list_controls(target) {
             var target = target || $('#dataset_list');
-            target.on("click", "span.delete", function() {remove_dataset_from_list(this)})
+            target.on("click", "span.delete", function() {remove_dataset_from_list(this)});
         }
 
         function update_dataset_list(target) {
