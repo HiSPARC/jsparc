@@ -184,6 +184,8 @@
         function data_download(station_number, startdate, enddate, type) {
             return [DATA_URL, station_number, type].join('/') + '?' + 'start=' + startdate + '&' + 'end=' + enddate;}
 
+
+        // Helper functions
         function parse_csv(csv) {
             /* Convert downloaded csv to 2D Array
             */
@@ -197,6 +199,25 @@
             for (var i in lines) {
                 data.push(lines[i].split(delimiter));}
             return data;
+        }
+
+        function transpose(a) {
+            /* Make the transpose of a 2D Array
+            */
+            var w = a.length ? a.length : 0,
+                h = a[0] instanceof Array ? a[0].length : 0;
+
+            if (h === 0 || w === 0) {
+                return [];}
+
+            var t = [];
+
+            for (var i = 0; i < h; i++) {
+                t[i] = [];
+                for (var j = 0; j < w; j++) {
+                    t[i][j] = a[j][i];}}
+
+            return t;
         }
 
         function pad_zero(number, length) {
