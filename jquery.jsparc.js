@@ -327,6 +327,16 @@
 
         // Flot
 
+        function make_plot(target, data, type) {
+            /* Create a plot of data
+            */
+            var target = (target) ? target : $('#plot');
+            return $.plot(target, [
+                    {data: [[x1,y1], [x2,y2], .., yaxis: 1},
+                    {data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2},], flot_lines);
+                   });
+        }
+
         function HideTickLabels(v, axis) {
             /* Make the ticklabels for the top/right axes empty
             */
