@@ -1,5 +1,8 @@
 (function($) {
     function jSparc() {
+
+        // Constants
+
         var jsparc = this,
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
@@ -31,7 +34,9 @@
                                'dew_point': 15,
                                'wind_chill': 16};
 
+
         // Public functions
+
         jsparc.make_station_select = make_station_select;
         jsparc.make_datepicker = make_datepicker;
         jsparc.download_dataset = download_dataset;
@@ -39,32 +44,7 @@
         jsparc.datasets = function() {return datasets};
 
 
-        function get_multiple_json(urls) {
-            /* Asynchronously download multiple urls of type json
-            */
-            return $.when.apply(null, urls.map(function (url) {return get_json(url);}));
-        }
-
-        function get_json(url) {
-            /* Asynchronously download data of type json
-            */
-            return $.ajax({url: url,
-                           dataType: 'json',
-                           type: 'GET'});
-        }
-
-        function get_csv(url) {
-            /* Asynchronously download data of type csv
-            
-            The csv data will be converted to an array
-            Comment headers will be removed
-
-            */
-            return $.ajax({url: url,
-                           converters: {"text json": parse_csv},
-                           dataType: 'json',
-                           type: 'GET'});
-        }
+        // Datasets
 
         function download_dataset(station_number, startdate, enddate, type) {
             /* Store the result of downlaoding data to the datasets
@@ -172,13 +152,16 @@
             return column;
         }
 
+
+        // User Interface
+
         function make_datepicker(target) {
             /* Create an date input field
             
             Possible choices are limited to dates between start of
             HiSPARC (9/1/2004) and yesterday.
 
-            Requires jQuery UI
+            Requires jquery-ui
 
             */
             target.datepicker({minDate: new Date(2004, 1, 9), maxDate: -1, dateFormat: 'yy-mm-dd'})
@@ -239,9 +222,39 @@
             target.html(select);
         }
 
-        // URL formatters
+
+        // AJAX
+
+        function get_multiple_json(urls) {
+            /* Asynchronously download multiple urls of type json
+            */
+            return $.when.apply(null, urls.map(function (url) {return get_json(url);}));
+        }
+
+        function get_json(url) {
+            /* Asynchronously download data of type json
+            */
+            return $.ajax({url: url,
+                           dataType: 'json',
+                           type: 'GET'});
+        }
+
+        function get_csv(url) {
+            /* Asynchronously download data of type csv
+            
+            The csv data will be converted to an array
+            Comment headers will be removed
+
+            */
+            return $.ajax({url: url,
+                           converters: {"text json": parse_csv},
+                           dataType: 'json',
+                           type: 'GET'});
+        }
+
 
         // API
+
         function api_stations() {
             return [API_URL, 'stations', ''].join('/');}
 
@@ -284,11 +297,15 @@
         function api_number_of_events(station_number, year, month, day, hour) {
             return [API_URL, 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
 
+
         // Data Download
+
         function data_download(station_number, startdate, enddate, type) {
             return [DATA_URL, station_number, type].join('/') + '?start=' + startdate + '&end=' + enddate;}
 
+
         // jSparc
+
         function jsparc_get_coincidence(get_coincidence) {
             /* Create url with query to get a coincidence from a jSparc session
             
@@ -308,7 +325,98 @@
             return [JSPARC_URL, 'result', null].join('/')  + '?' + $.param(result);}
 
 
+        // Flot
+
+        function HideTickLabels(v, axis) {
+            /* Make the ticklabels for the top/right axes empty
+            */
+            return ' ';}
+
+        // Requires jquery.flot.js, jquery.flot.axislabels.js
+        var flot_base = {
+            colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
+            legend: {show: false},
+            xaxis: {
+                show: true,
+                font: {
+                    size: 12},
+                color: '#000',
+                tickColor: '#000',
+                labelHeight: 23,
+                tickLength: 4,
+                tickDecimals: 0,
+                axisLabelUseCanvas: true,
+                axisLabelFontSizePixels: 16},
+            yaxis: {
+                show: true,
+                font: {
+                    size: 12},
+                color: '#000',
+                tickColor: '#000',
+                labelWidth: 33,
+                tickLength: 4,
+                tickDecimals: 0,
+                axisLabelUseCanvas: true,
+                axisLabelFontSizePixels: 16},
+            y2axis: {
+                show: true,
+                position: 'right',
+                tickFormatter: HideTickLabels,
+                labelWidth: 11,
+                tickLength: 2,
+                alignTicksWithAxis: 1,
+                axisLabel: ''},
+            x2axis: {
+                show: true,
+                position: 'top',
+                tickFormatter: HideTickLabels,
+                labelHeight: 0,
+                tickLength: 2,
+                alignTicksWithAxis: 1,
+                axisLabel: ''},
+            series: {
+                lines: {
+                    lineWidth: 1.5,
+                    steps: false},
+                shadowSize: 0},
+            grid: {
+                aboveData: 0,
+                color: '#000',
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                labelMargin: 7,
+                axisMargin: 0,
+                borderWidth: 0,
+                minBorderMargin: 0,
+                clickable: false,
+                hoverable: false,
+                autoHighlight: false}
+        };
+
+        var flot_histogram = {
+            yaxis: {
+                min: 0},
+            series: {
+                lines: {
+                    steps: true}}
+        };
+
+        var flot_lines = {
+        };
+
+        var flot_scatter = {
+            series: {
+                points: {
+                    show: true,
+                    radius: .75,
+                    lineWidth: 0.00001,
+                    fillColor: "#222"},
+                lines: {
+                    show: false}}
+        };
+
+
         // Helper functions
+
         function parse_csv(csv) {
             /* Convert downloaded csv to 2D Array
             */
