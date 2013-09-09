@@ -326,6 +326,7 @@
 
 
         // Flot
+        // Requires jquery.flot.js
 
         function make_plot(target, data, type) {
             /* Create a plot of data
@@ -337,12 +338,13 @@
                    });
         }
 
-        function HideTickLabels(v, axis) {
-            /* Make the ticklabels for the top/right axes empty
-            */
-            return ' ';}
+        function downloadGraph(target) {
+            var dataurl = $(target + ' .flot-base')[0].toDataURL();
+            window.open(dataurl, '_blank', "height=350, width=630, toolbar=yes")
+        }
 
-        // Requires jquery.flot.js, jquery.flot.axislabels.js
+        // Flot options
+        // Requires jquery.flot.axislabels.js
         var flot_base = {
             colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
             legend: {show: false},
@@ -371,7 +373,7 @@
             y2axis: {
                 show: true,
                 position: 'right',
-                tickFormatter: HideTickLabels,
+                tickFormatter: _hide_tick_labels,
                 labelWidth: 11,
                 tickLength: 2,
                 alignTicksWithAxis: 1,
@@ -379,7 +381,7 @@
             x2axis: {
                 show: true,
                 position: 'top',
-                tickFormatter: HideTickLabels,
+                tickFormatter: _hide_tick_labels,
                 labelHeight: 0,
                 tickLength: 2,
                 alignTicksWithAxis: 1,
@@ -423,6 +425,33 @@
                 lines: {
                     show: false}}
         };
+
+        var flot_ylog = {
+            yaxis: {
+                transform: _make_log_axis},
+                inverseTransform: _inverse_make_log_axis}
+        };
+
+        var flot_xlog = {
+            xaxis: {
+                transform: _make_log_axis},
+                inverseTransform: _inverse_make_log_axis}
+        };
+
+        function _hide_tick_labels(v, axis) {
+            /* Make the ticklabels for the top/right axes empty
+            */
+            return ' ';}
+
+        function _make_log_axis(v) {
+            /* Transform an axis to log
+            */
+            return Math.log(N);}
+
+        function _inverse_make_log_axis(v) {
+            /* Inverse for transforming an axis to log
+            */
+            return Math.exp(N);}
 
 
         // Helper functions
