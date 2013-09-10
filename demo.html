@@ -5,6 +5,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-1.10.3.custom.css" />
         <style type="text/css">
             #loading {position: absolute; top: 5px; right: 5px; font-weight: bold;}
+            #date_choice {list-style: none;}
             #dataset_list {width: 500px;}
             #dataset_list ol {list-style: none;}
             #dataset_list li {margin: 1px 0; padding: 5px; background-color: #91D1F1;}
@@ -17,11 +18,11 @@
         <script>
             var jsparc;
             $(document).ready(function () {
-                $(document).bind('ajaxSend', function(){
-                   $('#loading').show();
-                 }).bind('ajaxComplete', function(){
-                   $('#loading').hide();
-                 });
+                $(document).bind('ajaxSend', function() {
+                    $('#loading').show();
+                }).bind('ajaxComplete', function() {
+                    $('#loading').hide();
+                });
                 jsparc = $.jsparc();
                 jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'));
