@@ -37,11 +37,61 @@
 
         // Public functions
 
-        jsparc.make_station_select = make_station_select;
-        jsparc.make_datepicker = make_datepicker;
+        jsparc.datasets = function() {return datasets};
         jsparc.download_dataset = download_dataset;
         jsparc.remove_dataset = remove_dataset;
-        jsparc.datasets = function() {return datasets};
+        jsparc.make_station_select = make_station_select;
+        jsparc.make_datepicker = make_datepicker;
+
+        // Development
+        /* The following functions are made public to make
+           development easier, some might be added to the above
+           list, and some may become private.
+        */
+        jsparc.remove_dataset_from_list = remove_dataset_from_list;
+        jsparc.sort_events = sort_events;
+        jsparc.sort_weather = sort_weather;
+        jsparc.sort_extendedtimestamps = sort_extendedtimestamps;
+        jsparc.sort_timestamps = sort_timestamps;
+        jsparc.combine_datasets = combine_datasets;
+        jsparc.make_ext_timestamp = make_ext_timestamp;
+        jsparc.get_column = get_column;
+        jsparc.set_dataset_list_controls = set_dataset_list_controls;
+        jsparc.update_dataset_list = update_dataset_list;
+        jsparc.update_dataset_select = update_dataset_select;
+        jsparc.get_multiple_json = get_multiple_json;
+        jsparc.get_multiple_csv = get_multiple_csv;
+        jsparc.get_json = get_json;
+        jsparc.get_csv = get_csv;
+        jsparc.api_stations = api_stations;
+        jsparc.api_stations_in_subcluster = api_stations_in_subcluster;
+        jsparc.api_subclusters = api_subclusters;
+        jsparc.api_subclusters_in_cluster = api_subclusters_in_cluster;
+        jsparc.api_clusters = api_clusters;
+        jsparc.api_clusters_in_country = api_clusters_in_country;
+        jsparc.api_countries = api_countries;
+        jsparc.api_stations_with_data = api_stations_with_data;
+        jsparc.api_stations_with_weather = api_stations_with_weather;
+        jsparc.api_station_info = api_station_info;
+        jsparc.api_has_data = api_has_data;
+        jsparc.api_has_weather = api_has_weather;
+        jsparc.api_configuration = api_configuration;
+        jsparc.api_number_of_events = api_number_of_events;
+        jsparc.data_download = data_download;
+        jsparc.jsparc_get_coincidence = jsparc_get_coincidence;
+        jsparc.jsparc_result = jsparc_result;
+        jsparc.make_plot = make_plot;
+        jsparc.download_graph = download_graph;
+        jsparc.zip_data = zip_data;
+        jsparc.linear_interpolation = linear_interpolation;
+        jsparc.bisect_search = bisect_search;
+        jsparc.make_options = make_options;
+        jsparc._hide_tick_labels = _hide_tick_labels;
+        jsparc._make_log_axis = _make_log_axis;
+        jsparc._inverse_make_log_axis = _inverse_make_log_axis;
+        jsparc.parse_csv = parse_csv;
+        jsparc.transpose = transpose;
+        jsparc.pad_zero = pad_zero;
 
 
         // Datasets
@@ -104,7 +154,7 @@
             return (a[t] == b[t]) ? a[n] - b[n] : a[t] - b[t];
         }
 
-        function sort_extendedtimestamps(a, b) {
+        function sort_timestamps(a, b) {
             /* Sort by timestamp
              */
             t = weather_columns['timestamp'];
@@ -231,6 +281,12 @@
             return $.when.apply(null, urls.map(function (url) {return get_json(url);}));
         }
 
+        function get_multiple_csv(urls) {
+            /* Asynchronously download multiple urls of type csv
+            */
+            return $.when.apply(null, urls.map(function (url) {return get_csv(url);}));
+        }
+
         function get_json(url) {
             /* Asynchronously download data of type json
             */
@@ -282,8 +338,8 @@
         function api_stations_with_weather(year, month, day) {
             return [API_URL, 'stations/weather', year, month, day, ''].join('/');}
 
-        function api_station_info(station_number) {
-            return [API_URL, 'station', station_number, ''].join('/');}
+        function api_station_info(station_number, year, month, day) {
+            return [API_URL, 'station', station_number, year, month, day, ''].join('/');}
 
         function api_has_data(station_number, year, month, day) {
             return [API_URL, 'station', station_number, 'data', year, month, day, ''].join('/');}
@@ -313,7 +369,7 @@
             session_title, session_pin, student_name
 
             */
-            return [JSPARC_URL, 'get_coincidence', null].join('/') +  '?' + $.param(get_coincidence);}
+            return [JSPARC_URL, 'get_coincidence', ''].join('/') +  '?' + $.param(get_coincidence);}
 
         function jsparc_result(result) {
             /* Create url with query to send the jSparc results to the server
@@ -322,7 +378,7 @@
             session_title, session_pin, student_name, pk, logEnergy, error, lon, lat
 
             */
-            return [JSPARC_URL, 'result', null].join('/')  + '?' + $.param(result);}
+            return [JSPARC_URL, 'result', ''].join('/')  + '?' + $.param(result);}
 
 
         // Flot
@@ -332,19 +388,80 @@
             /* Create a plot of data
             */
             var target = (target) ? target : $('#plot');
-            return $.plot(target, [
-                    {data: [[x1,y1], [x2,y2], .., yaxis: 1},
-                    {data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2},], flot_lines);
-                   });
+            return $.plot(target,
+                    [{data: data, yaxis: 1},
+                     {data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}],
+                    flot_lines);
         }
 
-        function downloadGraph(target) {
+        function download_graph(target) {
+            /* Open a new window with a png version (base64 encoded) of the graph
+            */
             var dataurl = $(target + ' .flot-base')[0].toDataURL();
             window.open(dataurl, '_blank', "height=350, width=630, toolbar=yes")
         }
 
+        function zip_data(x, y) {
+            /* Create a zipped array of 2 arrays
+            
+            Give two equal length arrays (x, y)
+            They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
+
+            */
+            if (x.length != y.length) {
+                return null;}
+
+            var data = [];
+            for (var i = 0; i < x.length; i++) {
+                data.push([x[i], y[i]])
+            return data;
+        }
+
+        function linear_interpolation(x1, x2, y2) {
+            /* Make a linear interpolation to get y2 to be the same length as x1
+            */
+            var y1 = [];
+            for (var i = 0; i < x1.length; i++) {
+                var j = bisect_search(x1[i], x2);
+                var dydx = (y2[j + 1] - y2[j]) / (x2[j + 1] - x2[j]);
+                y1.push(y2[j] + dydx * (x1[i] - x2[j]));
+            }
+            return y1;
+        }
+
+        function bisect_search(point, array) {
+            /* Use bisection to find an index i where array[i] <= point < array[i + 1].
+            */
+            if (point >= array[array.length - 2]) {
+                return array.length - 2;}
+            if (point < array[1]) {
+                return 0;}
+
+            var imin = 0;
+            var imax = array.length;
+            while (imin < imax) {
+                var imid = imin + ((imax - imin) >> 1);
+                if (point >= array[imid]) {
+                    imin = imid + 1;}
+                else {
+                    imax = imid;}}
+            return imin - 1;
+        }
+
+        function make_options(options) {
+            /* Combine plot options
+            
+            line style (histogram, line, scatter)
+            axis (x, y: linear, log)
+            
+            */
+            flot_active = $.extend.apply([], true, {}, flot_base, options);
+        }
+
         // Flot options
         // Requires jquery.flot.axislabels.js
+        var flot_active = {};
+
         var flot_base = {
             colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
             legend: {show: false},
@@ -428,30 +545,36 @@
 
         var flot_ylog = {
             yaxis: {
-                transform: _make_log_axis},
+                transform: _make_log_axis,
                 inverseTransform: _inverse_make_log_axis}
         };
 
         var flot_xlog = {
             xaxis: {
-                transform: _make_log_axis},
+                transform: _make_log_axis,
                 inverseTransform: _inverse_make_log_axis}
         };
+
+
+        // Flot helpers
 
         function _hide_tick_labels(v, axis) {
             /* Make the ticklabels for the top/right axes empty
             */
-            return ' ';}
+            return ' ';
+        }
 
         function _make_log_axis(v) {
             /* Transform an axis to log
             */
-            return Math.log(N);}
+            return Math.log(N);
+        }
 
         function _inverse_make_log_axis(v) {
             /* Inverse for transforming an axis to log
             */
-            return Math.exp(N);}
+            return Math.exp(N);
+        }
 
 
         // Helper functions
@@ -476,17 +599,13 @@
             */
             var w = a.length ? a.length : 0,
                 h = a[0] instanceof Array ? a[0].length : 0;
-
             if (h === 0 || w === 0) {
                 return [];}
-
             var t = [];
-
             for (var i = 0; i < h; i++) {
                 t[i] = [];
                 for (var j = 0; j < w; j++) {
                     t[i][j] = a[j][i];}}
-
             return t;
         }
 
