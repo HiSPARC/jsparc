@@ -29,9 +29,9 @@
     events:[status: "statusinformation",
             timestamp: "event timestamp",
             nanoseconds: "nanoseconds of event"
-            lon: "longitude of station",
-            lat: "latitude of station",
-            alt: "altitude of station",
+            longitude: "longitude of station",
+            latitude: "latitude of station",
+            altitude: "altitude of station",
             number: "numbers of station",
             pulseheights: ["the pulseheights of the trace 0/3 in mV"],
             integrals: ["the area above the trace in mVns"],
@@ -66,8 +66,8 @@
  * Calculates geodetic distance between two points specified by latitude/longitude using
  * Vincenty inverse formula for ellipsoids
  *
- * @param   {Number} lat1, lon1: first point in decimal degrees
- * @param   {Number} lat2, lon2: second point in decimal degrees
+ * @param   {Number} latitude1, longitude1: first point in decimal degrees
+ * @param   {Number} latitude2, longitude2: second point in decimal degrees
  * @returns (Number} distance in metres between points
  */
 var c = 299792458;
@@ -80,13 +80,13 @@ function toDeg(x) {
     return x * 45 / Math.atan(1);
 }
 
-function distVincenty(lat1, lon1, lat2, lon2) {
+function distVincenty(latitude1, longitude1, latitude2, longitude2) {
     var a = 6378137,
         b = 6356752.314245,
         f = 1 / 298.257223563; // WGS-84 ellipsoid params
-    var L = toRad((lon2 - lon1));
-    var U1 = Math.atan((1 - f) * Math.tan(toRad(lat1)));
-    var U2 = Math.atan((1 - f) * Math.tan(toRad(lat2)));
+    var L = toRad((longitude2 - longitude1));
+    var U1 = Math.atan((1 - f) * Math.tan(toRad(latitude1)));
+    var U2 = Math.atan((1 - f) * Math.tan(toRad(latitude2)));
     var sinU1 = Math.sin(U1),
         cosU1 = Math.cos(U1);
     var sinU2 = Math.sin(U2),
@@ -179,28 +179,28 @@ function toScient(x, dx) {
 function invNKG(shower4326, stationIndex, data) {
     var S = $("#MIP" + stationIndex).val();
     var r;
-    if (data.events[stationIndex].lat !== "") {
-        r = distVincenty(shower4326.y, shower4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);}
+    if (data.events[stationIndex].latitude !== "") {
+        r = distVincenty(shower4326.y, shower4326.x, data.events[stationIndex].latitude, data.events[stationIndex].longitude);}
     return S * Math.pow((r / r0), (alfa)) * Math.pow((1 + (r / r0)), (eta - alfa));
 }
 
 function invAgase(shower4326, stationIndex, data) {
     var S = $("#MIP" + stationIndex).val();
     var r;
-    if (data.events[stationIndex].lat !== "") {
-        r = distVincenty(shower4326.y, shower4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);}
+    if (data.events[stationIndex].latitude !== "") {
+        r = distVincenty(shower4326.y, shower4326.x, data.events[stationIndex].latitude, data.events[stationIndex].longitude);}
     return S * Math.pow((r / r0), (-1.2)) * Math.pow((1 + (r / r0)), (-2.64)) * Math.pow((1 + r * r / 1000000), (-0.6));
 }
 
 function NKG(pMerc, k, stationIndex, data) {
     var p4326 = (pMerc);
-    var r = distVincenty(p4326.y, p4326.x, data.events[stationIndex].lat, data.events[stationIndex].lon);
+    var r = distVincenty(p4326.y, p4326.x, data.events[stationIndex].latitude, data.events[stationIndex].longitude);
     return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
 }
 
 function agase(pMerc, k, stationIndex, data) {
     var p4326 = (pMerc);
-    var r = distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon);
+    var r = distVincenty(p4326.y, p4326.x, data.events[i].latitude, data.events[i].longitude);
     return k * Math.pow((r / r0), (1.2)) * Math.pow((1 + (r / r0)), (2.64)) * Math.pow((1 + r * r / 1000000), (0.6));
 }
 
@@ -256,31 +256,31 @@ function transPlace(pMerc) {
 
 function writeDist(htmlInfo, pMerc, data) {
     var p4326 = transPlace(pMerc);
-    result.lon = p4326.x;
-    result.lat = p4326.y;
+    result.longitude = p4326.x;
+    result.latitude = p4326.y;
     calcEnergy(htmlInfo, p4326, data);
     for (i = 0; i < data.events.length; i++) {
-        $("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].lat, data.events[i].lon));}
+        $("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].latitude, data.events[i].longitude));}
 }
 
 function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     var mapData = {
-        lon: 0,
-        lat: 0,
+        longitude: 0,
+        latitude: 0,
         xmin: 90,
         ymin: 180,
         xmax: -90,
         ymax: -180};
     result.pk = data.pk;
     for (i = 0; i < data.events.length; i++) {
-        mapData.lon += data.events[i].lon;
-        mapData.lat += data.events[i].lat;
-        if (mapData.xmax < data.events[i].lon) {mapData.xmax = data.events[i].lon;}
-        if (mapData.xmin > data.events[i].lon) {mapData.xmin = data.events[i].lon;}
-        if (mapData.ymax < data.events[i].lat) {mapData.ymax = data.events[i].lat;}
-        if (mapData.ymin > data.events[i].lat) {mapData.ymin = data.events[i].lat;}}
-    var x = mapData.lon / data.events.length;
-    var y = mapData.lat / data.events.length;
+        mapData.longitude += data.events[i].longitude;
+        mapData.latitude += data.events[i].latitude;
+        if (mapData.xmax < data.events[i].longitude) {mapData.xmax = data.events[i].longitude;}
+        if (mapData.xmin > data.events[i].longitude) {mapData.xmin = data.events[i].longitude;}
+        if (mapData.ymax < data.events[i].latitude) {mapData.ymax = data.events[i].latitude;}
+        if (mapData.ymin > data.events[i].latitude) {mapData.ymin = data.events[i].latitude;}}
+    var x = mapData.longitude / data.events.length;
+    var y = mapData.latitude / data.events.length;
 
     var options = {
         controls: [
@@ -305,7 +305,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
 
     var stationLayer = new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
     for (i = 0; i < data.events.length; i++) {
-        station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].lon, data.events[i].lat).transform(proj4326, projmerc),
+        station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].longitude, data.events[i].latitude).transform(proj4326, projmerc),
                 {some: 'data'},
                 {externalGraphic: 'images/marker' + i + '.png',
                  graphicHeight: 25,
@@ -462,13 +462,13 @@ function plotGraph(htmlInfo, data) {
     showEvent(0);
 }
 
-function toOrthogonal(i, lat, lon, alt) {
+function toOrthogonal(i, latitude, longitude, altitude) {
     var coordinate = {};
     var a = 6378137.000;
     var b = 6356752.315;
-    coordinate.x = (b + alt) * Math.sin(lat);
-    coordinate.y = (a + alt) * Math.cos(lat) * Math.sin(lon);
-    coordinate.z = (a + alt) * Math.cos(lat) * Math.cos(lon);
+    coordinate.x = (b + altitude) * Math.sin(latitude);
+    coordinate.y = (a + altitude) * Math.cos(latitude) * Math.sin(longitude);
+    coordinate.z = (a + altitude) * Math.cos(latitude) * Math.cos(longitude);
     return coordinate;
 }
 
@@ -480,7 +480,7 @@ function interactionTrace(data) {
     var A, B, C, D, E, F, G;
 
     for (i = 0; i < data.events.length; i++) {
-        coordinate = toOrthogonal(i, data.events[i].lon, data.events[i].lat, data.events[i].alt);
+        coordinate = toOrthogonal(i, data.events[i].longitude, data.events[i].latitude, data.events[i].altitude);
         x[i] = coordinate.x;
         y[i] = coordinate.y;
         z[i] = coordinate.z;
