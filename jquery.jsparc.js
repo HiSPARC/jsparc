@@ -458,8 +458,10 @@
             flot_active = $.extend.apply([], true, {}, flot_base, options);
         }
 
+
         // Flot options
         // Requires jquery.flot.axislabels.js
+
         var flot_active = {};
 
         var flot_base = {
@@ -567,13 +569,13 @@
         function _make_log_axis(v) {
             /* Transform an axis to log
             */
-            return Math.log(N);
+            return Math.log(v);
         }
 
         function _inverse_make_log_axis(v) {
             /* Inverse for transforming an axis to log
             */
-            return Math.exp(N);
+            return Math.exp(v);
         }
 
 
