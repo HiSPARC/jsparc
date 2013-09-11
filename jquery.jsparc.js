@@ -6,8 +6,7 @@
         var jsparc = this,
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
-            JSPARC_URL = "http://data.hisparc.nl/jsparc";
-            datasets = {},
+            JSPARC_URL = "http://data.hisparc.nl/jsparc",
             events_columns = {'date': 0,
                               'time': 1,
                               'timestamp': 2,
@@ -33,6 +32,9 @@
                                'heat_index': 14,
                                'dew_point': 15,
                                'wind_chill': 16};
+
+        // Data container
+        var datasets = {};
 
 
         // Public functions
@@ -399,7 +401,7 @@
             */
             var target = (target) ? target : $('#plot');
             var dataurl = $(target + ' .flot-base')[0].toDataURL();
-            window.open(dataurl, '_blank', "height=350, width=630, toolbar=yes")
+            window.open(dataurl, '_blank', "height=350, width=630, toolbar=yes");
         }
 
         function zip_data(x, y) {
@@ -414,7 +416,7 @@
 
             var data = [];
             for (var i = 0; i < x.length; i++) {
-                data.push([x[i], y[i]])}
+                data.push([x[i], y[i]]);}
             return data;
         }
 
@@ -465,7 +467,8 @@
         // Flot options
         // Requires jquery.flot.axislabels.js
 
-        var flot_active = {};
+        var flot_active = {
+        };
 
         var flot_base = {
             colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
