@@ -85,7 +85,7 @@
         jsparc.zip_data = zip_data;
         jsparc.linear_interpolation = linear_interpolation;
         jsparc.bisect_search = bisect_search;
-        jsparc.make_options = make_options;
+        jsparc.set_flot_options = set_flot_options;
         jsparc._hide_tick_labels = _hide_tick_labels;
         jsparc._make_log_axis = _make_log_axis;
         jsparc._inverse_make_log_axis = _inverse_make_log_axis;
@@ -391,12 +391,13 @@
             return $.plot(target,
                     [{data: data, yaxis: 1},
                      {data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}],
-                    flot_lines);
+                    flot_active);
         }
 
         function download_graph(target) {
             /* Open a new window with a png version (base64 encoded) of the graph
             */
+            var target = (target) ? target : $('#plot');
             var dataurl = $(target + ' .flot-base')[0].toDataURL();
             window.open(dataurl, '_blank', "height=350, width=630, toolbar=yes")
         }
@@ -413,7 +414,7 @@
 
             var data = [];
             for (var i = 0; i < x.length; i++) {
-                data.push([x[i], y[i]])
+                data.push([x[i], y[i]])}
             return data;
         }
 
@@ -448,14 +449,16 @@
             return imin - 1;
         }
 
-        function make_options(options) {
+        function set_flot_options(options) {
             /* Combine plot options
             
             line style (histogram, line, scatter)
             axis (x, y: linear, log)
             
             */
-            flot_active = $.extend.apply([], true, {}, flot_base, options);
+            var extend_default = [true, {}, flot_base];
+            var apply_args = extend_default.concat(options);
+            flot_active = $.extend.apply([], apply_args);
         }
 
 
