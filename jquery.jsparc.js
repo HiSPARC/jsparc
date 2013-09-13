@@ -1,6 +1,7 @@
 (function($) {
     function jSparc() {
 
+
         // Constants
 
         var jsparc = this,
@@ -34,6 +35,7 @@
                                'wind_chill': 16};
 
         // Data container
+
         var datasets = {};
 
 
@@ -44,6 +46,7 @@
         jsparc.remove_dataset = remove_dataset;
         jsparc.make_station_select = make_station_select;
         jsparc.make_datepicker = make_datepicker;
+
 
         // Development
         /* The following functions are made public to make
@@ -325,6 +328,8 @@
 
 
         // API
+        /* Functions to construct URLs to access the publicdb API
+        */
 
         function api_stations() {
             return [API_URL, 'stations', ''].join('/');}
@@ -372,6 +377,8 @@
         // Data Download
 
         function data_download(station_number, startdate, enddate, type) {
+            /* Construct URLs to access the publicdb data download
+            */
             return [DATA_URL, station_number, type].join('/') + '?start=' + startdate + '&end=' + enddate;}
 
 
