@@ -106,12 +106,12 @@
 
         function download_dataset(station_number, startdate, enddate, type) {
             /* Store the result of downlaoding data to the datasets
-            
+
             The url will be used as key to reference the data
 
             */
             var url = data_download(station_number, startdate, enddate, type);
-            if (datasets[url]) { 
+            if (datasets[url]) {
                 alert('That dataset is already available');
                 return;}
             return get_csv(url)
@@ -153,7 +153,7 @@
 
         function sort_extendedtimestamps(a, b) {
             /* Sort by extended timestamps
- 
+
             First sort by timestamp, if they are the same, use the nanoseconds
 
             */
@@ -191,9 +191,9 @@
 
         function make_javascript_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
-            
+
             flot recognizes javascript timestamps for time series data
-            
+
             */
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e3 + Math.round(nanoseconds / 1e6);
@@ -226,7 +226,7 @@
 
         function make_datepicker(target) {
             /* Create an date input field
-            
+
             Possible choices are limited to dates between start of
             HiSPARC (9/1/2004) and yesterday.
 
@@ -263,7 +263,7 @@
             */
             var target = target || $('#dataset_list');
             var list = $('<ol>');
-            for (var i in datasets) {            
+            for (var i in datasets) {
                 var item = $('<li>');
                 var del = $('<span>').attr('class', 'delete').text('x');
                 item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
@@ -316,7 +316,7 @@
 
         function get_csv(url) {
             /* Asynchronously download data of type csv
-            
+
             The csv data will be converted to an array
             Comment headers will be removed
 
@@ -387,7 +387,7 @@
 
         function jsparc_get_coincidence(get_coincidence) {
             /* Create url with query to get a coincidence from a jSparc session
-            
+
             get_coincidence should be an object with the following keys:
             session_title, session_pin, student_name
 
@@ -396,7 +396,7 @@
 
         function jsparc_result(result) {
             /* Create url with query to send the jSparc results to the server
-            
+
             result should be an object with the following keys:
             session_title, session_pin, student_name, pk, logEnergy, error, lon, lat
 
@@ -427,7 +427,7 @@
 
         function zip_data(x, y) {
             /* Create a zipped array of 2 arrays
-            
+
             Give two equal length arrays (x, y)
             They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
 
@@ -474,10 +474,11 @@
 
         function set_flot_options(options) {
             /* Combine plot options
-            
+
             line style (histogram, line, scatter)
             axis (x, y: linear, log)
-            
+            variables (x, y: labels)
+
             */
             var extend_default = [true, {}, flot_base];
             var apply_args = extend_default.concat(options);
@@ -655,7 +656,7 @@
 
         function pad_zero(number, length) {
             /* Prepend a number with zero's until its length is length
-            
+
             e.g. pad_zero(5, 5) -> '00005'
 
             */
