@@ -57,6 +57,7 @@
         jsparc.sort_timestamps = sort_timestamps;
         jsparc.combine_datasets = combine_datasets;
         jsparc.make_ext_timestamp = make_ext_timestamp;
+        jsparc.make_javascript_timestamp = make_javascript_timestamp;
         jsparc.get_column = get_column;
         jsparc.set_dataset_list_controls = set_dataset_list_controls;
         jsparc.update_dataset_list = update_dataset_list;
@@ -179,7 +180,18 @@
         function make_ext_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
             */
+            var nanoseconds = nanoseconds || null;
             return timestamp * 1e9 + nanoseconds;
+        }
+
+        function make_javascript_timestamp(timestamp, nanoseconds) {
+            /* Combine timestamp and nanoseconds to one value
+            
+            flot recognizes javascript timestamps for time series data
+            
+            */
+            var nanoseconds = nanoseconds || null;
+            return timestamp * 1e3 + Math.round(nanoseconds / 1e6);
         }
 
         function get_column(column_name, data, type) {
