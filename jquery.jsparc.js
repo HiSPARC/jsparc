@@ -89,6 +89,7 @@
         jsparc.linear_interpolation = linear_interpolation;
         jsparc.bisect_search = bisect_search;
         jsparc.set_flot_options = set_flot_options;
+        jsparc.flot_axis_labels = flot_axis_labels;
         jsparc._hide_tick_labels = _hide_tick_labels;
         jsparc._make_log_axis = _make_log_axis;
         jsparc._inverse_make_log_axis = _inverse_make_log_axis;
@@ -477,7 +478,7 @@
 
 
         // Flot options
-        // Requires jquery.flot.axislabels.js
+        // Requires jquery.flot.axislabels.js, jquery.flot.time.js
 
         var flot_active = {
         };
@@ -574,6 +575,21 @@
                 transform: _make_log_axis,
                 inverseTransform: _inverse_make_log_axis}
         };
+
+        var flot_timeseries = {
+            xaxis: {
+                axisLabel: 'Date/Time (GPS)',
+                mode: 'time'}
+        };
+
+        function flot_axis_labels(x_label, y_label) {
+            /* Create an flot options object with axis labels
+            */
+            return {yaxis: {
+                        axisLabel: x_label},
+                    xaxis: {
+                        axisLabel: y_label}}
+        }
 
 
         // Flot helpers
