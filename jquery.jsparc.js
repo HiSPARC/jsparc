@@ -8,31 +8,32 @@
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
             JSPARC_URL = "http://data.hisparc.nl/jsparc",
-            events_columns = {'date': 0,
-                              'time': 1,
-                              'timestamp': 2,
-                              'nanoseconds': 3,
-                              'pulseheights': [4, 5, 6, 7],
-                              'integral': [8, 9, 10, 11],
-                              'number_of_mips': [12, 13, 14, 15],
-                              'arrival_times': [16, 17, 18, 19]},
-            weather_columns = {'date': 0 ,
-                               'time': 1,
-                               'timestamp': 2,
-                               'temperature_inside': 3,
-                               'temperature_outside': 4,
-                               'humidity_inside': 5,
-                               'humidity_outside': 6,
-                               'atmospheric_pressure': 7,
-                               'wind_direction': 8,
-                               'wind_speed': 9,
-                               'solar_radiation': 10,
-                               'uv_index': 11,
-                               'evapotranspiration': 12,
-                               'rain_rate': 13,
-                               'heat_index': 14,
-                               'dew_point': 15,
-                               'wind_chill': 16};
+            events_format = {'date': {'column': 0, 'units': 'GPS date'},
+                             'time': {'column': 1, 'units': 'GPS time'},
+                             'timestamp': {'column': 2, 'units': 's'},
+                             'nanoseconds': {'column': 3, 'units': 'ns'},
+                             'pulseheights': {'column': [4, 5, 6, 7], 'units': 'ADC'},
+                             'integral': {'column': [8, 9, 10, 11], 'units': 'ADC.ns'},
+                             'number_of_mips': {'column': [12, 13, 14, 15], 'units': 'N'},
+                             'arrival_times': {'column': [16, 17, 18, 19], 'units': 'ns'}},
+            weather_format = {'date': {'column': 0, 'units': 'GPS date'},
+                               'time': {'column': 1, 'units': 'GPS time'},
+                               'timestamp': {'column': 2, 'units': 's'},
+                               'temperature_inside': {'column': 3, 'units': 'deg C'},
+                               'temperature_outside': {'column': 4, 'units': 'deg C'},
+                               'humidity_inside': {'column': 5, 'units': '%'},
+                               'humidity_outside': {'column': 6, 'units': '%'},
+                               'atmospheric_pressure': {'column': 7, 'units': 'hPa'},
+                               'wind_direction': {'column': 8, 'units': 'deg'},
+                               'wind_speed': {'column': 9, 'units': 'm/s'},
+                               'solar_radiation': {'column': 10, 'units': 'W/m/m'},
+                               'uv_index': {'column': 11, 'units': '0-16'},
+                               'evapotranspiration': {'column': 12, 'units': 'mm'},
+                               'rain_rate': {'column': 13, 'units': 'mm/h'},
+                               'heat_index': {'column': 14, 'units': 'deg C'},
+                               'dew_point': {'column': 15, 'units': 'deg C'},
+                               'wind_chill': {'column': 16, 'units': 'deg C'}};
+
 
         // Data container
 
@@ -156,15 +157,15 @@
             First sort by timestamp, if they are the same, use the nanoseconds
 
             */
-            t = events_columns['timestamp'];
-            n = events_columns['nanoseconds'];
+            t = events_format['timestamp'].column;
+            n = events_format['nanoseconds'].column;
             return (a[t] == b[t]) ? a[n] - b[n] : a[t] - b[t];
         }
 
         function sort_timestamps(a, b) {
             /* Sort by timestamp
              */
-            t = weather_columns['timestamp'];
+            t = weather_format['timestamp'].column;
             return a[t] - b[t];
         }
 
@@ -203,9 +204,9 @@
             */
             var column = [];
             if (type == 'events') {
-                var col = events_columns[column_name];}
+                var col = events_format[column_name].column;}
             else if (type == 'weather') {
-                var col = weather_columns[column_name];}
+                var col = weather_format[column_name].column;}
 
             if (col.length) {
                 for (var i = 0; i < data.length; i++) {
