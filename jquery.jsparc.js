@@ -498,30 +498,31 @@
             xaxis: {
                 show: true,
                 font: {
-                    size: 12},
+                    size: 12,
+                    lineHeight: 13,
+                    family: "sans-serif",
+                    color: "#000"},
                 color: '#000',
                 tickColor: '#000',
                 labelHeight: 23,
                 tickLength: 4,
-                tickDecimals: 0,
-                axisLabelUseCanvas: true,
-                axisLabelFontSizePixels: 16},
+                tickDecimals: 0},
             yaxis: {
                 show: true,
                 font: {
-                    size: 12},
+                    size: 12,
+                    lineHeight: 13,
+                    family: "sans-serif",
+                    color: "#000"},
                 color: '#000',
                 tickColor: '#000',
-                labelWidth: 33,
                 tickLength: 4,
-                tickDecimals: 0,
-                axisLabelUseCanvas: true,
-                axisLabelFontSizePixels: 16},
+                tickDecimals: 0},
             y2axis: {
                 show: true,
                 position: 'right',
                 tickFormatter: _hide_tick_labels,
-                labelWidth: 11,
+                labelWidth: 0,
                 tickLength: 2,
                 alignTicksWithAxis: 1,
                 axisLabel: ''},
@@ -544,11 +545,12 @@
                 backgroundColor: 'rgba(255, 255, 255, 0)',
                 labelMargin: 7,
                 axisMargin: 0,
-                borderWidth: 0,
+                borderWidth: 1,
                 minBorderMargin: 0,
                 clickable: false,
                 hoverable: false,
-                autoHighlight: false}
+                autoHighlight: false},
+            canvas: true
         };
 
         var flot_histogram = {
