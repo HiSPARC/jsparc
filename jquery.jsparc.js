@@ -98,6 +98,8 @@
         jsparc._make_log_axis = _make_log_axis;
         jsparc._inverse_make_log_axis = _inverse_make_log_axis;
         jsparc.parse_csv = parse_csv;
+        jsparc.range = range;
+        jsparc.histogram = histogram;
         jsparc.transpose = transpose;
         jsparc.pad_zero = pad_zero;
 
@@ -639,6 +641,59 @@
             for (var i = 0; i < lines.length; i++) {
                 data.push(lines[i].split(delimiter));}
             return data;
+        }
+
+        function range(start, stop, step) {
+            /* Generate a range array, similar to range() in Python
+
+            From: http://stackoverflow.com/a/8273091/1033535
+            Fixed to allow non-integer steps
+
+            */
+            if (typeof stop == 'undefined') {
+                var stop = start,
+                    start = 0;}
+            if (typeof step == 'undefined') {
+                var step = 1;}
+            if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+                return [];}
+
+            var result = [],
+                counter = 0,
+                current = start;
+            while (step > 0 ? current < stop : current > stop) {
+                result.push(current);
+                counter++;
+                current = start + (counter * step);}
+            return result;
+        }
+
+        function histogram(a, nbins) {
+            /* Compute the histogram of a set of data.
+
+            The last bin includes values that would be equal to the edge
+            of the next bin, i.e. [[1, 2), [2, 3), [3, 4), [4, 5]].
+
+            */
+            var data = a.sort(),
+                nbins = nbins || 20,
+                mn = data[0],
+                mx = data[data.length - 1],
+                n = [];
+
+            for (var i = 0; i < nbins; i++) {
+                n[i] = 0;}
+
+            for (var j = 0; j < data.length; j++) {
+                if (a[j] == mx) {
+                    n[nbins - 1]++;}
+                else {
+                    var i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
+                    n[i]++;}}
+
+            var bins = range(mn, mx, (mx - mn) / nbins);
+
+            return [n, bins];
         }
 
         function transpose(a) {
