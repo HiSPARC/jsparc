@@ -637,11 +637,14 @@
             */
             var eol = '\n',
                 delimiter = '\t',
+                empty = '',
                 comments = '#';
             var data = [];
             var lines = csv.split(eol);
             while (lines[0][0] == comments) {
                 lines.splice(0, 1);}
+            while (lines[lines.length - 1] == empty) {
+                lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 data.push(lines[i].split(delimiter));}
             return data;
