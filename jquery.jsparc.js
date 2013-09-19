@@ -354,6 +354,16 @@
 
         // Data Download
 
+        jsparc.data_example = data_example;
+        function data_example(station_number, startdate, enddate, type) {
+            /* Construct URLs to access local example data
+            */
+            if (type == 'events') {
+                return './examples/events-s501-20130910.csv';}
+            else {
+                return './examples/weather-s501-20130910.csv';}}
+
+        jsparc.data_download = data_download;
         function data_download(station_number, startdate, enddate, type) {
             /* Construct URLs to access the publicdb data download
             */
