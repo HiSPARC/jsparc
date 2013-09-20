@@ -270,6 +270,44 @@
             target.html(select);
         }
 
+        jsparc.create_dataset_table = create_dataset_table;
+        function create_dataset_table(url, target, limit) {
+            /* Create a table representation of a dataset
+            */
+            var dataset = datasets[url],
+                target = (target) ? target : $('#dataTable'),
+                limit = (limit) ? limit : dataset.data.length,
+                table = $('<table>').addClass(dataset.type);
+
+            // Header row
+            var firstrow = $('<tr>'),
+                type = (dataset.type == 'events') ? events_format : weather_format;
+            firstrow.append($('<th>').text('#'));
+            for (var key in type) {
+                var ncol = (type[key].column.length) ? type[key].column.length : 1;
+                firstrow.append($('<th>').text(key).attr('colspan', ncol));}
+            table.append(firstrow);
+
+            // Data rows
+            for (var i = 0; i < dataset.data.length; i++) {
+                var row = $('<tr>');
+                row.append($('<td>').text(i + 1));
+                for (var j = 0; j < dataset.data[i].length; j++) {
+                    row.append($('<td>').text(dataset.data[i][j]));}
+                table.append(row);
+                if (limit != dataset.data.length && i == Math.floor(limit / 2) - 1) {
+                    var truncrow = $('<tr>');
+                    truncrow.append($('<td>')
+                                    .text('... truncated table (click to expand)')
+                                    .attr('colspan', dataset.data[0].length + 1)
+                                    .css('text-align', 'left')
+                                    .click(function() {create_dataset_table(url, target, dataset.data.length);}));
+                    table.append(truncrow);
+                    i = dataset.data.length - 1 - Math.ceil(limit / 2);}}
+
+            target.html(table);
+        }
+
 
         // AJAX
 
