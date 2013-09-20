@@ -214,25 +214,36 @@
         jsparc.set_dataset_list_controls = set_dataset_list_controls;
         function set_dataset_list_controls(target) {
             var target = target || $('#dataset_list');
-
-        function update_dataset_list(target) {
-            /* Create a readable overview list of the available datasets
-            */
-            var target = target || $('#dataset_list');
-            var list = $('<ol>');
             target.on('click', 'td.delete', function() {
                 remove_dataset_from_list(this);
                 $(this).parent().remove();});
         }
+
+        jsparc.update_dataset_table = update_dataset_table;
+        function update_dataset_table(target) {
+            /* Create a readable overview table of the available datasets
+            */
+            var target = target || $('#dataset_list'),
+                list = $('<table>'),
+                firstrow = $('<tr>');
+            firstrow.append($('<th>').text('Dataset 1'));
+            firstrow.append($('<th>').text('Dataset 2'));
+            firstrow.append($('<th>').text('Station'));
+            firstrow.append($('<th>').text('Type'));
+            firstrow.append($('<th>').text('Start date'));
+            firstrow.append($('<th>').text('End date'));
+            firstrow.append($('<th>').text('Remove'));
+            list.append(firstrow);
             for (var i in datasets) {
-                var item = $('<li>');
-                var del = $('<span>').attr('class', 'delete').text('x');
-                item.text('Station: ' + datasets[i].station_number + ' - ' + datasets[i].type +
-                          '. Date: ' + datasets[i].startdate + ' - ' + datasets[i].enddate)
-                    .attr('name', datasets[i].url);
-                item.append(del);
-                list.append(item);
-            }
+                var row = $('<tr>').attr('name', datasets[i].url);
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set1')));
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set2')));
+                row.append($('<td>').text(datasets[i].station_number).addClass('station'));
+                row.append($('<td>').text(datasets[i].type).addClass('type'));
+                row.append($('<td>').text(datasets[i].startdate).addClass('start'));
+                row.append($('<td>').text(datasets[i].enddate).addClass('end'));
+                row.append($('<td>').text('x').addClass('delete'));
+                list.append(row);}
             target.html(list);
             set_dataset_list_controls(target);
         }
