@@ -3,14 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
     <head>
         <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-1.10.3.custom.css" />
-        <style type="text/css">
-            #loading {position: absolute; top: 5px; right: 5px; font-weight: bold;}
-            #date_choice {list-style: none;}
-            #dataset_list {width: 500px;}
-            #dataset_list ol {list-style: none;}
-            #dataset_list li {margin: 1px 0; padding: 5px; background-color: #91D1F1;}
-            span.delete {margin-left: 10px; font-weight: bold;}
-        </style>
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/demo.css" />
         <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="scripts/jquery-ui-1.10.3.custom.min.js"></script>
@@ -30,21 +23,63 @@
                 jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'));
                 jsparc.make_datepicker($('#enddate_choice'));
-                $('#download_dataset').on('click', function() {jsparc.download_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#date_choice *:checked').val())});
+                $('#download_dataset').on('click', function() {jsparc.download_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#type_choice *:checked').val())});
+                $('#make_plot').on('click', function() {
+                    $('#results').html('<div id="plot"></div>');
+                    jsparc.make_plot($('#plot'),
+                                     jsparc.zip_data(jsparc.get_column('timestamp', jsparc.datasets()['./examples/weather-s501-20130910.csv'].data, 'weather'),
+                                                     jsparc.get_column('wind_direction', jsparc.datasets()['./examples/weather-s501-20130910.csv'].data, 'weather')))
+                    $('#plot').show()});
+                $('#make_table_1').on('click', function() {jsparc.create_dataset_table($("#dataset_list [name=set1]:checked").parent().parent().attr('name'),
+                                                                                       $('#results'), 29);
+                                                           $('#results').show();});
+                $('#make_table_2').on('click', function() {jsparc.create_dataset_table($("#dataset_list [name=set2]:checked").parent().parent().attr('name'),
+                                                                                       $('#results'), 29);
+                                                           $('#results').show();});
             });
         </script>
     </head>
     <body>
-        <h2>Download datasets</h2>
-        <p>Station: <span id="station_choice"></span></p>
-        <p>Start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01'</span></p>
-        <p>End date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02'</span></p>
-        <ul id="date_choice">
-            <li><input name="data_type" type="radio" value="events" checked="checked"> Events</li>
-            <li><input name="data_type" type="radio" value="weather"> Weather</li>
-        </ul>
-        <input type='button' value="Get Data!" id="download_dataset">
         <p id="loading" style="display: none;">Loading!</p>
-        <p id="dataset_list"></p>
+        <div id="download_data">
+            <h2>Download datasets</h2>
+            <p>Station: <span id="station_choice"></span></p>
+            <p>Start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01'</span></p>
+            <p>End date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02'</span></p>
+            <p>Data type:
+                <span id="type_choice">
+                    <input name="data_type" type="radio" value="events" checked="checked"> Events
+                    <input name="data_type" type="radio" value="weather"> Weather
+                </span>
+            </p>
+            <input type='button' value="Get Data!" id="download_dataset">
+        </div>
+        <div id="select_dataset">
+            <h3>Select dataset to use</h3>
+            <p id="dataset_list"></p>
+            <input type="button" value="Show Plot" id="make_plot">
+            <input type="button" value="Show Dataset 1" id="make_table_1">
+            <input type="button" value="Show Dataset 2" id="make_table_2">
+            <div id="plot_settings">
+                <p>Plot type:
+                <span id="plot_type">
+                    <input name="plot_type" type="radio" value="histogram" checked> Histogram
+                    <input name="plot_type" type="radio" value="scatter"> Scatter
+                    <input name="plot_type" type="radio" value="timeseries"> Time series
+                </span></p>
+                <p>x-Axis:
+                <span id="plot_x_axis">
+                    <input name="plot_x_axis" type="radio" value="none" checked> Linear
+                    <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic
+                </span></p>
+                <p>y-Axis:
+                <span id="plot_y_axis">
+                    <input name="plot_y_axis" type="radio" value="none" checked> Linear
+                    <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic
+                </span></p>
+            </div>
+        </div>
+        <div id="results">
+        </div>
     </body>
 </html>
