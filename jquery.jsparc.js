@@ -187,8 +187,10 @@
             Requires jquery-ui
 
             */
-            target.datepicker({minDate: new Date(2004, 1, 9), maxDate: -1, dateFormat: 'yy-mm-dd'})
-                  .datepicker("setDate", -1);
+            target.datepicker({minDate: new Date(2004, 1, 9),
+                               maxDate: -1,
+                               dateFormat: 'yy-mm-dd'})
+                  .datepicker('setDate', -1);
         }
 
         jsparc.make_station_select = make_station_select;
@@ -203,7 +205,8 @@
                        for (var i = 0; i < station_json.length; i++) {
                            number = station_json[i].number;
                            name = station_json[i].name;
-                           select.append($('<option>').attr('value', number).text(number + ' - ' + name));}
+                           select.append($('<option>').text(number + ' - ' + name)
+                                                      .attr('value', number));}
                        target.html(select);
                    });
         }
@@ -246,7 +249,8 @@
                 enddate = dataset[i].enddate;
                 type = dataset[i].type;
                 url = dataset[i].url;
-                select.append($('<option>').attr('value', url).text('Station ' + station_number + ' - ' + type + ': ' + startdate + ' - ' + enddate));}
+                str = 'Station ' + station_number + ' - ' + type + ': ' + startdate + ' - ' + enddate;
+                select.append($('<option>').attr('value', url).text(str));}
             target.html(select);
         }
 
@@ -487,6 +491,7 @@
         jsparc.flot_active = function() {return flot_active;};
         var flot_active = {};
 
+        jsparc.flot_base = function() {return flot_base;};
         var flot_base = {
             colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
             legend: {show: false},
@@ -603,6 +608,10 @@
                     xaxis: {
                         axisLabel: y_label}}
         }
+
+        jsparc.flot_none = function() {return flot_none;};
+        var flot_none = {
+        };
 
 
         // Flot helpers
