@@ -136,6 +136,11 @@
         function make_ext_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
             */
+            if (timestamp.length) {
+                var ext_timestamps = [];
+                for (var i = 0; i < timestamp.length; i++) {
+                    ext_timestamps.push(make_ext_timestamp(timestamp[i], nanoseconds[i]))}
+                return ext_timestamps}
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e9 + nanoseconds;
         }
