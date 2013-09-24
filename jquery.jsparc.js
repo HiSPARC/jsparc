@@ -41,7 +41,7 @@
 
         // Data container
 
-        jsparc.datasets = function() {return datasets};
+        jsparc.datasets = function() {return datasets;};
         var datasets = {};
 
 
@@ -105,8 +105,8 @@
             First sort by timestamp, if they are the same, use the nanoseconds
 
             */
-            t = events_format['timestamp'].column;
-            n = events_format['nanoseconds'].column;
+            var t = events_format.timestamp.column,
+                n = events_format.nanoseconds.column;
             return (a[t] == b[t]) ? a[n] - b[n] : a[t] - b[t];
         }
 
@@ -114,7 +114,7 @@
         function sort_timestamps(a, b) {
             /* Sort by timestamp
              */
-            t = weather_format['timestamp'].column;
+            var t = weather_format.timestamp.column;
             return a[t] - b[t];
         }
 
@@ -125,7 +125,7 @@
             var datatype = datasets[urls[0]].type;
             for (var i = 0; i < urls.length; i++) {
                 if (urls[i].indexOf(datatype) == -1) {
-                    return false}} // Not all of same type!
+                    return false;}} // Not all of same type!
 
             var combined_dataset = [];
             combined_dataset = combined_dataset.concat.apply([], urls.map(function (url) {return datasets[url].data;}));
@@ -139,8 +139,8 @@
             if (timestamp.length) {
                 var ext_timestamps = [];
                 for (var i = 0; i < timestamp.length; i++) {
-                    ext_timestamps.push(make_ext_timestamp(timestamp[i], nanoseconds[i]))}
-                return ext_timestamps}
+                    ext_timestamps.push(make_ext_timestamp(timestamp[i], nanoseconds[i]));}
+                return ext_timestamps;}
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e9 + nanoseconds;
         }
@@ -157,10 +157,16 @@
         }
 
         jsparc.get_column = get_column;
-        function get_column(column_name, data, type) {
+        function get_column(column_name, url) {
             /* Get a column from a dataset
+
+            If a column occurs more than once (e.g. pulseheights, integrals)
+            it will return an array containing each column
+
             */
-            var column = [];
+            var data = datasets[url].data,
+                type = datasets[url].type,
+                column = [];
             if (type == 'events') {
                 var col = events_format[column_name].column;}
             else if (type == 'weather') {
@@ -231,8 +237,8 @@
             var target = target || $('#dataset_list'),
                 list = $('<table>'),
                 firstrow = $('<tr>');
-            firstrow.append($('<th>').text('Dataset 1'));
-            firstrow.append($('<th>').text('Dataset 2'));
+            firstrow.append($('<th>').text('Choice 1'));
+            firstrow.append($('<th>').text('Choice 2'));
             firstrow.append($('<th>').text('Station'));
             firstrow.append($('<th>').text('Type'));
             firstrow.append($('<th>').text('Start date'));
@@ -258,13 +264,13 @@
             /* Create a readable select menu of the available datasets
             */
             var select = $('<select>');
-            var station_number, startdate, enddate, type, url;
-            for (var i in dataset) {
-                station_number = dataset[i].station_number;
-                startdate = dataset[i].startdate;
-                enddate = dataset[i].enddate;
-                type = dataset[i].type;
-                url = dataset[i].url;
+            var station_number, startdate, enddate, type, url, str;
+            for (var i in datasets) {
+                station_number = datasets[i].station_number;
+                startdate = datasets[i].startdate;
+                enddate = datasets[i].enddate;
+                type = datasets[i].type;
+                url = datasets[i].url;
                 str = 'Station ' + station_number + ' - ' + type + ': ' + startdate + ' - ' + enddate;
                 select.append($('<option>').attr('value', url).text(str));}
             target.html(select);
@@ -625,7 +631,7 @@
             series: {
                 points: {
                     show: true,
-                    radius: .75,
+                    radius: 1,
                     lineWidth: 0.00001,
                     fillColor: '#222'},
                 lines: {
@@ -681,14 +687,16 @@
         function _make_log_axis(v) {
             /* Transform an axis to log
             */
-            return Math.log(v);
+            if (v <= 0) {
+                return null;}
+            return Math.log(v) / Math.LN10;
         }
 
         jsparc._inverse_make_log_axis = _inverse_make_log_axis;
         function _inverse_make_log_axis(v) {
             /* Inverse for transforming an axis to log
             */
-            return Math.exp(v);
+            return Math.pow(10, v);
         }
 
 
