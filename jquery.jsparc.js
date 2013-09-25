@@ -248,8 +248,8 @@
             list.append(firstrow);
             for (var i in datasets) {
                 var row = $('<tr>').attr('name', datasets[i].url);
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set1')));
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set2')));
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set1').attr('alt', 'set2').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set2').attr('alt', 'set1').val(i)));
                 row.append($('<td>').text(datasets[i].station_number).addClass('station'));
                 row.append($('<td>').text(datasets[i].type).addClass('type'));
                 row.append($('<td>').text(datasets[i].startdate).addClass('start'));
@@ -275,6 +275,30 @@
                 str = 'Station ' + station_number + ' - ' + type + ': ' + startdate + ' - ' + enddate;
                 select.append($('<option>').attr('value', url).text(str));}
             target.html(select);
+        }
+
+        jsparc.make_variable_plot_table = make_variable_plot_table;
+        function make_variable_plot_table(url, target) {
+            /* Make an overview of available variables in the dataset for plot
+            */
+            var type = datasets[url].type,
+                target = target || $('#var_list'),
+                format = (type == 'events') ? events_format : weather_format,
+                list = $('<table>').attr('name', url),
+                firstrow = $('<tr>');
+            firstrow.append($('<th>').text('x-Axis'));
+            firstrow.append($('<th>').text('y-Axis'));
+            firstrow.append($('<th>').text('Variable'));
+            firstrow.append($('<th>').text('Units'));
+            list.append(firstrow);
+            for (var i in format) {
+                var row = $('<tr>').attr('name', i);
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val(i)));
+                row.append($('<td>').text(i).addClass('variable'));
+                row.append($('<td>').text(format[i].units).addClass('units'));
+                list.append(row);}
+            target.html(list);
         }
 
         jsparc.create_dataset_table = create_dataset_table;
