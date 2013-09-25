@@ -87,6 +87,10 @@
         jsparc.sort_events = sort_events;
         function sort_events(data) {
             /* Sort event data by extended timestamps
+
+            Data from the ESD is already sorted.
+            However, this can be useful after merging datasets
+
             */
             return data.sort(sort_extendedtimestamps);
         }
@@ -94,6 +98,10 @@
         jsparc.sort_weather = sort_weather;
         function sort_weather(data) {
             /* Sort weather data by timestamps
+
+            Data from the ESD is already sorted.
+            However, this can be useful after merging datasets
+
             */
             return data.sort(sort_timestamps);
         }
@@ -793,32 +801,64 @@
         }
 
         jsparc.histogram = histogram;
-        function histogram(a, nbins) {
+        function histogram(a, bins) {
             /* Compute the histogram of a set of data.
 
             The last bin includes values that would be equal to the edge
             of the next bin, i.e. [[1, 2), [2, 3), [3, 4), [4, 5]].
+            The returned bins are the left edges of the bins.
 
             */
-            var data = a.sort(),
-                nbins = nbins || 20,
-                mn = data[0],
-                mx = data[data.length - 1],
-                n = [];
+            if (bins instanceof Array) {
+                var nbins = bins.length,
+                    mn = bins[0],
+                    mx = bins[nbins - 1] + (bins[1] - bins[0]);
+                console.log(nbins, mn, mx)}
+            else {
+                var nbins = bins || 100,
+                    mn = a[0][0],
+                    mx = a[0][0];
+                if (a[0] instanceof Array) {
+                    for (var i = 0; i < a.length; i++) {
+                        var sorted = a[i].sort(sort_stringvalues);
+                        mn = (sorted[0] > mn) ? mn : sorted[0];
+                        mx = (sorted[sorted.length - 1] < mx) ? mx : sorted[sorted.length - 1];}
+                    var flat = [].concat.apply([], a);}
+                else {
+                    var sorted = a.sort(sort_stringvalues),
+                        mn = sorted[0],
+                        mx = sorted[sorted.length - 1];}
+                bins = range(parseFloat(mn),
+                             parseFloat(mx),
+                             parseFloat((mx - mn) / nbins));}
+            var n = [];
+
+            if (a[0] instanceof Array) {
+                for (var i = 0; i < a.length; i++) {
+                    n[i] = histogram(a[i], bins)[0];}
+                return [n, bins];}
 
             for (var i = 0; i < nbins; i++) {
                 n[i] = 0;}
 
-            for (var j = 0; j < data.length; j++) {
+            for (var j = 0; j < a.length; j++) {
                 if (a[j] == mx) {
                     n[nbins - 1]++;}
                 else {
                     var i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
                     n[i]++;}}
 
-            var bins = range(parseFloat(mn), parseFloat(mx), parseFloat((mx - mn) / nbins));
-
             return [n, bins];
+        }
+
+        jsparc.sort_stringvalues = sort_stringvalues;
+        function sort_stringvalues(a, b) {
+            /* Sort by the value of the string
+
+            Prevents this: ['1', '10', '11', '2', '23', '9']
+
+            */
+            return parseFloat(a) - parseFloat(b);
         }
 
         jsparc.transpose = transpose;
