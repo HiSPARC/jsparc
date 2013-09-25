@@ -195,13 +195,13 @@
             Possible choices are limited to dates between start of
             HiSPARC (9/1/2004) and yesterday.
 
-            Requires jquery-ui
+            Requires jquery-ui.js, jquery-ui-timepicker-addon.js
 
             */
-            target.datepicker({minDate: new Date(2004, 1, 9),
-                               maxDate: -1,
-                               dateFormat: 'yy-mm-dd'})
-                  .datepicker('setDate', -1);
+            target.datetimepicker({minDate: new Date(2004, 1, 9),
+                                   maxDate: -1,
+                                   timezone:'UTC',
+                                   dateFormat: 'yy-mm-dd'});
         }
 
         jsparc.make_station_select = make_station_select;

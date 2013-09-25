@@ -3,10 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
     <head>
         <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-1.10.3.custom.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-timepicker-addon.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="styles/demo.css" />
         <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
         <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
-        <script type="text/javascript" src="scripts/jquery-ui-1.10.3.custom.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery-ui-1.10.3.custom.js"></script>
+        <script type="text/javascript" src="scripts/jquery-ui-timepicker-addon.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.time.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.canvas.js"></script>
@@ -44,8 +46,8 @@
         <div id="download_data">
             <h2>Download datasets</h2>
             <p>Station: <span id="station_choice"></span></p>
-            <p>Start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01'</span></p>
-            <p>End date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02'</span></p>
+            <p>Start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01 14:20'</span></p>
+            <p>End date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02 10:00'</span></p>
             <p>Data type:
                 <span id="type_choice">
                     <input name="data_type" type="radio" value="events" checked="checked"> Events
