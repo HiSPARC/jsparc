@@ -152,6 +152,12 @@
             flot recognizes javascript timestamps for time series data
 
             */
+            if (timestamp instanceof Array) {
+                var nanoseconds = nanoseconds || [];
+                var js_timestamps = [];
+                for (var i = 0; i < timestamp.length; i++) {
+                    js_timestamps.push(make_javascript_timestamp(timestamp[i]));}
+                return js_timestamps;}
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e3 + Math.round(nanoseconds / 1e6);
         }
