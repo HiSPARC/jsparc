@@ -771,7 +771,7 @@
                     var i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
                     n[i]++;}}
 
-            var bins = range(mn, mx, (mx - mn) / nbins);
+            var bins = range(parseFloat(mn), parseFloat(mx), parseFloat((mx - mn) / nbins));
 
             return [n, bins];
         }
