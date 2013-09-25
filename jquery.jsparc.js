@@ -479,12 +479,12 @@
                           flot_active);
         }
 
-        jsparc.download_graph = download_graph;
-        function download_graph(target) {
-            /* Open a new window with a png version (base64 encoded) of the graph
+        jsparc.download_plot = download_plot;
+        function download_plot(target) {
+            /* Open a new window with a png version (base64 encoded) of the plot
             */
             var target = (target) ? target : $('#plot');
-            var dataurl = $(target + ' .flot-base')[0].toDataURL();
+            var dataurl = target.find('.flot-base')[0].toDataURL();
             window.open(dataurl, '_blank', 'height=350, width=630, toolbar=yes');
         }
 
@@ -554,8 +554,9 @@
 
             */
             var extend_default = [true, {}, flot_base];
-            var apply_args = extend_default.concat(options);
-            flot_active = $.extend.apply([], apply_args);
+            for (var i = 0; i < options.length ; i++) {
+                extend_default.push(options[i]);}
+            flot_active = $.extend.apply([], extend_default);
         }
 
 
