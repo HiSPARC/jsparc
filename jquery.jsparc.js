@@ -811,6 +811,22 @@
             return t;
         }
 
+        jsparc.enable_radio_set = enable_radio_set;
+        function enable_radio_set(name) {
+            /* Enable all radio buttons of a certain set (name)
+            */
+            var input = $('input[name=' + name + ']');
+            input.removeAttr('disabled');
+        }
+
+        jsparc.disable_radio_set = disable_radio_set;
+        function disable_radio_set(name) {
+            /* Enable all radio buttons of a certain set (name)
+            */
+            var input = $('input[name=' + name + ']');
+            input.prop('disabled', true);
+        }
+
         jsparc.pad_zero = pad_zero;
         function pad_zero(number, length) {
             /* Prepend a number with zero's until its length is length
