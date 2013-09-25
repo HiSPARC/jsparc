@@ -161,7 +161,8 @@
             /* Get a column from a dataset
 
             If a column occurs more than once (e.g. pulseheights, integrals)
-            it will return an array containing each column
+            it will return an array containing each column:
+            [[x1, x2, x3, x4], [y1, y2, y3, y4]]
 
             */
             var data = datasets[url].data,
@@ -173,11 +174,11 @@
                 var col = weather_format[column_name].column;}
 
             if (col.length) {
-                for (var i = 0; i < data.length; i++) {
+                for (var i = 0; i < col.length; i++) {
                     var values = [];
-                    for (var j = 0; j < col.length; j++) {
-                        values[i] = data[i][j];}
-                    column[i] = values}}
+                    for (var j = 0; j < data.length; j++) {
+                        values[j] = data[j][col[i]];}
+                    column[i] = values;}}
             else {
                 for (var i = 0; i < data.length; i++) {
                     column[i] = data[i][col];}}
@@ -464,11 +465,18 @@
         function make_plot(target, data) {
             /* Create a plot of data
             */
-            var target = (target) ? target : $('#plot');
+            var target = (target) ? target : $('#plot'),
+                datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
+
+            if (data[0][0] instanceof Array) {
+                var colors = ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'];
+                for (var i = 0; i < data.length; i++) {
+                    datas.unshift({data: data[i], yaxis: 1, points: {fillColor: colors[i]}});}}
+            else {
+                datas.unshift({data: data, yaxis: 1});}
             return $.plot(target,
-                    [{data: data, yaxis: 1},
-                     {data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}],
-                    flot_active);
+                          datas,
+                          flot_active);
         }
 
         jsparc.download_graph = download_graph;
@@ -487,9 +495,15 @@
             Give two equal length arrays (x, y)
             They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
 
+            If y contains multiple arrays each will be zipped with x:
+            [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...]]
+
             */
-            if (x.length != y.length) {
-                return null;}
+            if (y[0] instanceof Array) {
+                var data = [];
+                for (var i = 0; i < y.length; i++) {
+                    data[i] = zip_data(x, y[i]);}
+                return data;}
 
             var data = [];
             for (var i = 0; i < x.length; i++) {
