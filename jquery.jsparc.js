@@ -533,18 +533,31 @@
             Give two equal length arrays (x, y)
             They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
 
-            If y contains multiple arrays each will be zipped with x:
+            If x OR y contains multiple arrays each will be zipped with the other:
             [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...]]
+            [[[x11, y1], [x12, y2], ...], [[x21, y1], [x22, y2], ...]]
+
+            If both x AND y contain multiple arrays each will be zipped with their counterpart:
+            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...]]
 
             */
-            if (y[0] instanceof Array) {
-                var data = [];
-                for (var i = 0; i < y.length; i++) {
+            var data = [],
+                i;
+
+            if (x[0] instanceof Array && y[0] instanceof Array) {
+                for (i = 0; i < x.length; i++) {
+                    data[i] = zip_data(x[i], y[i]);}
+                return data;}
+            else if (x[0] instanceof Array) {
+                for (i = 0; i < x.length; i++) {
+                    data[i] = zip_data(x[i], y);}
+                return data;}
+            else if (y[0] instanceof Array) {
+                for (i = 0; i < y.length; i++) {
                     data[i] = zip_data(x, y[i]);}
                 return data;}
 
-            var data = [];
-            for (var i = 0; i < x.length; i++) {
+            for (i = 0; i < x.length; i++) {
                 data.push([x[i], y[i]]);}
             return data;
         }
