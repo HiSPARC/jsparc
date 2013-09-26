@@ -17,27 +17,94 @@
             var jsparc;
             $(document).ready(function () {
                 $(document).bind('ajaxSend', function() {
-                    $('#loading').show();
-                }).bind('ajaxComplete', function() {
-                    $('#loading').hide();
-                });
+                    $('#loading').show();})
+                           .bind('ajaxComplete', function() {
+                    $('#loading').hide();});
                 jsparc = $.jsparc();
                 jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'));
                 jsparc.make_datepicker($('#enddate_choice'));
-                $('#download_dataset').on('click', function() {jsparc.download_dataset($('#station_choice select').val(), $('#startdate_choice').val(), $('#enddate_choice').val(), $('#type_choice *:checked').val())});
+                jsparc.set_dataset_list_controls($('#dataset_list'));
+                jsparc.set_flot_options($('#plot_settings input:checked').map(function () {
+                    return eval('jsparc.flot_' + $(this).val())()}));
+
+                // Download button
+                $('#download_dataset').on('click', function() {
+                    jsparc.download_dataset($('#station_choice select').val(),
+                                            $('#startdate_choice').val(),
+                                            $('#enddate_choice').val(),
+                                            $('#type_choice input:checked').val());
+                    $('#select_dataset').show();});
+
+                // Show plot button
                 $('#make_plot').on('click', function() {
-                    $('#results').html('<div id="plot"></div>');
-                    jsparc.make_plot($('#plot'),
-                                     jsparc.zip_data(jsparc.get_column('timestamp', jsparc.datasets()['./examples/weather-s501-20130910.csv'].data, 'weather'),
-                                                     jsparc.get_column('wind_direction', jsparc.datasets()['./examples/weather-s501-20130910.csv'].data, 'weather')))
-                    $('#plot').show()});
-                $('#make_table_1').on('click', function() {jsparc.create_dataset_table($("#dataset_list [name=set1]:checked").parent().parent().attr('name'),
-                                                                                       $('#results'), 29);
-                                                           $('#results').show();});
-                $('#make_table_2').on('click', function() {jsparc.create_dataset_table($("#dataset_list [name=set2]:checked").parent().parent().attr('name'),
-                                                                                       $('#results'), 29);
-                                                           $('#results').show();});
+                    $('#results').html('<a onclick="jsparc.download_plot()">Image</a><div id="plot"></div>');
+                    var x = $('#select_variables input[name=x-axis]:checked');
+                        y = $('#select_variables input[name=y-axis]:checked');
+                    if ($('#plot_type input:checked').val() == 'histogram') {
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), x.parents('table').attr('name')));
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(hist[1], hist[0]));}
+                    if ($('#plot_type input:checked').val() == 'scatter') {
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(jsparc.get_column(x.val(), x.parents('table').attr('name')),
+                                                         jsparc.get_column(y.val(), y.parents('table').attr('name'))));}
+                    if ($('#plot_type input:checked').val() == 'timeseries') {
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', y.parents('table').attr('name'))),
+                                                         jsparc.get_column(y.val(), y.parents('table').attr('name'))));}
+                    $('#plot').show();
+                    $('#results').show();});
+
+                // Show data buttons
+                $('#make_table_1').on('click', function() {
+                    jsparc.create_dataset_table($("#dataset_list [name=set1]:checked").val(),
+                                                $('#results'), 29);
+                    $('#results').show();});
+
+                $('#make_table_2').on('click', function() {
+                    jsparc.create_dataset_table($("#dataset_list [name=set2]:checked").val(),
+                                                $('#results'), 29);
+                    $('#results').show();});
+
+                // Radio buttons
+                $('#dataset_list').on('change', 'input[name=set1]', function() {
+                    jsparc.make_variable_plot_table($(this).val(), $('#set1_variables'));
+                    jsparc.enable_radio_set($(this).attr('alt'));
+                    $('#dataset_list [name=' + $(this).attr('alt') + '][value="' + $(this).val() + '"]').prop('disabled', true);
+                    $('#select_variables').show();});
+
+                $('#dataset_list').on('change', 'input[name=set2]', function() {
+                    jsparc.make_variable_plot_table($(this).val(), $('#set2_variables'));
+                    jsparc.enable_radio_set($(this).attr('alt'));
+                    $('#dataset_list [name=' + $(this).attr('alt') + '][value="' + $(this).val() + '"]').prop('disabled', true);
+                    $('#select_variables').show();});
+
+                $('#set1_variables').on('change', 'input', function() {
+                    if ($('#plot_type input:checked').val() == 'scatter') {
+                        jsparc.enable_radio_set($(this).attr('alt'));
+                        $('#set1_variables [name=' + $(this).attr('alt') + '][value="' + $(this).val() + '"]').prop('disabled', true);}
+                    $('#controls').show();});
+
+                $('#set2_variables').on('change', 'input', function() {
+                    if ($('#plot_type input:checked').val() == 'scatter') {
+                        jsparc.enable_radio_set($(this).attr('alt'));
+                        $('#set2_variables [name=' + $(this).attr('alt') + '][value="' + $(this).val() + '"]').prop('disabled', true);}
+                    $('#controls').show();});
+
+                $('#plot_type').on('change', 'input', function() {
+                    if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
+                                                       jsparc.disable_radio_set('y-axis');}
+                    else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
+                                                          jsparc.enable_radio_set('y-axis');}
+                    else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
+                                                             jsparc.enable_radio_set('y-axis');}});
+
+                $('#plot_settings').on('change', 'input', function() {
+                    $('#select_variables input[name=x-axis]:checked').val();
+                    $('#select_variables input[name=y-axis]:checked').val();
+                    jsparc.set_flot_options($('#plot_settings input:checked').map(function () {
+                        return eval('jsparc.flot_' + $(this).val())()}));});
             });
         </script>
     </head>
@@ -57,16 +124,23 @@
             <input type='button' value="Get Data!" id="download_dataset">
         </div>
         <div id="select_dataset">
-            <h3>Select dataset to use</h3>
+            <h3>Select datasets to use</h3>
             <p id="dataset_list"></p>
-            <input type="button" value="Show Plot" id="make_plot">
             <input type="button" value="Show Dataset 1" id="make_table_1">
             <input type="button" value="Show Dataset 2" id="make_table_2">
+        </div>
+        <div id="select_variables">
+            <h3>Select variables to plot</h3>
+            <p id="set1_variables"></p>
+            <p id="set2_variables"></p>
+        </div>
+        <div id="controls">
+            <input type="button" value="Create Plot" id="make_plot">
             <div id="plot_settings">
                 <p>Plot type:
                 <span id="plot_type">
-                    <input name="plot_type" type="radio" value="histogram" checked> Histogram
-                    <input name="plot_type" type="radio" value="scatter"> Scatter
+                    <input name="plot_type" type="radio" value="scatter" checked> Scatter
+                    <input name="plot_type" type="radio" value="histogram"> Histogram
                     <input name="plot_type" type="radio" value="timeseries"> Time series
                 </span></p>
                 <p>x-Axis:
