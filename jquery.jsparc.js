@@ -296,7 +296,7 @@
             /* Make an overview of available variables in the dataset for plot
             */
             var type = datasets[url].type,
-                target = target || $('#var_list'),
+                target = target || $('#set_variables'),
                 format = (type == 'events') ? events_format : weather_format,
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
