@@ -507,9 +507,8 @@
                 datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
 
             if (data[0][0] instanceof Array) {
-                var colors = ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'];
                 for (var i = 0; i < data.length; i++) {
-                    datas.unshift({data: data[i], yaxis: 1, points: {fillColor: colors[i]}});}}
+                    datas.unshift({data: data[i], yaxis: 1});}}
             else {
                 datas.unshift({data: data, yaxis: 1});}
             return $.plot(target,
@@ -661,12 +660,17 @@
                 alignTicksWithAxis: 1,
                 axisLabel: ''},
             series: {
+                points: {
+                    show: false,
+                    radius: 1,
+                    lineWidth: 0.00001,
+                    fillColor: false},
                 lines: {
                     lineWidth: 1.5,
                     steps: false},
                 shadowSize: 0},
             grid: {
-                aboveData: 0,
+                aboveData: 1,
                 color: '#000',
                 backgroundColor: 'rgba(255, 255, 255, 0)',
                 labelMargin: 7,
@@ -696,10 +700,7 @@
         var flot_scatter = {
             series: {
                 points: {
-                    show: true,
-                    radius: 1,
-                    lineWidth: 0.00001,
-                    fillColor: '#222'},
+                    show: true},
                 lines: {
                     show: false}}
         };
@@ -720,19 +721,28 @@
 
         jsparc.flot_timeseries = function() {return flot_timeseries;};
         var flot_timeseries = {
+            series: {
+                points: {
+                    show: true},
+                lines: {
+                    show: false}},
             xaxis: {
                 axisLabel: 'Date/Time (GPS)',
                 mode: 'time'}
         };
 
-        jsparc.flot_axis_labels = flot_axis_labels;
-        function flot_axis_labels(x_label, y_label) {
-            /* Create an flot options object with axis labels
+        jsparc.flot_x_axis_labels = flot_x_axis_labels;
+        function flot_x_axis_labels(x_label) {
+            /* Create an flot options object with the x axis labels
             */
-            return {yaxis: {
-                        axisLabel: x_label},
-                    xaxis: {
-                        axisLabel: y_label}}
+            return {xaxis: {axisLabel: x_label}};
+        }
+
+        jsparc.flot_y_axis_labels = flot_y_axis_labels;
+        function flot_y_axis_labels(y_label) {
+            /* Create an flot options object with the y axis labels
+            */
+            return {yaxis: {axisLabel: y_label}};
         }
 
         jsparc.flot_none = function() {return flot_none;};
