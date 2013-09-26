@@ -54,6 +54,7 @@
             The url will be used as key to reference the data
 
             */
+            // var url = data_example(station_number, startdate, enddate, type);
             var url = data_download(station_number, startdate, enddate, type);
             if (datasets[url]) {
                 alert('That dataset is already available');
@@ -507,7 +508,7 @@
                 datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
 
             if (data[0][0] instanceof Array) {
-                for (var i = 0; i < data.length; i++) {
+                for (var i = data.length - 1; i >= 0; i--) {
                     datas.unshift({data: data[i], yaxis: 1});}}
             else {
                 datas.unshift({data: data, yaxis: 1});}
@@ -835,8 +836,7 @@
             if (bins instanceof Array) {
                 var nbins = bins.length,
                     mn = bins[0],
-                    mx = bins[nbins - 1] + (bins[1] - bins[0]);
-                console.log(nbins, mn, mx)}
+                    mx = bins[nbins - 1] + (bins[1] - bins[0]);}
             else {
                 var nbins = bins || 100,
                     mn = a[0][0],
@@ -844,8 +844,8 @@
                 if (a[0] instanceof Array) {
                     for (var i = 0; i < a.length; i++) {
                         var sorted = a[i].sort(sort_stringvalues);
-                        mn = (sorted[0] > mn) ? mn : sorted[0];
-                        mx = (sorted[sorted.length - 1] < mx) ? mx : sorted[sorted.length - 1];}
+                        mn = (parseFloat(sorted[0]) > parseFloat(mn)) ? mn : sorted[0];
+                        mx = (parseFloat(sorted[sorted.length - 1]) < parseFloat(mx)) ? mx : sorted[sorted.length - 1];}
                     var flat = [].concat.apply([], a);}
                 else {
                     var sorted = a.sort(sort_stringvalues),
