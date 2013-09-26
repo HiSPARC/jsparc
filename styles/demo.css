@@ -10,15 +10,21 @@ body {
 ul {
     list-style: none;}
 
+td {
+    font-family: monospace;}
+
 #dataset_list table {
     width: 600px;
     border-collapse: collapse;}
 
-#dataset_list td {
-    text-align: center;
-    font-family: monospace;}
+#dataset_list td,
+#set1_variables td:not(:nth-child(n+3)),
+#set2_variables td:not(:nth-child(n+3)) {
+    text-align: center;}
 
-#dataset_list tr {
+#dataset_list tr,
+#set1_variables tr,
+#set2_variables tr {
     margin: 1px 0;
     padding: 5px;}
 
@@ -26,20 +32,31 @@ ul {
     margin-right: 10px;
     font-weight: bold;
     text-align: center;
-    font-family: monospace;
     cursor: pointer;}
+
+.variable {
+    text-transform: capitalize;}
+
+.units:before {
+    content: '[';}
+
+.units:after {
+    content: ']';}
 
 #plot {
     width: 800px;
     height: 300px;
     display: none;}
 
+#select_dataset,
+#select_variables,
+#controls,
 #results {
     display: none;}
 
-#results th, #results td {
-    white-space: nowrap;
-    font-family: monospace;}
+#results th,
+#results td {
+    white-space: nowrap;}
 
 #results td {
     font-size: 12px;
