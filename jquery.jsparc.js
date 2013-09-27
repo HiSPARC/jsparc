@@ -257,6 +257,8 @@
             firstrow.append($('<th>').text('Type'));
             firstrow.append($('<th>').text('Start date'));
             firstrow.append($('<th>').text('End date'));
+            firstrow.append($('<th>').text('Entries'));
+            firstrow.append($('<th>').text('Preview'));
             firstrow.append($('<th>').text('Remove'));
             list.append(firstrow);
             for (var i in datasets) {
@@ -267,6 +269,9 @@
                 row.append($('<td>').text(datasets[i].type).addClass('type'));
                 row.append($('<td>').text(datasets[i].startdate).addClass('start'));
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
+                row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
+                row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
+                row.append($('<td>').text('↓').addClass('download').attr('name', datasets[i].url + '&download=true'));
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
             target.html(list);

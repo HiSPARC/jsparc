@@ -57,15 +57,12 @@
                     $('#results').show();});
 
                 // Show data buttons
-                $('#make_table_1').on('click', function() {
-                    jsparc.create_dataset_table($("#dataset_list [name=set1]:checked").val(),
+                $('#dataset_list').on('click', '.preview', function() {
+                    jsparc.create_dataset_table($(this).attr('name'),
                                                 $('#results'), 29);
                     $('#results').show();});
-
-                $('#make_table_2').on('click', function() {
-                    jsparc.create_dataset_table($("#dataset_list [name=set2]:checked").val(),
-                                                $('#results'), 29);
-                    $('#results').show();});
+                $('#dataset_list').on('click', '.download', function() {
+                    window.open($(this).attr('name'),'_blank');});
 
                 // Radio buttons
                 $('#dataset_list').on('change', 'input[name=set1]', function() {
@@ -126,8 +123,6 @@
         <div id="select_dataset">
             <h3>Select datasets to use</h3>
             <p id="dataset_list"></p>
-            <input type="button" value="Show Dataset 1" id="make_table_1">
-            <input type="button" value="Show Dataset 2" id="make_table_2">
         </div>
         <div id="select_variables">
             <h3>Select variables to plot</h3>

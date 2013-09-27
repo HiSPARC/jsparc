@@ -10,12 +10,13 @@ body {
 ul {
     list-style: none;}
 
+th,
+td {
+    white-space: nowrap;}
+
 td {
     font-family: monospace;}
 
-#dataset_list table {
-    width: 600px;
-    border-collapse: collapse;}
 
 #dataset_list td,
 #set1_variables td:not(:nth-child(n+3)),
@@ -28,7 +29,9 @@ td {
     margin: 1px 0;
     padding: 5px;}
 
-#dataset_list td.delete {
+#dataset_list .preview,
+#dataset_list .download,
+#dataset_list .delete {
     margin-right: 10px;
     font-weight: bold;
     text-align: center;
@@ -53,10 +56,6 @@ td {
 #controls,
 #results {
     display: none;}
-
-#results th,
-#results td {
-    white-space: nowrap;}
 
 #results td {
     font-size: 12px;
