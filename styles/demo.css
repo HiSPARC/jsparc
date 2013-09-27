@@ -65,10 +65,15 @@ td {
 
 /* Color pulseheight columns in table
 */
+#results .weather td:nth-child(5),
+#results .weather td:nth-child(7) {color: #222; padding-left: 15px;}
+#results .weather td:nth-child(6),
+#results .weather td:nth-child(8) {color: #D22; padding-left: 15px;}
+
 #results .events td:nth-child(4n+6) {color: #222; padding-left: 15px;}
 #results .events td:nth-child(4n+7) {color: #D22;}
 #results .events td:nth-child(4n+8) {color: #1C2;}
-#results .events td:nth-child(4n+9) {color: #1aa;}
+#results .events td:nth-child(4n+9) {color: #1AA;}
 
 /* Line number column
 */
