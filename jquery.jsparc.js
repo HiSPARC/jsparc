@@ -203,7 +203,7 @@
         // User Interface
 
         jsparc.make_datepicker = make_datepicker;
-        function make_datepicker(target) {
+        function make_datepicker(target, offset) {
             /* Create an date input field
 
             Possible choices are limited to dates between start of
@@ -212,10 +212,12 @@
             Requires jquery-ui.js, jquery-ui-timepicker-addon.js
 
             */
+            var offset = (offset) ? offset : -1;
             target.datetimepicker({minDate: new Date(2004, 1, 9),
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
+            target.datepicker("setDate", offset);
         }
 
         jsparc.make_station_select = make_station_select;
@@ -225,13 +227,20 @@
             var url = api_stations();
             return get_json(url)
                    .done(function(station_json) {
-                       var select = $('<select>');
-                       var number, name;
+                       var select = $('<select>'),
+                           selected = Math.round(Math.random() * (station_json.length - 1)),
+                           number,
+                           name;
                        for (var i = 0; i < station_json.length; i++) {
                            number = station_json[i].number;
                            name = station_json[i].name;
-                           select.append($('<option>').text(number + ' - ' + name)
-                                                      .attr('value', number));}
+                           if (i == selected) {
+                               select.append($('<option>').text(number + ' - ' + name)
+                                                          .attr('value', number)
+                                                          .prop('selected', true));}
+                           else {
+                               select.append($('<option>').text(number + ' - ' + name)
+                                                          .attr('value', number));}}
                        target.html(select);
                    });
         }
@@ -259,6 +268,7 @@
             firstrow.append($('<th>').text('End date'));
             firstrow.append($('<th>').text('Entries'));
             firstrow.append($('<th>').text('Preview'));
+            firstrow.append($('<th>').text('Download'));
             firstrow.append($('<th>').text('Remove'));
             list.append(firstrow);
             for (var i in datasets) {

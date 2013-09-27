@@ -17,7 +17,6 @@ td {
 td {
     font-family: monospace;}
 
-
 #dataset_list td,
 #set1_variables td:not(:nth-child(n+3)),
 #set2_variables td:not(:nth-child(n+3)) {

@@ -22,8 +22,8 @@
                     $('#loading').hide();});
                 jsparc = $.jsparc();
                 jsparc.make_station_select($('#station_choice'));
-                jsparc.make_datepicker($('#startdate_choice'));
-                jsparc.make_datepicker($('#enddate_choice'));
+                jsparc.make_datepicker($('#startdate_choice'), -2);
+                jsparc.make_datepicker($('#enddate_choice'), -1);
                 jsparc.set_dataset_list_controls($('#dataset_list'));
                 jsparc.set_flot_options($('#plot_settings input:checked').map(function () {
                     return eval('jsparc.flot_' + $(this).val())()}));
@@ -110,8 +110,8 @@
         <div id="download_data">
             <h2>Download datasets</h2>
             <p>Station: <span id="station_choice"></span></p>
-            <p>Start date: <input id="startdate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-01 14:20'</span></p>
-            <p>End date: <input id="enddate_choice" type="datetime"> <span class="helptext">e.g. '2013-08-02 10:00'</span></p>
+            <p>Start date: <input id="startdate_choice" type="datetime"></p>
+            <p>End date: <input id="enddate_choice" type="datetime"></p>
             <p>Data type:
                 <span id="type_choice">
                     <input name="data_type" type="radio" value="events" checked="checked"> Events
