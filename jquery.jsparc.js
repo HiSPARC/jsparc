@@ -1,3 +1,22 @@
+/* jSparc - Javascript library for HiSPARC
+
+This library contains functions to work with HiSPARC data.
+
+
+Warnings
+--------
+
+In HiSPARC we use GPS timestamps record event times, these timestamps
+have nanosecond accuracy. The timestamp (normally only seconds) that
+includes this nanosecond part is called the `extended timestamp`.
+However, this number is so long it only fits in a 64-bit integer, but
+javascript numbers only has 53 bits of accuracy. So using an extended
+timestamp like "1380412812090648357" would result in
+1380412812090648300. To work with extended timestamps, the values should
+be stored as strings.
+
+*/
+
 (function($) {
     function jSparc() {
         // Development
@@ -142,14 +161,19 @@
         jsparc.make_ext_timestamp = make_ext_timestamp;
         function make_ext_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
+
+            See Warnings
+
             */
-            if (timestamp.length) {
+            if (timestamp instanceof Array) {
                 var ext_timestamps = [];
                 for (var i = 0; i < timestamp.length; i++) {
-                    ext_timestamps.push(make_ext_timestamp(timestamp[i], nanoseconds[i]));}
+                    var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
+                    ext_timestamps.push(make_ext_timestamp(timestamp[i], ns));}
                 return ext_timestamps;}
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e9 + nanoseconds;
+            // return timestamp.toString() + pad_zero(nanoseconds, 9);
         }
 
         jsparc.make_javascript_timestamp = make_javascript_timestamp;
@@ -163,10 +187,27 @@
                 var nanoseconds = nanoseconds || [];
                 var js_timestamps = [];
                 for (var i = 0; i < timestamp.length; i++) {
-                    js_timestamps.push(make_javascript_timestamp(timestamp[i]));}
+                    var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
+                    js_timestamps.push(make_javascript_timestamp(timestamp[i], ns));}
                 return js_timestamps;}
             var nanoseconds = nanoseconds || null;
             return timestamp * 1e3 + Math.round(nanoseconds / 1e6);
+        }
+
+        jsparc.get_ext_timestamp = get_ext_timestamp;
+        function get_ext_timestamp(url) {
+            /* Get ext_timestamps
+
+            See Warnings
+
+            */
+            var type = datasets[url].type;
+            if (type == 'events') {
+                var ext_timestamps = make_ext_timestamp(get_column('timestamp', url),
+                                                        get_column('nanoseconds', url));}
+            else if (type == 'weather') {
+                var ext_timestamps = make_ext_timestamp(get_column('timestamp', url));}
+            return ext_timestamps;
         }
 
         jsparc.get_column = get_column;
@@ -320,6 +361,7 @@
             firstrow.append($('<th>').text('Units'));
             list.append(firstrow);
             for (var i in format) {
+                if (i == 'date' || i == 'time') {continue}
                 var row = $('<tr>').attr('name', i);
                 row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val(i)));
@@ -556,22 +598,23 @@
             */
             var data = [],
                 i;
-
             if (x[0] instanceof Array && y[0] instanceof Array) {
-                for (i = 0; i < x.length; i++) {
-                    data[i] = zip_data(x[i], y[i]);}
-                return data;}
+                if (x.length == y.length) {
+                    for (i = 0; i < x.length; i++) {
+                        data[i] = zip_data(x[i], y[i]);}}
+                else {
+                    for (i = 0; i < x.length; i++) {
+                        for (var j = 0; j < y.length; j++) {
+                            data[i + j * (y.length - 1)] = zip_data(x[i], y[j]);}}}}
             else if (x[0] instanceof Array) {
                 for (i = 0; i < x.length; i++) {
-                    data[i] = zip_data(x[i], y);}
-                return data;}
+                    data[i] = zip_data(x[i], y);}}
             else if (y[0] instanceof Array) {
                 for (i = 0; i < y.length; i++) {
-                    data[i] = zip_data(x, y[i]);}
-                return data;}
-
-            for (i = 0; i < x.length; i++) {
-                data.push([x[i], y[i]]);}
+                    data[i] = zip_data(x, y[i]);}}
+            else {
+                for (i = 0; i < x.length; i++) {
+                    data.push([x[i], y[i]]);}}
             return data;
         }
 
@@ -580,11 +623,18 @@
             /* Make a linear interpolation to get y2 to be the same length as x1
             */
             var y1 = [];
+            if (y2[0] instanceof Array) {
+                for (var k = 0; k < y2.length; k++) {
+                    y1[k] = [];}}
             for (var i = 0; i < x1.length; i++) {
                 var j = bisect_search(x1[i], x2);
-                var dydx = (y2[j + 1] - y2[j]) / (x2[j + 1] - x2[j]);
-                y1.push(y2[j] + dydx * (x1[i] - x2[j]));
-            }
+                if (y2[0] instanceof Array) {
+                    for (var k = 0; k < y2.length; k++) {
+                        var dydx = (y2[k][j + 1] - y2[k][j]) / (x2[j + 1] - x2[j]);
+                        y1[k][i] = y2[k][j] + dydx * (x1[i] - x2[j]);}}
+                else {
+                    var dydx = (y2[j + 1] - y2[j]) / (x2[j + 1] - x2[j]);
+                    y1.push(y2[j] + dydx * (x1[i] - x2[j]));}}
             return y1;
         }
 
@@ -807,7 +857,10 @@
             while (lines[lines.length - 1] == empty) {
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
-                data.push(lines[i].split(delimiter));}
+                values = lines[i].split(delimiter);
+                for (var j = 2; j < values.length; j++) {
+                    values[j] = parseFloat(values[j]);}
+                data.push(values);}
             return data;
         }
 
@@ -856,17 +909,15 @@
                     mx = a[0][0];
                 if (a[0] instanceof Array) {
                     for (var i = 0; i < a.length; i++) {
-                        var sorted = a[i].sort(sort_stringvalues);
-                        mn = (parseFloat(sorted[0]) > parseFloat(mn)) ? mn : sorted[0];
-                        mx = (parseFloat(sorted[sorted.length - 1]) < parseFloat(mx)) ? mx : sorted[sorted.length - 1];}
+                        var sorted = a[i].sort();
+                        mn = (sorted[0] > mn) ? mn : sorted[0];
+                        mx = (sorted[sorted.length - 1] < mx) ? mx : sorted[sorted.length - 1];}
                     var flat = [].concat.apply([], a);}
                 else {
-                    var sorted = a.sort(sort_stringvalues),
+                    var sorted = a.sort(),
                         mn = sorted[0],
                         mx = sorted[sorted.length - 1];}
-                bins = range(parseFloat(mn),
-                             parseFloat(mx),
-                             parseFloat((mx - mn) / nbins));}
+                bins = range(mn, mx, (mx - mn) / nbins);}
             var n = [];
 
             if (a[0] instanceof Array) {
