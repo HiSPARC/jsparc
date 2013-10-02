@@ -39,20 +39,28 @@
                 // Show plot button
                 $('#make_plot').on('click', function() {
                     $('#results').html('<a onclick="jsparc.download_plot()">Image</a><div id="plot"></div>');
-                    var x = $('#select_variables input[name=x-axis]:checked');
-                        y = $('#select_variables input[name=y-axis]:checked');
+                    var x = $('#select_variables input[name=x-axis]:checked'),
+                        y = $('#select_variables input[name=y-axis]:checked'),
+                        xset = x.parents('table').attr('name'),
+                        yset = y.parents('table').attr('name');
                     if ($('#plot_type input:checked').val() == 'histogram') {
-                        var hist = jsparc.histogram(jsparc.get_column(x.val(), x.parents('table').attr('name')));
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset));
                         jsparc.make_plot($('#plot'),
                                          jsparc.zip_data(hist[1], hist[0]));}
                     if ($('#plot_type input:checked').val() == 'scatter') {
+                        if (xset != yset) {
+                            var y_data = jsparc.linear_interpolation(jsparc.get_ext_timestamp(xset),
+                                                                    jsparc.get_ext_timestamp(yset),
+                                                                    jsparc.get_column(y.val(), yset))}
+                        else {
+                            var y_data = jsparc.get_column(y.val(), yset)}
                         jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.get_column(x.val(), x.parents('table').attr('name')),
-                                                         jsparc.get_column(y.val(), y.parents('table').attr('name'))));}
+                                         jsparc.zip_data(jsparc.get_column(x.val(), xset),
+                                                         y_data));}
                     if ($('#plot_type input:checked').val() == 'timeseries') {
                         jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', y.parents('table').attr('name'))),
-                                                         jsparc.get_column(y.val(), y.parents('table').attr('name'))));}
+                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
+                                                         jsparc.get_column(y.val(), yset)));}
                     $('#plot').show();
                     $('#results').show();});
 
