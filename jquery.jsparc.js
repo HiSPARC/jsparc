@@ -510,6 +510,10 @@ be stored as strings.
         function api_number_of_events(station_number, year, month, day, hour) {
             return [API_URL, 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
 
+        jsparc.api_event_trace = api_event_trace;
+        function api_event_trace(station_number, ext_timestamp) {
+            return [API_URL, 'station', station_number, 'trace', ext_timestamp, ''].join('/');}
+
 
         // Data Download
 
