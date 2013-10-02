@@ -519,8 +519,10 @@ be stored as strings.
             */
             if (type == 'events') {
                 return './examples/events-s501-20130910.csv';}
+                //return './examples/events-s8006-20130910.csv';}
             else {
                 return './examples/weather-s501-20130910.csv';}}
+                //return './examples/weather-s8006-20130910.csv';}}
 
         jsparc.data_download = data_download;
         function data_download(station_number, startdate, enddate, type) {
