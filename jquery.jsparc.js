@@ -158,6 +158,24 @@ be stored as strings.
             return combined_dataset;
         }
 
+        jsparc.make_ext_timestamp_str = make_ext_timestamp_str;
+        function make_ext_timestamp_str(timestamp, nanoseconds) {
+            /* Combine timestamp and nanoseconds to one value
+
+            See Warnings
+
+            */
+            if (timestamp instanceof Array) {
+                var ext_timestamps = [];
+                for (var i = 0; i < timestamp.length; i++) {
+                    var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
+                    ext_timestamps.push(make_ext_timestamp(timestamp[i], ns));}
+                return ext_timestamps;}
+            var nanoseconds = nanoseconds || null;
+            // return timestamp * 1e9 + nanoseconds;
+            return timestamp.toString() + pad_zero(nanoseconds, 9);
+        }
+
         jsparc.make_ext_timestamp = make_ext_timestamp;
         function make_ext_timestamp(timestamp, nanoseconds) {
             /* Combine timestamp and nanoseconds to one value
@@ -353,6 +371,7 @@ be stored as strings.
             var type = datasets[url].type,
                 target = target || $('#set_variables'),
                 format = (type == 'events') ? events_format : weather_format,
+                header = $('<span>').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
             firstrow.append($('<th>').text('x-Axis'));
@@ -368,7 +387,7 @@ be stored as strings.
                 row.append($('<td>').text(i).addClass('variable'));
                 row.append($('<td>').text(format[i].units).addClass('units'));
                 list.append(row);}
-            target.html(list);
+            target.html(header.append(list));
         }
 
         jsparc.create_dataset_table = create_dataset_table;
@@ -387,6 +406,8 @@ be stored as strings.
             for (var key in type) {
                 var ncol = (type[key].column.length) ? type[key].column.length : 1;
                 firstrow.append($('<th>').text(key).attr('colspan', ncol));}
+            if (dataset.type == 'events') {
+                firstrow.append($('<th>').text('trace'));}
             table.append(firstrow);
 
             // Data rows
@@ -395,14 +416,16 @@ be stored as strings.
                 row.append($('<td>').text(i + 1));
                 for (var j = 0; j < dataset.data[i].length; j++) {
                     row.append($('<td>').text(dataset.data[i][j]));}
+                if (dataset.type == 'events') {
+                    row.append($('<td>').text('show').addClass('trace').attr('data-url', api_event_trace(dataset.station_number, make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3]))));}
                 table.append(row);
                 if (limit != dataset.data.length && i == Math.floor(limit / 2) - 1) {
                     var truncrow = $('<tr>');
                     truncrow.append($('<td>')
-                                    .text('... truncated table (click to expand)')
+                                    .text('... truncated table (click to show more)')
                                     .attr('colspan', dataset.data[0].length + 1)
                                     .css('text-align', 'left')
-                                    .click(function() {create_dataset_table(url, target, dataset.data.length);}));
+                                    .click(function() {create_dataset_table(url, target, limit * 2);}));
                     table.append(truncrow);
                     i = dataset.data.length - 1 - Math.ceil(limit / 2);}}
 
@@ -584,7 +607,7 @@ be stored as strings.
             */
             var target = (target) ? target : $('#plot');
             var dataurl = target.find('.flot-base')[0].toDataURL();
-            window.open(dataurl, '_blank', 'height=350, width=630, toolbar=yes');
+            window.open(dataurl, '_blank', 'height=450, width=630, toolbar=yes');
         }
 
         jsparc.zip_data = zip_data;
@@ -668,6 +691,8 @@ be stored as strings.
         function set_flot_options(options) {
             /* Combine plot options
 
+            Apply these options to the float_base options
+
             line style (histogram, line, scatter)
             axis (x, y: linear, log)
             variables (x, y: labels)
@@ -677,6 +702,13 @@ be stored as strings.
             for (var i = 0; i < options.length ; i++) {
                 extend_default.push(options[i]);}
             flot_active = $.extend.apply([], extend_default);
+        }
+
+        jsparc.add_flot_options = add_flot_options;
+        function add_flot_options(options) {
+            /* Append plot options to the currently active options
+            */
+            flot_active = $.extend(true, {}, flot_active, options);
         }
 
 

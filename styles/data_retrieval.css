@@ -1,6 +1,31 @@
 body {
     font-family: sans-serif;}
 
+#container {
+    margin: auto;
+    width: 850px;}
+
+#header {
+    height: 75px;
+    width: 100%;}
+
+#pageHeader {
+    float: right;
+    position: relative;
+    right: 10px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 180px;
+    height: 63px;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;}
+
+#pageHeader.animated {
+    background: url(../images/HiSPARC_animated.gif) top right no-repeat;}
+
+
 #loading {
     position: absolute;
     top: 5px;
@@ -45,16 +70,33 @@ td {
 .units:after {
     content: ']';}
 
-#plot {
-    width: 800px;
-    height: 300px;
-    display: none;}
+.right {float: right;}
+.left {float: left;}
+.clear {clear: both;}
 
+.save_image{
+    cursor: pointer;
+    position: relative;
+    right: 15px;}
+
+#graph {
+    padding: 30px;}
+
+#plot { 
+    clear:both;
+    width: 800px;
+    height: 400px;}
+
+#graph,
+#plot,
 #select_dataset,
 #select_variables,
 #controls,
 #results {
     display: none;}
+
+#results {
+    overflow: scroll;}
 
 #results td {
     font-size: 12px;
@@ -83,3 +125,11 @@ td {
 .ui-widget {
     font-family: sans-serif;
     font-size: 0.8em;}
+
+/* Flot styling
+*/
+.yaxisLabel {
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;}

@@ -1,0 +1,49 @@
+html {
+    font-family: sans-serif;}
+
+#container {
+    margin: auto;
+    width: 850px;}
+
+#header {
+    height: 75px;
+    width: 100%;}
+
+#pageHeader {
+    background: url(../images/header.png) top right no-repeat;
+    height: 63px;
+    width: 189px;
+    margin: 0;
+    padding: 0;
+    float: right;
+    display: inline-block;}
+
+#pageHeader span {
+    display: none;}
+
+.clearer {
+    clear: both;}
+
+#content {
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: 50%;}
+
+h2 {
+    margin-top: 25px;}
+
+p {
+    line-height: 1.8em;}
+
+a {
+    color: #0060B9;
+    text-decoration: none;}
+
+a:visited {
+    color: #3C6891;
+    text-decoration: none;}
+
+a:hover {
+    color: #002141;
+    text-decoration: none;}
