@@ -45,25 +45,25 @@
                         xset = x.parents('table').attr('name'),
                         yset = y.parents('table').attr('name');
                     if ($('#plot_type input:checked').val() == 'histogram') {
-                        jsparc.add_flot_options(jsparc.flot_x_axis_labels($('#select_variables input[name=x-axis]:checked').val()));
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
-                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset));
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
                         jsparc.make_plot($('#plot'),
                                          jsparc.zip_data(hist[1], hist[0]));}
                     if ($('#plot_type input:checked').val() == 'scatter') {
-                        jsparc.add_flot_options(jsparc.flot_x_axis_labels($('#select_variables input[name=x-axis]:checked').val()));
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels($('#select_variables input[name=y-axis]:checked').val()));
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
                         if (xset != yset) {
                             var y_data = jsparc.linear_interpolation(jsparc.get_ext_timestamp(xset),
-                                                                    jsparc.get_ext_timestamp(yset),
-                                                                    jsparc.get_column(y.val(), yset))}
+                                                                     jsparc.get_ext_timestamp(yset),
+                                                                     jsparc.get_column(y.val(), yset))}
                         else {
                             var y_data = jsparc.get_column(y.val(), yset)}
                         jsparc.make_plot($('#plot'),
                                          jsparc.zip_data(jsparc.get_column(x.val(), xset),
                                                          y_data));}
                     if ($('#plot_type input:checked').val() == 'timeseries') {
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels($('#select_variables input[name=y-axis]:checked').val()));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
                         jsparc.make_plot($('#plot'),
                                          jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
                                                          jsparc.get_column(y.val(), yset)));}
@@ -76,16 +76,16 @@
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
                         jsparc.set_flot_options([]);
-                        jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time'));
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time [ns]'));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('ADCcounts'));
-                        var x_data = jsparc.range(data[0].length);
+                        var x_data = jsparc.range(0, 2.5 * data[0].length, 2.5);
                         jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
                     })});
 
-                // Show data buttons
+                // Dataset list buttons
                 $('#dataset_list').on('click', '.preview', function() {
                     jsparc.create_dataset_table($(this).attr('name'),
                                                 $('#results'), 29);
@@ -96,6 +96,7 @@
                 // Radio buttons
                 $('#dataset_list').on('change', 'input', function() {
                     jsparc.make_variable_plot_table($(this).val(), $('#' + $(this).attr('name') + '_variables'));
+                    $('#plot_type input:checked').trigger('change');
                     $('#select_variables').show();});
 
                 $('#select_variables').on('change', 'input', function() {
@@ -136,41 +137,41 @@
             <h3>Select datasets to use</h3>
             <p id="dataset_list"></p>
         </div>
-        <div class='left'>
-            <div id="select_variables">
-                <h3>Select variables to plot</h3>
-                <p id="set1_variables"></p>
-                <p id="set2_variables"></p>
-            </div>
-            <div id="controls">
-                <input type="button" value="Create Plot" id="make_plot">
+        <div id="select_variables">
+            <h3>Select variables and settings to plot</h3>
+            <div id="controls" class="left">
                 <div id="plot_settings">
-                    <p>Plot type:
+                    <span class="key">Plot type:</span><br />
                     <span id="plot_type">
-                        <input name="plot_type" type="radio" value="scatter" checked> Scatter
-                        <input name="plot_type" type="radio" value="histogram"> Histogram
-                        <input name="plot_type" type="radio" value="timeseries"> Time series
-                    </span></p>
-                    <p>x-Axis:
+                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br />
+                        <input name="plot_type" type="radio" value="histogram"> Histogram<br />
+                        <input name="plot_type" type="radio" value="timeseries"> Time series<br />
+                    </span><br />
+                    <span class="key">x-Axis:</span><br />
                     <span id="plot_x_axis">
-                        <input name="plot_x_axis" type="radio" value="none" checked> Linear
-                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic
-                    </span></p>
-                    <p>y-Axis:
+                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br />
+                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br />
+                    </span><br />
+                    <span class="key">y-Axis:</span><br />
                     <span id="plot_y_axis">
-                        <input name="plot_y_axis" type="radio" value="none" checked> Linear
-                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic
-                    </span></p>
+                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br />
+                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br />
+                    </span><br />
+                    <span class="key">Histogram:</span><br />
+                    <span id="hist_bins">
+                        Bins: <input name="hist_bins" type="text" style="width: 60px;" value="100"><br />
+                    </span><br />
                 </div>
+                <input type="button" value="Create Plot" id="make_plot">
             </div>
-        </div>
-        <div class="right">
-            <div id="graph">
-                <a onclick="jsparc.download_plot()" class="save_image right">Save image</a>
-                <div id="plot"></div>
-            </div>
+            <div id="set1_variables" class="left"></div>
+            <div id="set2_variables" class="left"></div>
         </div>
         <div class="clear"></div>
+        <div id="graph">
+            <a onclick="jsparc.download_plot()" class="save_image right">Save image</a>
+            <div id="plot"></div>
+        </div>
         <div id="results">
         </div>
     </div>

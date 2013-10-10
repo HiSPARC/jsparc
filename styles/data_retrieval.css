@@ -39,8 +39,14 @@ th,
 td {
     white-space: nowrap;}
 
+th {
+    padding-right: 10px;}
+
 td {
     font-family: monospace;}
+
+.key {
+    font-weight: bold;}
 
 #dataset_list td,
 #set1_variables td:not(:nth-child(n+3)),
@@ -90,7 +96,7 @@ td {
     right: 15px;}
 
 #graph {
-    padding: 30px;}
+    padding: 25px;}
 
 #plot { 
     clear:both;
@@ -104,6 +110,13 @@ td {
 #controls,
 #results {
     display: none;}
+
+#set1_variables {
+    margin-right: 20px;}
+
+#controls {
+    margin-right: 20px;
+    font-size: 14px;}
 
 #results {
     overflow: scroll;}

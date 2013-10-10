@@ -371,7 +371,7 @@ be stored as strings.
             var type = datasets[url].type,
                 target = target || $('#set_variables'),
                 format = (type == 'events') ? events_format : weather_format,
-                header = $('<span>').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
+                header = $('<span>').addClass('key').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
             firstrow.append($('<th>').text('x-Axis'));
@@ -387,7 +387,8 @@ be stored as strings.
                 row.append($('<td>').text(i).addClass('variable'));
                 row.append($('<td>').text(format[i].units).addClass('units'));
                 list.append(row);}
-            target.html(header.append(list));
+            target.html(header);
+            target.append(list);
         }
 
         jsparc.create_dataset_table = create_dataset_table;
