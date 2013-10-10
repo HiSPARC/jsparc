@@ -40,7 +40,6 @@
 
                 // Show plot button
                 $('#make_plot').on('click', function() {
-                    $('#graph').html('<a onclick="jsparc.download_plot()" class="save_image right">Save image</a><div id="plot"></div>');
                     var x = $('#select_variables input[name=x-axis]:checked'),
                         y = $('#select_variables input[name=y-axis]:checked'),
                         xset = x.parents('table').attr('name'),
@@ -73,7 +72,6 @@
 
                 // Show trace button
                 $('#results').on('click', 'td.trace', function() {
-                    $('#graph').html('<a onclick="jsparc.download_plot()" class="save_image right">Save image</a><div id="plot"></div>');
                     var url = $(this).attr('data-url');
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
@@ -84,6 +82,7 @@
                         jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
+                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
                     })});
 
                 // Show data buttons
@@ -167,6 +166,8 @@
         </div>
         <div class="right">
             <div id="graph">
+                <a onclick="jsparc.download_plot()" class="save_image right">Save image</a>
+                <div id="plot"></div>
             </div>
         </div>
         <div class="clear"></div>

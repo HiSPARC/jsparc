@@ -58,8 +58,17 @@ td {
 #dataset_list .delete {
     margin-right: 10px;
     font-weight: bold;
-    text-align: center;
-    cursor: pointer;}
+    text-align: center;}
+
+#dataset_list .preview,
+#dataset_list .download,
+#dataset_list .delete,
+#results .trace,
+#graph .save_image {
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;}
 
 .variable {
     text-transform: capitalize;}
@@ -75,7 +84,8 @@ td {
 .clear {clear: both;}
 
 .save_image{
-    cursor: pointer;
+    border-radius: 3px;
+    font-size: 11px;
     position: relative;
     right: 15px;}
 
