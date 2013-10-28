@@ -100,15 +100,15 @@
 
     function calcMIPs() {
         var r, a, x, y, dx, dy;
-            for (i = 0; i < 4; i++) {
-                a = $("#alfa"+i).val() * toRad;
-                r = $("#r"+i).val();
-                x = r * Math.sin(a);
-                y = r * Math.cos(a);
-                dx = x - $("#r").val() * Math.sin($("#alfa").val() * toRad); 
-                dy= y - $("#r").val() * Math.cos($("#alfa").val() * toRad);
-                $("#mip"+i).val(((calcMIP(calcK($("#energy").val()), Math.sqrt(dx*dx+dy*dy)))/2).toFixed(4));
-            }
+        for (i = 0; i < 4; i++) {
+            a = $("#alfa"+i).val() * toRad;
+            r = $("#r"+i).val();
+            x = r * Math.sin(a);
+            y = r * Math.cos(a);
+            dx = x - $("#r").val() * Math.sin($("#alfa").val() * toRad); 
+            dy= y - $("#r").val() * Math.cos($("#alfa").val() * toRad);
+            $("#mip"+i).val(((calcMIP(calcK($("#energy").val()), Math.sqrt(dx*dx+dy*dy)))/2).toFixed(4));
+        }
     }
 
     function normCoord(objName){
@@ -141,15 +141,15 @@
         var maxHeight = 0.5*param.height;
         var r, alfa, x, y, change;
         for(i = 0; i < 4; i++) {
-            r = $("#r"+i).val();
-            alfa = $("#alfa"+i).val() * toRad;
+            r = $("#r0"+i).val();
+            alfa = $("#alfa0"+i).val() * toRad;
             x = maxWidth * r * Math.sin(alfa);
             y = maxWidth * r * Math.cos(alfa);
             change=225+x/10-26;
             $("#detector"+i).css("left", eval(change));
             change=225-y/10-26;
             $("#detector"+i).css("top", eval(change));
-            change="rotate("+$("#beta"+i).val()+"deg)";
+            change="rotate("+$("#beta0"+i).val()+"deg)";
             $("#detector"+i).css("transform", change);
             $("#detector"+i).css("-moz-transform", change);
             $("#detector"+i).css("-webkit-transform", change);
@@ -160,18 +160,22 @@
         var plotStyle = {
             seriesDefaults: {
                 lineWidth: 1.5, shadow: false, showLine: true, showMarker: false,
-                markerOptions: {show: false, size: 0, lineWidth: 0}},
+                markerOptions: {show: false, size: 0, lineWidth: 0}
+            },
             legend: {show: false},
             cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
-            axesDefaults: {
+                axesDefaults: {
                 labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
                 labelOptions: {textColor: '#222', enableFontSupport: true},
                 tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: false, mark: 'outside', markSize: 4}},
+                tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: false, mark: 'outside', markSize: 4}
+            },
             axes: {
                 xaxis: {numberTicks: 5, label: "Time [ns]"},
-                yaxis: {numberTicks: 3, max: 0, label: "Pulseheight [mV]"}},
-            grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#000", borderWidth: 1, borderColor: "#000"}};
+                yaxis: {numberTicks: 3, max: 0, label: "Pulseheight [mV]"}
+            },
+            grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#000", borderWidth: 1, borderColor: "#000"}
+        };
 
         $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
@@ -223,12 +227,12 @@
 
  </head>
  <body>
-  <div id="detectorMap">
+  <div id="detectorMap" class="detectorMap">
    <img id="gps" src="images/gps.png" alt="gps" />
-   <img id="detector0" src="images/detector0.png" alt="0" />
-   <img id="detector1" src="images/detector1.png" alt="1" />
-   <img id="detector2" src="images/detector2.png" alt="2" />
-   <img id="detector3" src="images/detector3.png" alt="3" />
+   <img id="detector00" src="images/detector0.png" alt="0" />
+   <img id="detector01" src="images/detector1.png" alt="1" />
+   <img id="detector02" src="images/detector2.png" alt="2" />
+   <img id="detector03" src="images/detector3.png" alt="3" />
   </div>
   <table>
     <tr>
@@ -236,27 +240,27 @@
     </tr>
     <tr>
       <td align='center' class='det1' style='border-radius:2px;'>1</td>
-      <td><input id="r0" type=text value=8 size=5 /></td>
-      <td><input id="alfa0" type=text value=0 size=5 /></td>
-      <td><input id="beta0" type=text value=0 size=5 /></td>
+      <td><input id="r00" type=text value=8 size=5 /></td>
+      <td><input id="alfa00" type=text value=0 size=5 /></td>
+      <td><input id="beta00" type=text value=0 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det2' style='border-radius:2px;'>2</td>
-      <td><input id="r1" type=text value=3 size=5  /></td>
-      <td><input id="alfa1" type=text value=0 size=5 /></td>
-      <td><input id="beta1" type=text value=0 size=5 /></td>
+      <td><input id="r01" type=text value=3 size=5  /></td>
+      <td><input id="alfa01" type=text value=0 size=5 /></td>
+      <td><input id="beta01" type=text value=0 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det3' style='border-radius:2px;'>3</td>
-      <td><input id="r2" type=text value=5 size=5  /></td>
-      <td><input id="alfa2" type=text value=270 size=5 /></td>
-      <td><input id="beta2" type=text value=270 size=5 /></td>
+      <td><input id="r02" type=text value=5 size=5  /></td>
+      <td><input id="alfa02" type=text value=270 size=5 /></td>
+      <td><input id="beta02" type=text value=270 size=5 /></td>
     </tr>
     <tr>
       <td align='center' class='det4' style='border-radius:2px;'>4</td>
-      <td><input id="r3" type=text value=5 size=5  /></td>
-      <td><input id="alfa3" type=text value=90 size=5 /></td>
-      <td><input id="beta3" type=text value=90 size=5 /></td>
+      <td><input id="r03" type=text value=5 size=5  /></td>
+      <td><input id="alfa03" type=text value=90 size=5 /></td>
+      <td><input id="beta03" type=text value=90 size=5 /></td>
     </tr>
     <tr>
       <td colspan=4><input type="button" id="changeMap" value="Change map" style='width:200px;'></input><td>

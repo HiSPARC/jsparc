@@ -240,7 +240,7 @@ table {
     top: 222px;}
 
 
-#detector0 {
+#detector00 {
     width: 52px;
     height: 52px;
     position: absolute;
@@ -251,7 +251,7 @@ table {
     -moz-transform: rotate(90deg);
     -webkit-transform: rotate(90deg);}
 
-#detector1 {
+#detector01 {
     width: 52px;
     height: 52px;
     position: absolute;
@@ -262,7 +262,7 @@ table {
     -moz-transform: rotate(90deg);
     -webkit-transform: rotate(90deg);}
 
-#detector2 {
+#detector02 {
     width: 52px;
     height: 52px;
     position: absolute;
@@ -273,7 +273,95 @@ table {
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);}
 
-#detector3 {
+#detector03 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}
+
+#detector10 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 60px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector11 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 125px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector12 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector13 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}
+
+#detector20 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 60px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector21 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 125px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector22 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector23 {
     width: 52px;
     height: 52px;
     position: absolute;

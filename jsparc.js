@@ -449,7 +449,10 @@ function timeCalc(htmlInfo, data, dRA, dDec){
         $('#nanoCalc' + i).val((calculation[i]).toFixed(0));
     }
     var Sigma = calcSigma(measurement, calculation);
+    var ra, dec;
+    ra = (dRA-data.events[0].lon).toFixed(1);
+    dec = (dDec+data.events[0].lat).toFixed(1)
     $('#dirEr').val(Sigma.toFixed(1));
-    $('#RA').val(calculation[2]);
-    $('#Dec').val(calculation[1]);
+    $('#RA').val(ra);
+    $('#Dec').val(dec);
 }

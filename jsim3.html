@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Simulation</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.jqplot.min.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="jsparc.css" />
+  <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery.jqplot.min.js"></script>
+  <script type="text/javascript" src="scripts/jquery-ui.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.cursor.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasTextRenderer.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+  <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+  <script type="text/javascript">
+
+    var c = 299792458, toRad = Math.atan(1)/45;
+
+ // Calculate a simulated signal value for a timesample.
+    function traceSim(timeSample, trigger, height){
+        var triggerSample = parseInt(trigger/2.5+0.5);
+        var signal = 0, factor = 1/0.917, delta = 0, slewrate=100;
+        if(timeSample < triggerSample) {signal = 0;}
+        else {
+            if(timeSample < (triggerSample+height/slewrate)) {
+                signal = -height;
+                while(timeSample < (triggerSample+height/slewrate)){
+                    signal += slewrate;
+                    timeSample++;
+                }
+            }
+            else {
+                for(k = parseInt(triggerSample+height/slewrate); k < timeSample; k++) {factor = factor*0.966;}
+                signal = -height * factor;
+            }
+        }
+        return signal;
+    }
+
+ // Generate a JSON with simulated information.
+    function genJSON(){
+        var timeMax = 0, arrTime, i = 0;
+        var txt = '{'
+        txt += '"timestamp":"0",';
+        txt += '"nanoseconds":"0", "events":[';
+        for(h = 0; h < 3; h++){
+            txt += '{"status":"on",';
+            txt += '"timestamp":"0",';
+            txt += '"number":"'+$('#ch'+h).val()+'",';
+            txt += '"nanoseconds":"'+$('#nano'+h+i).val()+'","mips":[';
+            for(i = 0; i < 4; i++) {
+                txt += $("#mip"+h+i).val();
+                if(i<3) txt += ','
+            }
+            txt += ']';
+            txt += ',"traces":[';
+            for(i = 0; i < 4; i++) {
+                arrTime = $("#nano"+h+i).val();
+                if(timeMax<arrTime) timeMax = arrTime;
+            }
+            timeMax = 200; //timeMax / 2.5 + 100;
+            for(i = 0; i < 4; i++){
+                txt += '[';
+                for(j = -10; j < timeMax; j++){
+                    txt += traceSim(j, $('#nano'+h+i).val(), ($("#mip"+h+i).val()*$("#MIP-peak"+h+i).val()));
+                    if(j < (timeMax-1)) txt += ',';
+                }
+                txt += ']';
+                if(i < 3) txt += ',';
+            }
+            txt += ']},';
+        }
+        txt +=']}';
+        var obj = eval("("+txt+")");
+        return obj;
+    }
+
+ // Set the first time of the simulation on 0 ns.
+    function normTime(times) {
+        var minTime = 100;
+        for(j = 0; j < times.length; j++) {
+            if(times[j] < minTime) { minTime = times[j]; }
+        }
+        for(j = 0; j<times.length; j++) {
+            times[j] = times[j] - minTime;
+        }
+        return times;
+    }
+
+ // Calculate the time of arrival of a given shower for a given station.
+    function toShowerTime(theta, phi, x, y, z) {
+        var sinTheta = Math.sin(theta * toRad), cosTheta = Math.cos(theta*toRad);
+        var sinPhi = Math.sin(phi * toRad), cosPhi = Math.cos(phi*toRad);
+        return (1e9 * (sinPhi * sinTheta * x + cosPhi * sinTheta * y +cosTheta * z)/c).toFixed(1);
+    }
+
+ // Calculate the constant k for an air shower with a given energy.
+    function calcK(energy) {
+        var r0 = 92, alfa = 1.2, eta = 3.97;
+        return Math.pow((energy/2.15e17),(0.985))/(Math.pow((600 / r0), (-alfa))*Math.pow((1 + (600 / r0)), (alfa - eta)));
+    }
+
+ // Calculate the number of MIP's for a constant k on a distantance r.
+    function calcMIP(k, r) {
+        var r0 = 92, alfa = 1.2, eta = 3.97;
+        return k * Math.pow((r / r0), (-alfa)) * Math.pow((1 + (r / r0)), (alfa - eta));
+    }
+
+ // Calculate the number of MIP's using the given input.
+    function calcMIPs() {
+        var r, a, x, y, dx, dy;
+        for (h = 0; h<3; h++) {
+            for (i = 0; i < 4; i++) {
+                a = $("#alfa"+h+i).val() * toRad;
+                r = $("#r"+h+i).val();
+                x = r * Math.sin(a);
+                y = r * Math.cos(a);
+                dx = x - $("#r").val() * Math.sin($("#alfa").val() * toRad); 
+                dy= y - $("#r").val() * Math.cos($("#alfa").val() * toRad);
+                $("#mip"+h+i).val(((calcMIP(calcK($("#energy").val()), Math.sqrt(dx*dx+dy*dy)))/2).toFixed(4));
+            }
+        }
+    }
+
+ // Normalise width and height of on object.
+    function normCoord(objName){
+        var param = {}
+        param.width = ($("#" + objName).width());
+        param.height = ($("#" + objName).height());
+        return param;
+    }
+
+ // Calculate the times of arrival using the location of the detectors and the direction of the air shower.
+    function calcTime(){
+        var r, alfa, theta, phi, x, y, z, times = new Array();
+        for(h = 0; h < 3; h++) {
+            for(i = 0; i < 4; i++) {
+                r = $("#r"+h+i).val();
+                alfa = $("#alfa"+h+i).val() * toRad;
+                x = r * Math.sin(alfa);
+                y = r * Math.cos(alfa);
+                z = 0;
+                theta = $("#theta").val();
+                phi = $("#phi").val();
+                times[i] = -toShowerTime(theta, phi, x, y, z);
+            }
+            times = normTime(times);
+            for(i = 0; i < 4; i++) {
+                $("#nano"+h+i).val(times[i].toFixed(1));
+            }
+        }
+    }
+
+ // Set the location of detectors on the map.
+    function setDetLoc(param){
+        var maxWidth = 0.5*param.width;
+        var maxHeight = 0.5*param.height;
+        var r, alfa, x, y, change;
+        for(h = 0; h<3; h++){
+            for(i = 0; i < 4; i++) {
+                r = $("#r"+h+i).val();
+                alfa = $("#alfa"+h+i).val() * toRad;
+                x = maxWidth * r * Math.sin(alfa);
+                y = maxWidth * r * Math.cos(alfa);
+                change=225+x/10-26;
+                $("#detector"+h+i).css("left", eval(change));
+                change=225-y/10-26;
+                $("#detector"+h+i).css("top", eval(change));
+                change="rotate("+$("#beta"+h+i).val()+"deg)";
+                $("#detector"+h+i).css("transform", change);
+                $("#detector"+h+i).css("-moz-transform", change);
+                $("#detector"+h+i).css("-webkit-transform", change);
+            }
+        }
+    }
+
+ // Plot the graph of the detector signals.
+    function plotEventGraph(data){
+        var plotStyle = {
+            seriesDefaults: {
+                lineWidth: 1.5, shadow: false, showLine: true, showMarker: false,
+                markerOptions: {show: false, size: 0, lineWidth: 0}
+            },
+            legend: {show: false},
+            cursor: {tooltipLocation: 'se', zoom: true, clickReset: true},
+                axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                labelOptions: {textColor: '#222', enableFontSupport: true},
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: false, mark: 'outside', markSize: 4}
+            },
+            axes: {
+                xaxis: {numberTicks: 5, max: 200, label: "Time [ns]"},
+                yaxis: {numberTicks: 3, max: 0, label: "Pulseheight [mV]"}
+            },
+            grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#000", borderWidth: 1, borderColor: "#000"}
+        };
+
+        $.jqplot.config.enablePlugins = true; // on the page before plot creation.
+
+        var tracedata = [];  eventdata = [];
+        var trace_min = 0;
+        for (h = 0; h < 3; h++) {
+            for (k = 0; k < data.events[0].traces.length; k++) {
+                tracedata[k] = [[data.events[h].nanoseconds, data.events[0].traces[k][0]]];
+                for (i = 1; i < data.events[h].traces[k].length; i++) {
+                    tracedata[k].push([(i), data.events[h].traces[k][i]]);
+                    if(data.events[h].traces[k][i] < trace_min) {trace_min = data.events[0].traces[k][i]};
+                }
+                eventdata.push(tracedata[k]);
+            }
+            var _tracePlotStyle = {
+                seriesColors: ["#222", "#D22", "#1C2", "#1CC"],
+                title: "Station " + data.events[h].number,
+                axes: {
+                    xaxis: {min: -10, max: Math.ceil(data.events[0].traces[0].length * 2.5)},
+                    yaxis: {min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0, max: 0}
+                }
+            };
+            var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
+            diagramID = "chartdiv"+h;
+            $.jqplot(diagramID, eventdata, tracePlotStyle);
+        }
+    }
+    
+    function changeState() {
+        $('#chartdiv0').empty();
+        $('#chartdiv1').empty();
+        $('#chartdiv2').empty();
+        setDetLoc(normCoord("detectorMap")); // there are detectormaps!
+        calcMIPs();
+        calcTime();
+    }
+
+    $(document).ready(function(){
+        $("#chartdiv0").show();
+        $("#chartdiv1").hide();
+        $("#chartdiv2").hide();
+        changeState()
+        $("#changeMap0").click( function (event) {
+            changeState()
+        });
+        $("#changeMap1").click( function (event) {
+            changeState()
+        });
+        $("#changeMap2").click( function (event) {
+            changeState()
+        });
+        $("#simShow").click( function (event) {
+            calcMIPs();
+            calcTime();
+            var data = genJSON();
+            $('#chartdiv0').empty();
+            $('#chartdiv1').empty();
+            $('#chartdiv2').empty();
+            plotEventGraph(data);
+        });
+        
+        $("#detectorMap0").show();
+        $("#detectorMap1").hide();
+        $("#detectorMap2").hide();
+        $("#statIn0").show();
+        $("#statIn1").hide();
+        $("#statIn2").hide();
+        
+        
+        $("#ch0").bind('click', function (event) {        
+            $("#detectorMap0").show();
+            $("#detectorMap1").hide();
+            $("#detectorMap2").hide();
+            $("#statIn0").show();
+            $("#statIn1").hide();
+            $("#statIn2").hide();
+            $("#chartdiv0").show();
+            $("#chartdiv1").hide();
+            $("#chartdiv2").hide();
+            changeState()
+        });
+
+        $("#ch1").bind('click', function (event) {        
+            $("#detectorMap0").hide();
+            $("#detectorMap1").show();
+            $("#detectorMap2").hide();
+            $("#statIn0").hide();
+            $("#statIn1").show();
+            $("#statIn2").hide();
+            $("#chartdiv0").hide();
+            $("#chartdiv1").show();
+            $("#chartdiv2").hide();
+            changeState()
+        });
+
+        $("#ch2").bind('click', function (event) {        
+            $("#detectorMap0").hide();
+            $("#detectorMap1").hide();
+            $("#detectorMap2").show();
+            $("#statIn0").hide();
+            $("#statIn1").hide();
+            $("#statIn2").show();
+            $("#chartdiv0").hide();
+            $("#chartdiv1").hide();
+            $("#chartdiv2").show();
+            changeState()
+        });
+        
+    });
+  </script>
+ </head>
+ 
+ <body style="background-color: white"><div id="iets">
+  <div id="detectorMap">
+   <div id="detectorMap0">102
+    <img id="gps" src="images/gps.png" alt="gps" />
+    <img id="detector00" src="images/detector0.png" alt="00" />
+    <img id="detector01" src="images/detector1.png" alt="01" />
+    <img id="detector02" src="images/detector2.png" alt="02" />
+    <img id="detector03" src="images/detector3.png" alt="03" />
+   </div>
+   <div id="detectorMap1">104
+    <img id="gps" src="images/gps.png" alt="gps" />
+    <img id="detector10" src="images/detector0.png" alt="10" />
+    <img id="detector11" src="images/detector1.png" alt="11" />
+    <img id="detector12" src="images/detector2.png" alt="12" />
+    <img id="detector13" src="images/detector3.png" alt="13" />
+   </div>
+   <div id="detectorMap2">105
+    <img id="gps" src="images/gps.png" alt="gps" />
+    <img id="detector20" src="images/detector0.png" alt="20" />
+    <img id="detector21" src="images/detector1.png" alt="21" />
+    <img id="detector22" src="images/detector2.png" alt="22" />
+    <img id="detector23" src="images/detector3.png" alt="23" />
+   </div>
+  </div>
+  
+  <table id="statIn0">
+    <tr>
+      <td>detector</td>
+      <td align='center' class='det1' style='border-radius:2px;'>1</td>
+      <td align='center' class='det2' style='border-radius:2px;'>2</td>
+      <td align='center' class='det3' style='border-radius:2px;'>3</td>
+      <td align='center' class='det4' style='border-radius:2px;'>4</td>
+    </tr>
+    <tr>
+      <td>r [m]</td>
+      <td><input id="r00" type=text value=8 size=5 /></td>
+      <td><input id="r01" type=text value=3 size=5 /></td>
+      <td><input id="r02" type=text value=5 size=5 /></td>
+      <td><input id="r03" type=text value=5 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#945; [<sup>o</sup>]</td>
+      <td><input id="alfa00" type=text value=0 size=5 /></td>
+      <td><input id="alfa01" type=text value=0 size=5 /></td>
+      <td><input id="alfa02" type=text value=90 size=5 /></td>
+      <td><input id="alfa03" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#946; [<sup>o</sup>]</td>
+      <td><input id="beta00" type=text value=0 size=5 /></td>
+      <td><input id="beta01" type=text value=0 size=5 /></td>
+      <td><input id="beta02" type=text value=90 size=5 /></td>
+      <td><input id="beta03" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>MIP-peak [mV]</td>
+      <td><input id="MIP-peak00" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak01" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak02" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak03" type=text value=150 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=5><input type="button" id="changeMap0" value="Change map" style='width:320px;'></input><td>
+    </tr>
+    <tr>
+      <td>n [MIP]</td>
+      <td><input id="mip00" type=text size=5 /></td>
+      <td><input id="mip01" type=text size=5 /></td>
+      <td><input id="mip02" type=text size=5 /></td>
+      <td><input id="mip03" type=text size=5 /></td>
+    </tr>
+    <tr>
+      <td>t [ns]</td>
+      <td><input id="nano00" type=text size=5 /></td>
+      <td><input id="nano01" type=text size=5 /></td>
+      <td><input id="nano02" type=text size=5 /></td>
+      <td><input id="nano03" type=text size=5 /></td>
+    </tr>
+  </table>
+  
+  <table id="statIn1">
+    <tr>
+      <td>detector</td>
+      <td align='center' class='det1' style='border-radius:2px;'>1</td>
+      <td align='center' class='det2' style='border-radius:2px;'>2</td>
+      <td align='center' class='det3' style='border-radius:2px;'>3</td>
+      <td align='center' class='det4' style='border-radius:2px;'>4</td>
+    </tr>
+    <tr>
+      <td>r [m]</td>
+      <td><input id="r10" type=text value=8 size=5 /></td>
+      <td><input id="r11" type=text value=3 size=5 /></td>
+      <td><input id="r12" type=text value=5 size=5 /></td>
+      <td><input id="r13" type=text value=5 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#945; [<sup>o</sup>]</td>
+      <td><input id="alfa10" type=text value=0 size=5 /></td>
+      <td><input id="alfa11" type=text value=0 size=5 /></td>
+      <td><input id="alfa12" type=text value=90 size=5 /></td>
+      <td><input id="alfa13" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#946; [<sup>o</sup>]</td>
+      <td><input id="beta10" type=text value=0 size=5 /></td>
+      <td><input id="beta11" type=text value=0 size=5 /></td>
+      <td><input id="beta12" type=text value=90 size=5 /></td>
+      <td><input id="beta13" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>MIP-peak [mV]</td>
+      <td><input id="MIP-peak10" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak11" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak12" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak13" type=text value=150 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=5><input type="button" id="changeMap0" value="Change map" style='width:320px;'></input><td>
+    </tr>
+    <tr>
+      <td>n [MIP]</td>
+      <td><input id="mip10" type=text size=5 /></td>
+      <td><input id="mip11" type=text size=5 /></td>
+      <td><input id="mip12" type=text size=5 /></td>
+      <td><input id="mip13" type=text size=5 /></td>
+    </tr>
+    <tr>
+      <td>t [ns]</td>
+      <td><input id="nano10" type=text size=5 /></td>
+      <td><input id="nano11" type=text size=5 /></td>
+      <td><input id="nano12" type=text size=5 /></td>
+      <td><input id="nano13" type=text size=5 /></td>
+    </tr>
+  </table>
+
+  <table id="statIn2">
+    <tr>
+      <td>detector</td>
+      <td align='center' class='det1' style='border-radius:2px;'>1</td>
+      <td align='center' class='det2' style='border-radius:2px;'>2</td>
+      <td align='center' class='det3' style='border-radius:2px;'>3</td>
+      <td align='center' class='det4' style='border-radius:2px;'>4</td>
+    </tr>
+    <tr>
+      <td>r [m]</td>
+      <td><input id="r20" type=text value=8 size=5 /></td>
+      <td><input id="r21" type=text value=3 size=5 /></td>
+      <td><input id="r22" type=text value=5 size=5 /></td>
+      <td><input id="r23" type=text value=5 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#945; [<sup>o</sup>]</td>
+      <td><input id="alfa20" type=text value=0 size=5 /></td>
+      <td><input id="alfa21" type=text value=0 size=5 /></td>
+      <td><input id="alfa22" type=text value=90 size=5 /></td>
+      <td><input id="alfa23" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>&#946; [<sup>o</sup>]</td>
+      <td><input id="beta20" type=text value=0 size=5 /></td>
+      <td><input id="beta21" type=text value=0 size=5 /></td>
+      <td><input id="beta22" type=text value=90 size=5 /></td>
+      <td><input id="beta23" type=text value=270 size=5 /></td>
+    </tr>
+    <tr>
+      <td>MIP-peak [mV]</td>
+      <td><input id="MIP-peak20" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak21" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak22" type=text value=150 size=5 /></td>
+      <td><input id="MIP-peak23" type=text value=150 size=5 /></td>
+    </tr>
+    <tr>
+      <td colspan=5><input type="button" id="changeMap0" value="Change map" style='width:320px;'></input><td>
+    </tr>
+    <tr>
+      <td>n [MIP]</td>
+      <td><input id="mip20" type=text size=5 /></td>
+      <td><input id="mip21" type=text size=5 /></td>
+      <td><input id="mip22" type=text size=5 /></td>
+      <td><input id="mip23" type=text size=5 /></td>
+    </tr>
+    <tr>
+      <td>t [ns]</td>
+      <td><input id="nano20" type=text size=5 /></td>
+      <td><input id="nano21" type=text size=5 /></td>
+      <td><input id="nano22" type=text size=5 /></td>
+      <td><input id="nano23" type=text size=5 /></td>
+    </tr>
+  </table>
+  
+  <div id="chartdiv0" class="tracegraph"></div>
+  <div id="chartdiv1" class="tracegraph"></div>
+  <div id="chartdiv2" class="tracegraph"></div>
+  
+  <div id="logo">
+    <a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a>
+  </div>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+        <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+    </a>
+  <div id="dashboard">
+    <table>
+      <tr>
+        <td colspan=2>energy</td><td><input id="energy" type=text value=5e12 size=5  /></td>
+      </tr>
+      <tr>
+        <td colspan=2></td><td>&#952; [<sup>o</sup>]</td><td>&#934; [<sup>o</sup>]</td>
+      </tr>
+      <tr>
+        <td colspan=2>direction</td>
+        <td><input id="theta" type=text value=0 size=5 /></td>
+        <td><input id="phi" type=text value=0 size=5 /></td>
+      </tr>
+      <tr>
+        <td colspan=2></td><td>r [m]</td><td>&#945; [<sup>o</sup>]</td>
+      </tr>
+      <tr>
+        <td colspan=2>shower core</td>
+        <td><input id="r" type=text value=0 size=5 /></td>
+        <td><input id="alfa" type=text value=0 size=5 /></td>
+      </tr>
+      <tr>
+        <td colspan=4><input type="button" id="simShow" value="Simulate shower" style='width:200px;'></input></td>
+      </tr>
+      <tr>
+        <td id="ch0">
+          102
+        </td>
+        <td id="ch1">
+          104
+        </td>
+        <td id="ch2">
+          105
+        </td>
+      </tr>
+    </table>
+  </div></div>
+ </body>
+</html>

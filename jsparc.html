@@ -99,6 +99,7 @@
     
         function main(htmlInfo, URL) {
             $.getJSON(URL + "get_coincidence/", get_coincidence, function (data) {
+            alert(data)
                 // start callback getJSON
                 $("#dataButton").hide();
                 $("#exampleButton").hide();
@@ -265,7 +266,7 @@
 
   </script>
  </head>
- <body>
+ <body style="background-color: white">
   <div id="graph-id">
    <div id="chartdiv" class="coincidencegraph"></div>
    <table id="choice">
