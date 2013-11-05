@@ -1,7 +1,7 @@
 #datum-id {
     width: 440px;
     height: 25px;
-    background-color: #B8B8E6;
+    background-color: #dde;
     border-radius: 5px 5px 0px 0px;
     text-align: center;
     font-size: .95em;
@@ -23,12 +23,41 @@
     top: 480px;}
 
 #map-id {
+    display: block;
     width: 450px;
     height: 445px;
     position: absolute;
     margin: 0px;
     left: 350px;
     top: 35px;}
+
+#star-id {
+    display: block;
+    width: 425px;
+    height: 445px;
+    position: absolute;
+    margin: 0px;
+    left: 350px;
+    top: 35px;
+    z-index: 1;}
+
+#horizon {
+    display: block;
+    position: absolute;
+    top: 100px;
+    left: 435px;
+    width: 300px;
+    height: 300px;
+    z-index: 2;}
+
+#direction {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    margin: 0px;
+    left: 135px;
+    top: 135px;
+    z-index: 3;}
 
 #logo {
     width: 189px;
@@ -40,7 +69,8 @@
     top: 0px;}
 
 #dashboard {
-    height: 470px;
+    display: "block";
+    height: 470p
     padding: 5px;
     position: absolute;
     margin: 0px;
@@ -78,7 +108,7 @@ body {
     color: #333;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1em;
-    background: #ccf;}
+    background: #fff;}
 
 img {
     border: 0px;}
@@ -118,7 +148,10 @@ input[type="button"] {
 table {
     border: 0px;}
 
-.tracegraph, .coincidencegraph, .jqplot-yaxis-label {
+#mapFunction {
+    float: right;}
+
+.tracegraph, .coincidencegraph, #star-id, .jqplot-yaxis-label {
     color: #111;}
 
 .olControlAttribution {
@@ -187,3 +220,154 @@ table {
 #choice7 {
     background: #ccc;
     display: none;}
+
+#detectorMap {
+    display: block;
+    width: 450px;
+    height: 445px;
+    position: absolute;
+    margin: 0px;
+    left: 350px;
+    top: 35px;
+    background-color : #f0f0f0}
+
+#gps {
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    margin: 0px;
+    left: 222px;
+    top: 222px;}
+
+
+#detector00 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 60px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector01 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 125px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector02 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector03 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}
+
+#detector10 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 60px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector11 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 125px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector12 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector13 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}
+
+#detector20 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 60px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector21 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 150px;
+    top: 125px;
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);}
+
+#detector22 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 100px;
+    top: 150px;
+    transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);}
+
+#detector23 {
+    width: 52px;
+    height: 52px;
+    position: absolute;
+    margin: 0px;
+    left: 200px;
+    top: 150px;
+    transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}

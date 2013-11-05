@@ -216,7 +216,7 @@ function calcError(htmlInfo, data) {
         chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}
     $("#" + htmlInfo.stationEr).val(chiKwad.toFixed(4));
     result.error = chiKwad;
-    for (j = 0; j < 4; j++) {
+/*    for (j = 0; j < 4; j++) {
         for (i = 0; i < data.events.length; i++) {
             if ($("#" + htmlInfo.mipId + i + j).val() === "no data") {
                 delta = 0;}
@@ -224,7 +224,7 @@ function calcError(htmlInfo, data) {
                 delta = $("#" + htmlInfo.mipId + i + j).val();}
             delta = delta - $("#" + htmlInfo.mipCalcId + i).val();
             chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}}
-    $("#" + htmlInfo.showerEr).val(chiKwad.toFixed(4));
+    $("#" + htmlInfo.showerEr).val(chiKwad.toFixed(4));*/
 }
 
 function calcEnergy(htmlInfo, showerMerc, data) {
@@ -461,6 +461,105 @@ function plotGraph(htmlInfo, data) {
 
     showEvent(0);
 }
+
+function toZenith(RA,Dec,Lon,Lat,ST){
+    var sinDec = Math.sin(Dec * toRad), cosDec = Math.cos(Dec * toRad), sinLat = Math.sin(Lat * toRad), cosLat = Math.cos(Lat * toRad);
+    var ha = ST - Lon - RA, cosZenith = (sinDec * sinLat + cosDec * cosLat * Math.cos(ha * toRad)).toFixed(4);
+    var zenith = Math.acos(cosZenith) / toRad, azimuth;
+    if (cosLat * Math.sin(zenith * toRad).toFixed(4) == 0) {azimuth = 0;}
+    else {azimuth = (Math.acos((sinDec - sinLat * cosZenith) / (cosLat * Math.sin(zenith * toRad)))).toFixed(4) / toRad;}
+    if (Math.sin(ha*toRad) > 0) {azimuth = 360 - azimuth;}
+    var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
+    return out;}
+
+function zenithData(data, star) {
+    var x, y, r, mapData = {lon: 0, lat: 0};
+    for (i = 0; i < data.events.length; i++) {mapData.lon += data.events[i].lon; mapData.lat += data.events[i].lat;}
+    var Lon = mapData.lon / data.events.length, Lat = mapData.lat / data.events.length, ST = 0;
+    for (i = 0; i < star.length; i++){
+       for(j = 0; j < star[i].length; j++){
+           var netCoordInput = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
+           star[i][j][1] = netCoordInput.zenith; star[i][j][0] = netCoordInput.azimuth;
+           if(star[i][j][1] > 45) {star[i].splice(j, 1); j--;}
+           else {
+               r = star[i][j][1];
+               x = r * Math.sin(toRad * star[i][j][0]);
+               y = r * Math.cos(toRad * star[i][j][0]);
+               star[i][j][0] = -x;
+               star[i][j][1] = y;}}}
+    return star}
+    
+function WGS84toECEF(lat, lon, alt){
+    var a=6378137, b=6356752.315;
+    lon=toRad*lon; lat=toRad*lat;
+    var x=(a+alt)*Math.cos(lat)*Math.cos(lon), y=(a+alt)*Math.cos(lat)*Math.sin(lon), z=(b+alt)*Math.sin(lat), coordinate={"x":x,"y":y,"z":z,"lat":lat};
+    return coordinate;
+}
+
+function netLoc(data, height){
+    var netCoord = new Array;
+    for(var i = 0; i < data.events.length; i++){netCoord.push(WGS84toECEF(data.events[i].lat, data.events[i].lon, (data.events[i].alt+height)));}
+    return netCoord;
+}
+
+function showerDirection(data){
+    var showerDir = {}, norm, netCoord = netLoc(data, 20000);
+    showerDir.x = 0; showerDir.y = 0; showerDir.z = 0; showerDir.lat = 0;
+    for(var i = 0; i< data.events.length; i++){
+        showerDir.x += eval(netCoord[i].x); showerDir.y += eval(netCoord[i].y);
+        showerDir.z += eval(netCoord[i].z); showerDir.lat += eval(netCoord[i].lat);
+    }
+    showerDir.x = showerDir.x / data.events.length; showerDir.y = showerDir.y / data.events.length;   
+    showerDir.z = showerDir.z / data.events.length; showerDir.lat = showerDir.lat / data.events.length;
+    norm = 1/(Math.sqrt(showerDir.x * showerDir.x + showerDir.y * showerDir.y));
+    showerDir.xLon = -showerDir.y*norm; showerDir.yLon = showerDir.x*norm; showerDir.zLat = Math.cos(showerDir.lat);
+    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat); showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.lat);
+    return showerDir;
+}
+
+function timeCalc(htmlInfo, data, dRA, dDec){ 
+    var measurement = new Array, calculation = new Array, netCoord = netLoc(data, 0), showerDir = showerDirection(data);
+    var z = (showerDir.z+20000*showerDir.zLat*Math.tan(dDec*toRad)).toFixed(0);
+    var y = (showerDir.y+20000*(showerDir.yLat*Math.tan(dDec*toRad)+showerDir.xLon*Math.tan(dRA*toRad))).toFixed(0);
+    var x = (showerDir.x+20000*(showerDir.xLat*Math.tan(dDec*toRad)+showerDir.yLon*Math.tan(dRA*toRad))).toFixed(0);
+    var dx = x-netCoord[0].x, dy = y-netCoord[0].y, dz = z-netCoord[0].z, time = Math.sqrt(dx*dx+dy*dy+dz*dz)/c;
+    for(var i = 0; i < netCoord.length; i++){
+        dx = x-netCoord[i].x; dy = y-netCoord[i].y; dz = z-netCoord[i].z;
+        measurement[i] = data.events[i].nanoseconds-data.events[0].nanoseconds;
+        calculation[i] = 1e9*(Math.sqrt(dx*dx+dy*dy+dz*dz)/c-time).toFixed(9);
+        $('#nanoCalc' + i).val((calculation[i]).toFixed(0));
+    }
+    var Sigma = calcSigma(measurement, calculation);
+    var ra, dec;
+    ra = (dRA-data.events[0].lon).toFixed(1);
+    dec = (dDec+data.events[0].lat).toFixed(1)
+    $('#dirEr').val(Sigma.toFixed(1));
+    $('#RA').val(ra);
+    $('#Dec').val(dec);
+}
+
+    
+function makeStarMap(htmlInfo, star) {
+    var starStyle = {
+        title: 'Starmap',
+        seriesDefaults: {
+            shadow: false, showLine: false, color: "#111", showMarker: true,
+            markerOptions: {shadow: false, size: 6, style: "filledCircle", lineWidth: 0}},
+        series: [{markerOptions: {size: 2}}, {markerOptions: {size: 3}}, {markerOptions: {size: 4}}, {markerOptions: {size: 5}},
+                 {markerOptions: {size: 6}}, {markerOptions: {size: 7}}, {markerOptions: {size: 8}}, {markerOptions: {size: 9}}],
+        legend: {show: false},
+        cursor: {tooltipLocation: 'se', zoom: false},
+        axesDefaults: {
+            min: -60, max: 60, numberTicks: 9, labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            labelOptions: {textColor: '#222', enableFontSupport: true}, tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+            tickOptions: {textColor: '#222', enableFontSupport: true, showGridline: true, mark: 'outside', markSize: 4}},
+        axes: {
+            xaxis:{label: "delta Right Ascension [degrees]"},
+            yaxis: {label: "delta Declination [degrees]"}},
+        grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#ddd", borderWidth: 1, borderColor: "#000"}};
+    var plot1 = $.jqplot('star-id', star, starStyle)}
+
+
 
 function toOrthogonal(i, latitude, longitude, altitude) {
     var coordinate = {};
