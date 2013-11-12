@@ -30,6 +30,7 @@
     get_coincidence.student_name = "";
     var htmlInfo = {
         mapId: "map-id",
+        starId: "star-id",
         distId: "dist",
         chartId: "chartdiv",
         mipId: "MIP",
@@ -178,7 +179,7 @@
 
         showEvent(0);
         $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
-        star=zenithData(data, cat());
+        star = zenithData(data, cat());
         makeStarMap(htmlInfo, star);
         $("#star-id").hide();
         $("#horizon").hide();
@@ -228,6 +229,13 @@
 
     $(function() {
         $("#sessionHash").val(get_coincidence.session_hash);
+        
+        $("#map-id").show();
+        $("#coinInfo").show();
+        $("#coinInfo1").hide();
+        $("#horizon").hide();
+        $("#direction").hide();
+
 
         $("#exampleButton").bind('click', function (event) {
             getExample();

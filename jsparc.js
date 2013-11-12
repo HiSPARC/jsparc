@@ -42,6 +42,7 @@
    function and gives the names of input (output) instances, for intance:
 
    {mapId: "id of the map",
+    starId: "id of the star map",
     distId: "id of the inputs for distances",
     chartId: "id for the plotted charts",
     mipId: "id for the input of the MIP-flux",
@@ -140,7 +141,7 @@ function distVincenty(latitude1, longitude1, latitude2, longitude2) {
 }
 
 /* End of Vincenty Inverse Solution of Geodesics on the Ellipsoid (c) Chris Veness 2002-2010       */
-/* Code clean up by N.G.Schultheiss using http://jslint.com/                                           */
+/* Code clean up by N.G.Schultheiss using http://jslint.com/                                       */
 
 var showerMerc, shower4326;
 var PI = 4 * Math.atan(1);
@@ -204,18 +205,28 @@ function agase(pMerc, k, stationIndex, data) {
     return k * Math.pow((r / r0), (1.2)) * Math.pow((1 + (r / r0)), (2.64)) * Math.pow((1 + r * r / 1000000), (0.6));
 }
 
+function calcSigma(measurement, calculation){
+    var deviation=0, delta
+    for (i = 0; i < measurement.length; i++) {delta = measurement[i]-calculation[i]; deviation += delta * delta;}
+    return Math.sqrt(deviation / measurement.length);
+}
+
+function calcChiSq(measurement, calculation){
+    var chiSq = 0, delta;
+    for (i = 0; i < measurement.length; i++) {
+        if(measurement[i] != 0){delta = measurement[i]-calculation[i]; chiSq += delta * delta / measurement[i];}
+    }
+    return chiSq;
+}
+
 function energy(k) {
     return 2.15e17 * Math.pow((k * Math.pow((600 / r0), (-alfa)) * Math.pow((1 + (600 / r0)), (alfa - eta))), 1.015);
 }
 
 function calcError(htmlInfo, data) {
-    var chiKwad = 0;
-    var delta;
-    for (i = 0; i < data.events.length; i++) {
-        delta = $("#" + htmlInfo.mipId + i).val() - $("#" + htmlInfo.mipCalcId + i).val();
-        chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}
-    $("#" + htmlInfo.stationEr).val(chiKwad.toFixed(4));
-    result.error = chiKwad;
+    var chiSq = 0, delta, measurement = new Array, calculation = new Array;
+    for (i = 0; i < data.events.length; i++) {measurement[i] = $("#" + htmlInfo.mipId + i).val(); calculation[i] = $("#" + htmlInfo.mipCalcId + i).val();}
+    chiSq = calcChiSq(measurement, calculation); $("#" + htmlInfo.stationEr).val(chiSq.toFixed(4)); result.error = chiSq;
 /*    for (j = 0; j < 4; j++) {
         for (i = 0; i < data.events.length; i++) {
             if ($("#" + htmlInfo.mipId + i + j).val() === "no data") {
@@ -223,8 +234,8 @@ function calcError(htmlInfo, data) {
             else {
                 delta = $("#" + htmlInfo.mipId + i + j).val();}
             delta = delta - $("#" + htmlInfo.mipCalcId + i).val();
-            chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}}
-    $("#" + htmlInfo.showerEr).val(chiKwad.toFixed(4));*/
+            chiSq += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}}
+    $("#" + htmlInfo.showerEr).val(chiSq.toFixed(4));*/
 }
 
 function calcEnergy(htmlInfo, showerMerc, data) {
@@ -463,65 +474,69 @@ function plotGraph(htmlInfo, data) {
 }
 
 function toZenith(RA,Dec,Lon,Lat,ST){
-    var sinDec = Math.sin(Dec * toRad), cosDec = Math.cos(Dec * toRad), sinLat = Math.sin(Lat * toRad), cosLat = Math.cos(Lat * toRad);
-    var ha = ST - Lon - RA, cosZenith = (sinDec * sinLat + cosDec * cosLat * Math.cos(ha * toRad)).toFixed(4);
-    var zenith = Math.acos(cosZenith) / toRad, azimuth;
-    if (cosLat * Math.sin(zenith * toRad).toFixed(4) == 0) {azimuth = 0;}
-    else {azimuth = (Math.acos((sinDec - sinLat * cosZenith) / (cosLat * Math.sin(zenith * toRad)))).toFixed(4) / toRad;}
-    if (Math.sin(ha*toRad) > 0) {azimuth = 360 - azimuth;}
-    var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth.toFixed(4)};
+    var sinDec = Math.sin(toRad(Dec)), cosDec = Math.cos(toRad(Dec)), sinLat = Math.sin(toRad(Lat)), cosLat = Math.cos(toRad(Lat));
+    var ha = ST - Lon - RA, cosZenith = (sinDec * sinLat + cosDec * cosLat * Math.cos(toRad(ha))).toFixed(4);
+    var zenith = toDeg(Math.acos(cosZenith)), azimuth;
+    if (cosLat * Math.sin(toRad(zenith)).toFixed(4) == 0) {
+        azimuth = 0;}
+    else {azimuth = toDeg(Math.acos((sinDec - sinLat * cosZenith) / (cosLat * toRad(Math.sin(zenith))))).toFixed(4);}
+    if (Math.sin(toRad(ha)) > 0) {azimuth = 360 - azimuth;}
+    var out = {"zenith":zenith.toFixed(4), "azimuth":azimuth};
     return out;}
 
 function zenithData(data, star) {
-    var x, y, r, mapData = {lon: 0, lat: 0};
-    for (i = 0; i < data.events.length; i++) {mapData.lon += data.events[i].lon; mapData.lat += data.events[i].lat;}
-    var Lon = mapData.lon / data.events.length, Lat = mapData.lat / data.events.length, ST = 0;
+    var x, y, r, mapData = {longitude: 0, latitude: 0};
+    for (i = 0; i < data.events.length; i++) {
+        mapData.longitude += data.events[i].longitude; 
+        mapData.latitude += data.events[i].latitude;}
+    var Lon = mapData.longitude / data.events.length, Lat = mapData.latitude / data.events.length, ST = 0;
     for (i = 0; i < star.length; i++){
        for(j = 0; j < star[i].length; j++){
            var netCoordInput = toZenith(star[i][j][0], star[i][j][1], Lon, Lat, (data.events[0].timestamp / 86400 - 10957));
-           star[i][j][1] = netCoordInput.zenith; star[i][j][0] = netCoordInput.azimuth;
+           star[i][j][1] = netCoordInput.zenith; 
+           star[i][j][0] = netCoordInput.azimuth;
            if(star[i][j][1] > 45) {star[i].splice(j, 1); j--;}
            else {
                r = star[i][j][1];
-               x = r * Math.sin(toRad * star[i][j][0]);
-               y = r * Math.cos(toRad * star[i][j][0]);
+               x = r * Math.sin(toRad(star[i][j][0]));
+               y = r * Math.cos(toRad(star[i][j][0]));
                star[i][j][0] = -x;
                star[i][j][1] = y;}}}
     return star}
     
-function WGS84toECEF(lat, lon, alt){
+function WGS84toECEF(latitude, longitude, altitude){
     var a=6378137, b=6356752.315;
-    lon=toRad*lon; lat=toRad*lat;
-    var x=(a+alt)*Math.cos(lat)*Math.cos(lon), y=(a+alt)*Math.cos(lat)*Math.sin(lon), z=(b+alt)*Math.sin(lat), coordinate={"x":x,"y":y,"z":z,"lat":lat};
+    longitude=toRad(longitude); latitude=toRad(latitude);
+    var x=(a+altitude)*Math.cos(latitude)*Math.cos(longitude), y=(a+altitude)*Math.cos(latitude)*Math.sin(longitude), z=(b+altitude)*Math.sin(latitude), coordinate={"x":x,"y":y,"z":z,"latitude":latitude};
     return coordinate;
 }
 
 function netLoc(data, height){
     var netCoord = new Array;
-    for(var i = 0; i < data.events.length; i++){netCoord.push(WGS84toECEF(data.events[i].lat, data.events[i].lon, (data.events[i].alt+height)));}
+    for(var i = 0; i < data.events.length; i++){netCoord.push(WGS84toECEF(data.events[i].latitude, data.events[i].longitude, (data.events[i].altitude+height)));}
     return netCoord;
 }
 
 function showerDirection(data){
     var showerDir = {}, norm, netCoord = netLoc(data, 20000);
-    showerDir.x = 0; showerDir.y = 0; showerDir.z = 0; showerDir.lat = 0;
+    showerDir.x = 0; showerDir.y = 0; showerDir.z = 0; showerDir.latitude = 0;
     for(var i = 0; i< data.events.length; i++){
         showerDir.x += eval(netCoord[i].x); showerDir.y += eval(netCoord[i].y);
-        showerDir.z += eval(netCoord[i].z); showerDir.lat += eval(netCoord[i].lat);
+        showerDir.z += eval(netCoord[i].z); showerDir.latitude += eval(netCoord[i].latitude);
     }
     showerDir.x = showerDir.x / data.events.length; showerDir.y = showerDir.y / data.events.length;   
-    showerDir.z = showerDir.z / data.events.length; showerDir.lat = showerDir.lat / data.events.length;
+    showerDir.z = showerDir.z / data.events.length; showerDir.latitude = showerDir.latitude / data.events.length;
     norm = 1/(Math.sqrt(showerDir.x * showerDir.x + showerDir.y * showerDir.y));
-    showerDir.xLon = -showerDir.y*norm; showerDir.yLon = showerDir.x*norm; showerDir.zLat = Math.cos(showerDir.lat);
-    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.lat); showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.lat);
+    showerDir.xLon = -showerDir.y*norm; showerDir.yLon = showerDir.x*norm; showerDir.zLat = Math.cos(showerDir.latitude);
+    showerDir.yLat = -showerDir.y*norm*Math.sin(showerDir.latitude); showerDir.xLat = -showerDir.x*norm*Math.sin(showerDir.latitude);
     return showerDir;
 }
 
 function timeCalc(htmlInfo, data, dRA, dDec){ 
     var measurement = new Array, calculation = new Array, netCoord = netLoc(data, 0), showerDir = showerDirection(data);
-    var z = (showerDir.z+20000*showerDir.zLat*Math.tan(dDec*toRad)).toFixed(0);
-    var y = (showerDir.y+20000*(showerDir.yLat*Math.tan(dDec*toRad)+showerDir.xLon*Math.tan(dRA*toRad))).toFixed(0);
-    var x = (showerDir.x+20000*(showerDir.xLat*Math.tan(dDec*toRad)+showerDir.yLon*Math.tan(dRA*toRad))).toFixed(0);
+    var z = (showerDir.z+20000*showerDir.zLat*Math.tan(toRad(dDec))).toFixed(0);
+    var y = (showerDir.y+20000*(showerDir.yLat*Math.tan(toRad(dDec))+showerDir.xLon*Math.tan(toRad(dRA)))).toFixed(0);
+    var x = (showerDir.x+20000*(showerDir.xLat*Math.tan(toRad(dDec))+showerDir.yLon*Math.tan(toRad(dRA)))).toFixed(0);
     var dx = x-netCoord[0].x, dy = y-netCoord[0].y, dz = z-netCoord[0].z, time = Math.sqrt(dx*dx+dy*dy+dz*dz)/c;
     for(var i = 0; i < netCoord.length; i++){
         dx = x-netCoord[i].x; dy = y-netCoord[i].y; dz = z-netCoord[i].z;
@@ -531,8 +546,8 @@ function timeCalc(htmlInfo, data, dRA, dDec){
     }
     var Sigma = calcSigma(measurement, calculation);
     var ra, dec;
-    ra = (dRA-data.events[0].lon).toFixed(1);
-    dec = (dDec+data.events[0].lat).toFixed(1)
+    ra = (dRA-data.events[0].longitude).toFixed(1);
+    dec = (dDec+data.events[0].latitude).toFixed(1)
     $('#dirEr').val(Sigma.toFixed(1));
     $('#RA').val(ra);
     $('#Dec').val(dec);
@@ -557,7 +572,7 @@ function makeStarMap(htmlInfo, star) {
             xaxis:{label: "delta Right Ascension [degrees]"},
             yaxis: {label: "delta Declination [degrees]"}},
         grid: {shadow: false, background: "#fff", gridLineWidth: 1, gridLineColor: "#ddd", borderWidth: 1, borderColor: "#000"}};
-    var plot1 = $.jqplot('star-id', star, starStyle)}
+    var plot1 = $.jqplot(htmlInfo.starId, star, starStyle)}
 
 
 
