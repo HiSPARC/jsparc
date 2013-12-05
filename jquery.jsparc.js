@@ -1035,6 +1035,20 @@ be stored as strings.
                 str = '0' + str;}
             return str;
         }
+
+        jsparc.show_id = show_id;
+        function show_id(id) {
+            if (!jsparc.element_in_viewport($('#' + id)[0])) {
+                location.href = "#";
+                location.href = "#" + id;}
+        }
+
+        jsparc.element_in_viewport = element_in_viewport;
+        function element_in_viewport(target) {
+            var rect = target.getBoundingClientRect();
+            return (rect.top <= $(window).height() && rect.bottom >= 0 &&
+                    rect.left <= $(window).width() && rect.right >= 0);
+        }
     }
 
     $.jsparc = function() {

@@ -68,7 +68,8 @@
                                          jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
                                                          jsparc.get_column(y.val(), yset)));}
                     $('#plot').show();
-                    $('#graph').show();});
+                    $('#graph').show();
+                    jsparc.show_id('graph');});
 
                 // Show trace button
                 $('#results').on('click', 'td.trace', function() {
@@ -82,6 +83,7 @@
                         jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
+                        jsparc.show_id('graph');
                         jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
                     })});
 
@@ -89,7 +91,9 @@
                 $('#dataset_list').on('click', '.preview', function() {
                     jsparc.create_dataset_table($(this).attr('name'),
                                                 $('#results'), 29);
-                    $('#results').show();});
+                    $('#results').show();
+                    jsparc.show_id('results');});
+
                 $('#dataset_list').on('click', '.download', function() {
                     window.open($(this).attr('name'),'_blank');});
 
