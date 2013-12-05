@@ -1070,8 +1070,8 @@ be stored as strings.
         jsparc.element_in_viewport = element_in_viewport;
         function element_in_viewport(target) {
             var rect = target.getBoundingClientRect();
-            return (rect.top <= $(window).height() && rect.bottom >= 0 &&
-                    rect.left <= $(window).width() && rect.right >= 0);
+            return (rect.top < $(window).height() && rect.bottom > 0 &&
+                    rect.left < $(window).width() && rect.right > 0);
         }
     }
 
