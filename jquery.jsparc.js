@@ -78,13 +78,16 @@ be stored as strings.
                 return;}
             return get_csv(url)
                    .done(function(data) {
-                       datasets[url] = ({data: data,
-                                         station_number: station_number,
-                                         startdate: startdate,
-                                         enddate: enddate,
-                                         type: type,
-                                         url: url});
-                       update_dataset_table();
+                       if (!data.length) {
+                           alert('No data found for the requested variables');}
+                       else {
+                           datasets[url] = ({data: data,
+                                             station_number: station_number,
+                                             startdate: startdate,
+                                             enddate: enddate,
+                                             type: type,
+                                             url: url});
+                           update_dataset_table();}
                    });
         }
 
