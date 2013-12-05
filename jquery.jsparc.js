@@ -972,14 +972,13 @@ be stored as strings.
                     mx = a[0][0];
                 if (a[0] instanceof Array) {
                     for (var i = 0; i < a.length; i++) {
-                        var sorted = a[i].sort();
-                        mn = (sorted[0] > mn) ? mn : sorted[0];
-                        mx = (sorted[sorted.length - 1] < mx) ? mx : sorted[sorted.length - 1];}
-                    var flat = [].concat.apply([], a);}
+                        for (var j = 0; j < a[i].length; j++) {
+                            mn = (a[i][j] > mn) ? mn : a[i][j];
+                            mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
-                    var sorted = a.sort(),
-                        mn = sorted[0],
-                        mx = sorted[sorted.length - 1];}
+                    for (var i = 0; i < a.length; i++) {
+                        mn = (a[i] > mn) ? mn : a[i];
+                        mx = (a[i] < mx) ? mx : a[i];}}
                 bins = range(mn, mx, (mx - mn) / nbins);}
             var n = [];
 
@@ -1062,6 +1061,8 @@ be stored as strings.
 
         jsparc.show_id = show_id;
         function show_id(id) {
+            /* Goto element with the given id if it is not visible
+            */
             if (!jsparc.element_in_viewport($('#' + id)[0])) {
                 location.href = "#";
                 location.href = "#" + id;}
@@ -1069,6 +1070,8 @@ be stored as strings.
 
         jsparc.element_in_viewport = element_in_viewport;
         function element_in_viewport(target) {
+            /* Check if an element is visible in the current viewport
+            */
             var rect = target.getBoundingClientRect();
             return (rect.top < $(window).height() && rect.bottom > 0 &&
                     rect.left < $(window).width() && rect.right > 0);
