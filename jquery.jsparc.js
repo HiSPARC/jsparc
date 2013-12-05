@@ -757,8 +757,7 @@ be stored as strings.
                 color: '#000',
                 tickColor: '#000',
                 labelHeight: 23,
-                tickLength: 4,
-                tickDecimals: 0},
+                tickLength: 4},
             yaxis: {
                 show: true,
                 font: {
@@ -768,8 +767,7 @@ be stored as strings.
                     color: '#000'},
                 color: '#000',
                 tickColor: '#000',
-                tickLength: 4,
-                tickDecimals: 0},
+                tickLength: 4},
             y2axis: {
                 show: true,
                 position: 'right',
