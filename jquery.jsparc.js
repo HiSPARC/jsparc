@@ -612,18 +612,30 @@ be stored as strings.
         jsparc.make_plot = make_plot;
         function make_plot(target, data) {
             /* Create a plot of data
+
+            data can be a single dataset: [[x1, y1], [x2, y2], ... ]
+            or consist of multiple datasets: [[[x11, y11], ... ], [[x21, y21], ... ], ...]
+
             */
             var target = (target) ? target : $('#plot'),
                 datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
 
             if (data[0][0] instanceof Array) {
                 for (var i = data.length - 1; i >= 0; i--) {
+                    for (var j = 0; j < data[i].length; j++) {
+                        if (data[i][j][0] == -999 || data[i][j][1] == -999) {
+                            data[i].splice(j, 1);
+                            j--}}
+                    // if (data[i].length) {
+                    //     while (data[i][0][1] == 0) {
+                    //         data[i].splice(0,1);}}
                     datas.unshift({data: data[i], yaxis: 1});}}
             else {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i][0] == -999 || data[i][1] == -999) {
+                        data.splice(i, 1);}}
                 datas.unshift({data: data, yaxis: 1});}
-            return $.plot(target,
-                          datas,
-                          flot_active);
+            return $.plot(target, datas, flot_active);
         }
 
         jsparc.download_plot = download_plot;
@@ -971,11 +983,11 @@ be stored as strings.
                 if (a[0] instanceof Array) {
                     for (var i = 0; i < a.length; i++) {
                         for (var j = 0; j < a[i].length; j++) {
-                            mn = (a[i][j] > mn) ? mn : a[i][j];
+                            mn = (a[i][j] > mn || a[i][j] == -999) ? mn : a[i][j];
                             mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
                     for (var i = 0; i < a.length; i++) {
-                        mn = (a[i] > mn) ? mn : a[i];
+                        mn = (a[i] > mn || a[i] == -999) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
                 bins = range(mn, mx, (mx - mn) / nbins);}
             var n = [];
