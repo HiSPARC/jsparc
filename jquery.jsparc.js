@@ -281,14 +281,17 @@ be stored as strings.
         function make_datepicker(target, offset) {
             /* Create an date input field
 
-            Possible choices are limited to dates between start of
+            Possible choices should be limited to dates between start of
             HiSPARC (9/1/2004) and yesterday.
+
+            Currently the dates are limited to availability of ESD data
+            HiSPARC (1/1/2013) and yesterday.
 
             Requires jquery-ui.js, jquery-ui-timepicker-addon.js
 
             */
             var offset = (offset) ? offset : -1;
-            target.datetimepicker({minDate: new Date(2004, 1, 9),
+            target.datetimepicker({minDate: new Date(2012, 12, 1),
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
