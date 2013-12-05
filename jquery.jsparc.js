@@ -240,7 +240,9 @@ be stored as strings.
             var data = datasets[url].data,
                 type = datasets[url].type,
                 column = [];
-            if (type == 'events') {
+            if (column_name == 'event_rate') {
+                return generate_event_rate(url);}
+            else if (type == 'events') {
                 var col = events_format[column_name].column;}
             else if (type == 'weather') {
                 var col = weather_format[column_name].column;}
@@ -256,6 +258,20 @@ be stored as strings.
                     column[i] = data[i][col];}}
 
             return column;
+        }
+
+        jsparc.generate_event_rate = generate_event_rate;
+        function generate_event_rate(url) {
+            /* Generate event rate from timestamps
+            */
+            var window = 120,
+                data = get_column('timestamp', url),
+                bins = range(data[0], data[data.length-1], window),
+                hist = histogram(data, bins),
+                rate = linear_interpolation(data, bins, hist[0]);
+            for(var i = 0; i < rate.length; i++) {
+                rate[i] /= window;}
+            return rate;
         }
 
 
@@ -374,11 +390,19 @@ be stored as strings.
                 header = $('<span>').addClass('key').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
+                eventraterow = $('<tr>');
             firstrow.append($('<th>').text('x-Axis'));
             firstrow.append($('<th>').text('y-Axis'));
             firstrow.append($('<th>').text('Variable'));
             firstrow.append($('<th>').text('Units'));
             list.append(firstrow);
+            /* Add Event Rate as variable
+            */
+            eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
+            eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
+            eventraterow.append($('<td>').text('Event rate'));
+            eventraterow.append($('<td>').text('Hz').addClass('units'));
+            list.append(eventraterow);
             for (var i in format) {
                 if (i == 'date' || i == 'time') {continue}
                 var row = $('<tr>').attr('name', i);
