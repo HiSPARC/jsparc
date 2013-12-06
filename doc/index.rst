@@ -17,17 +17,11 @@ to using those.
 The source code can be found on `GitHub
 <https://github.com/HiSPARC/jsparc/>`_.
 
-Contents:
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
    data_retrieval
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
