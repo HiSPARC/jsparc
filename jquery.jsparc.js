@@ -622,6 +622,9 @@ be stored as strings.
             data can be a single dataset: [[x1, y1], [x2, y2], ... ]
             or consist of multiple datasets: [[[x11, y11], ... ], [[x21, y21], ... ], ...]
 
+            Warning: This function filters all data points for which
+            either the x or y value is -999 or -1.
+
             */
             var target = (target) ? target : $('#plot'),
                 datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
@@ -629,7 +632,8 @@ be stored as strings.
             if (data[0][0] instanceof Array) {
                 for (var i = data.length - 1; i >= 0; i--) {
                     for (var j = 0; j < data[i].length; j++) {
-                        if (data[i][j][0] == -999 || data[i][j][1] == -999) {
+                        if (data[i][j][0] == -999 || data[i][j][1] == -999 ||
+                            data[i][j][0] == -1 || data[i][j][1] == -1) {
                             data[i].splice(j, 1);
                             j--}}
                     // if (data[i].length) {
@@ -638,7 +642,8 @@ be stored as strings.
                     datas.unshift({data: data[i], yaxis: 1});}}
             else {
                 for (var i = 0; i < data.length; i++) {
-                    if (data[i][0] == -999 || data[i][1] == -999) {
+                    if (data[i][0] == -999 || data[i][1] == -999 ||
+                        data[i][0] == -1 || data[i][1] == -1) {
                         data.splice(i, 1);}}
                 datas.unshift({data: data, yaxis: 1});}
             return $.plot(target, datas, flot_active);
@@ -977,6 +982,9 @@ be stored as strings.
             of the next bin, i.e. [[1, 2), [2, 3), [3, 4), [4, 5]].
             The returned bins are the left edges of the bins.
 
+            Warning: This function ignores values of -999 and -1
+            when determining the minimum from the data.
+
             */
             if (bins instanceof Array) {
                 var nbins = bins.length,
@@ -989,11 +997,11 @@ be stored as strings.
                 if (a[0] instanceof Array) {
                     for (var i = 0; i < a.length; i++) {
                         for (var j = 0; j < a[i].length; j++) {
-                            mn = (a[i][j] > mn || a[i][j] == -999) ? mn : a[i][j];
+                            mn = (a[i][j] > mn || a[i][j] == -999 || a[i][j] == -1) ? mn : a[i][j];
                             mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
                     for (var i = 0; i < a.length; i++) {
-                        mn = (a[i] > mn || a[i] == -999) ? mn : a[i];
+                        mn = (a[i] > mn || a[i] == -999 || a[i] == -1) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
                 bins = range(mn, mx, (mx - mn) / nbins);}
             var n = [];
