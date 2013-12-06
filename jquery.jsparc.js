@@ -42,7 +42,7 @@ be stored as strings.
             weather_format = {'date': {'column': 0, 'units': 'GPS date'},
                               'time': {'column': 1, 'units': 'GPS time'},
                               'timestamp': {'column': 2, 'units': 's'},
-                              'temperature': {'column': [3, 4], 'units': 'deg C'},
+                              'temperature': {'column': [3, 4], 'units': '°C'},
                               'humidity': {'column': [5, 6], 'units': '%'},
                               'atmospheric_pressure': {'column': 7, 'units': 'hPa'},
                               'wind_direction': {'column': 8, 'units': 'deg'},
@@ -51,9 +51,9 @@ be stored as strings.
                               'uv_index': {'column': 11, 'units': '0-16'},
                               'evapotranspiration': {'column': 12, 'units': 'mm'},
                               'rain_rate': {'column': 13, 'units': 'mm/h'},
-                              'heat_index': {'column': 14, 'units': 'deg C'},
-                              'dew_point': {'column': 15, 'units': 'deg C'},
-                              'wind_chill': {'column': 16, 'units': 'deg C'}};
+                              'heat_index': {'column': 14, 'units': '°C'},
+                              'dew_point': {'column': 15, 'units': '°C'},
+                              'wind_chill': {'column': 16, 'units': '°C'}};
 
 
         // Data container
