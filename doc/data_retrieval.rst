@@ -3,8 +3,10 @@
 Data retrieval
 ==============
 
-This page describes the Data retrieval web application. It is webpage on
-which you can retrieve |hisparc| data, with which you can make plots.
+This page describes the `Data retrieval
+<http://data.hisparc.nl/media/jsparc/data_retrieval.html>`_ web
+application. It is webpage on which you can retrieve |hisparc| data,
+with which you can make plots.
 
 Here is a step by step guide for the functions of the page.
 
