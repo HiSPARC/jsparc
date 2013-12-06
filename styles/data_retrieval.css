@@ -1,0 +1,158 @@
+body {
+    font-family: sans-serif;}
+
+#container {
+    margin: auto;
+    width: 850px;}
+
+#header {
+    height: 65px;
+    width: 100%;}
+
+#pageHeader {
+    float: right;
+    position: relative;
+    right: 10px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 180px;
+    height: 63px;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;}
+
+#pageHeader.animated {
+    background: url(../images/HiSPARC_animated.gif) top right no-repeat;}
+
+
+#loading {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-weight: bold;}
+
+ul {
+    list-style: none;}
+
+th,
+td {
+    white-space: nowrap;}
+
+th {
+    padding-right: 10px;}
+
+td {
+    font-family: monospace;}
+
+.key {
+    font-weight: bold;}
+
+#dataset_list td,
+#set1_variables td:not(:nth-child(n+3)),
+#set2_variables td:not(:nth-child(n+3)) {
+    text-align: center;}
+
+#dataset_list tr,
+#set1_variables tr,
+#set2_variables tr {
+    margin: 1px 0;
+    padding: 5px;}
+
+#dataset_list .preview,
+#dataset_list .download,
+#dataset_list .delete {
+    margin-right: 10px;
+    font-weight: bold;
+    text-align: center;}
+
+#dataset_list .preview,
+#dataset_list .download,
+#dataset_list .delete,
+#results .trace,
+#graph .save_image {
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;}
+
+.variable {
+    text-transform: capitalize;}
+
+.units:before {
+    content: '[';}
+
+.units:after {
+    content: ']';}
+
+.right {float: right;}
+.left {float: left;}
+.clear {clear: both;}
+
+.save_image{
+    border-radius: 3px;
+    font-size: 11px;
+    position: relative;
+    right: 15px;}
+
+#graph {
+    padding: 25px;}
+
+#plot { 
+    clear:both;
+    width: 800px;
+    height: 400px;}
+
+#graph,
+#plot,
+#select_dataset,
+#select_variables,
+#controls,
+#results {
+    display: none;}
+
+#set1_variables {
+    margin-right: 20px;}
+
+#controls {
+    margin-right: 20px;
+    font-size: 14px;}
+
+#results {
+    overflow: scroll;}
+
+#results td {
+    font-size: 12px;
+    padding-right: 6px;
+    text-align: right;}
+
+/* Color pulseheight columns in table
+*/
+#results .weather td:nth-child(5),
+#results .weather td:nth-child(7) {color: #222; padding-left: 15px;}
+#results .weather td:nth-child(6),
+#results .weather td:nth-child(8) {color: #D22; padding-left: 15px;}
+
+#results .events td:nth-child(4n+6) {color: #222; padding-left: 15px;}
+#results .events td:nth-child(4n+7) {color: #D22;}
+#results .events td:nth-child(4n+8) {color: #1C2;}
+#results .events td:nth-child(4n+9) {color: #1AA;}
+
+/* Line number column
+*/
+#results td:first-child {
+    font-size: 9px;
+    color: #999;}
+
+
+.ui-widget {
+    font-family: sans-serif;
+    font-size: 0.8em;}
+
+/* Flot styling
+*/
+.yaxisLabel {
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;}
