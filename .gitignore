@@ -1,8 +1,5 @@
-# Eclipse
-.pydevproject
-.metadata
-.project
-.settings
+# Sphinx
+_build/
 
 # OS generated files
 .DS_Store*

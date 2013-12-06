@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+    <head>
+        <meta charset="utf-8">
+        <title>HiSPARC - jSparc - Data retrieval</title>
+        <link rel="icon" type="image/vnd.microsoft.icon" href="images/favicon.ico">
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-1.10.3.custom.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/jquery-ui-timepicker-addon.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="styles/data_retrieval.css" />
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="scripts/jquery-ui-1.10.3.custom.js"></script>
+        <script type="text/javascript" src="scripts/jquery-ui-timepicker-addon.js"></script>
+        <script type="text/javascript" src="scripts/jquery.flot.js"></script>
+        <script type="text/javascript" src="scripts/jquery.flot.time.js"></script>
+        <script type="text/javascript" src="scripts/jquery.flot.canvas.js"></script>
+        <script type="text/javascript" src="scripts/jquery.flot.axislabels.js"></script>
+        <script type="text/javascript" src="jquery.jsparc.js"></script>
+        <script>
+            var jsparc;
+            $(document).ready(function () {
+                $(document).bind('ajaxSend', function() {
+                    $('#pageHeader').addClass('animated');})
+                           .bind('ajaxComplete', function() {
+                    $('#pageHeader').removeClass('animated');});
+                jsparc = $.jsparc();
+                jsparc.make_station_select($('#station_choice'));
+                jsparc.make_datepicker($('#startdate_choice'), -2);
+                jsparc.make_datepicker($('#enddate_choice'), -1);
+                jsparc.set_dataset_list_controls($('#dataset_list'));
+                jsparc.set_flot_options([jsparc.flot_scatter()]);
+
+                // Download button
+                $('#download_dataset').on('click', function() {
+                    jsparc.download_dataset($('#station_choice select').val(),
+                                            $('#startdate_choice').val(),
+                                            $('#enddate_choice').val(),
+                                            $('#type_choice input:checked').val())
+                    .done(function() {$('#select_dataset').show()})
+                });
+
+                // Show plot button
+                $('#make_plot').on('click', function() {
+                    var x = $('#select_variables input[name=x-axis]:checked'),
+                        y = $('#select_variables input[name=y-axis]:checked'),
+                        xset = x.parents('table').attr('name'),
+                        yset = y.parents('table').attr('name');
+                    if ($('#plot_type input:checked').val() == 'histogram') {
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(hist[1], hist[0]));}
+                    if ($('#plot_type input:checked').val() == 'scatter') {
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
+                        if (xset != yset) {
+                            var y_data = jsparc.linear_interpolation(jsparc.get_ext_timestamp(xset),
+                                                                     jsparc.get_ext_timestamp(yset),
+                                                                     jsparc.get_column(y.val(), yset))}
+                        else {
+                            var y_data = jsparc.get_column(y.val(), yset)}
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(jsparc.get_column(x.val(), xset),
+                                                         y_data));}
+                    if ($('#plot_type input:checked').val() == 'timeseries') {
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
+                        jsparc.make_plot($('#plot'),
+                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
+                                                         jsparc.get_column(y.val(), yset)));}
+                    $('#plot').show();
+                    $('#graph').show();
+                    jsparc.show_id('plot');
+                });
+
+                // Show trace button
+                $('#preview').on('click', 'td.trace', function() {
+                    var url = $(this).attr('data-url');
+                    jsparc.get_json(url).done(function(data) {
+                        // Set plot options
+                        jsparc.set_flot_options([]);
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time [ns]'));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('ADCcounts'));
+                        var x_data = jsparc.range(0, 2.5 * data[0].length, 2.5);
+                        jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
+                        $('#plot').show();
+                        $('#graph').show();
+                        jsparc.show_id('plot');
+                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
+                    })
+                });
+
+                // Dataset list buttons
+                $('#dataset_list').on('click', '.preview', function() {
+                    jsparc.create_dataset_table($(this).attr('name'),
+                                                $('#preview'), 29);
+                    $('#results').show();
+                    jsparc.show_id('preview');
+                });
+
+                $('#dataset_list').on('click', '.download', function() {
+                    window.open($(this).attr('name'),'_blank');
+                });
+
+                // Radio buttons
+                $('#dataset_list').on('change', 'input', function() {
+                    jsparc.make_variable_plot_table($(this).val(), $('#' + $(this).attr('name') + '_variables'));
+                    $('#plot_type input:checked').trigger('change');
+                    $('#select_variables').show();
+                });
+
+                $('#select_variables').on('change', 'input', function() {
+                    $('#controls').show();
+                });
+
+                $('#plot_type').on('change', 'input', function() {
+                    if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
+                                                       jsparc.disable_radio_set('y-axis');}
+                    else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
+                                                          jsparc.enable_radio_set('y-axis');}
+                    else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
+                                                             jsparc.enable_radio_set('y-axis');}
+                });
+
+                $('#plot_settings').on('change', 'input', function() {
+                    jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
+                });
+            });
+        </script>
+    </head>
+    <body>
+    <div id="container">
+        <div id="header"><div id="pageHeader"></div></div>
+        <p id="loading" style="display: none;">Loading!</p>
+        <div id="download_data">
+            <h2>Load datasets</h2>
+            <p>Station: <span id="station_choice"></span></p>
+            <p>Start date: <input id="startdate_choice" type="datetime"></p>
+            <p>End date: <input id="enddate_choice" type="datetime"></p>
+            <p>Data type:
+                <span id="type_choice">
+                    <input name="data_type" type="radio" value="events" checked="checked"> Events
+                    <input name="data_type" type="radio" value="weather"> Weather
+                </span>
+            </p>
+            <input type='button' value="Get Data!" id="download_dataset">
+        </div>
+        <div id="select_dataset">
+            <h3>Select datasets to use</h3>
+            <p id="dataset_list"></p>
+        </div>
+        <div id="select_variables">
+            <h3>Select variables and settings to plot</h3>
+            <div id="controls" class="left">
+                <div id="plot_settings">
+                    <span class="key">Plot type:</span><br />
+                    <span id="plot_type">
+                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br />
+                        <input name="plot_type" type="radio" value="histogram"> Histogram<br />
+                        <input name="plot_type" type="radio" value="timeseries"> Time series<br />
+                    </span><br />
+                    <span class="key">x-Axis:</span><br />
+                    <span id="plot_x_axis">
+                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br />
+                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br />
+                    </span><br />
+                    <span class="key">y-Axis:</span><br />
+                    <span id="plot_y_axis">
+                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br />
+                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br />
+                    </span><br />
+                    <span class="key">Histogram:</span><br />
+                    <span id="hist_bins">
+                        Bins: <input name="hist_bins" type="text" style="width: 60px;" value="100"><br />
+                    </span><br />
+                </div>
+                <input type="button" value="Create Plot" id="make_plot">
+            </div>
+            <div id="set1_variables" class="left"></div>
+            <div id="set2_variables" class="left"></div>
+        </div>
+        <div class="clear"></div>
+        <div id="graph">
+            <h3>Plot</h3>
+            <a onclick="jsparc.download_plot()" class="save_image right">Save image</a>
+            <div id="plot"></div>
+        </div>
+        <div id="results">
+            <h3>Raw data in the dataset</h3>
+            <p id="preview"></p>
+        </div>
+    </div>
+    </body>
+</html>
