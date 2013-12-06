@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>HiSPARC trigger simulation</title>
+    <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        function check_trigger() {
+            var on = Math.random()
+            if (on < 0.03) {
+                hisparc.removeClass('none').addClass('trigger');}
+            else {
+                hisparc.removeClass('trigger').addClass('none');}
+        }
+
+        $(function() {
+            hisparc = $('#hisparciii');
+            setInterval(function() {check_trigger()}, 100);
+        });
+    </script>
+    <style>
+        #hisparciii {
+            margin: 0 auto;
+            width: 728px;
+            height: 455px;
+            transition: background 0.05s linear;}
+
+        .trigger {
+            background-image: url('images/hisparciii_front_power_hit_trigger.png');}
+
+        .none {
+            background-image: url('images/hisparciii_front_power_hit.png');}
+    </style>
+</head>
+
+<body>
+    <div id="hisparciii" style="none"></div>
+</body>
+</html>
