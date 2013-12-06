@@ -100,6 +100,17 @@ more by clicking the line in the middle of the shown data. However, if
 you wish to see all data, it is better to download the data to your pc.
 
 
+Event traces
+^^^^^^^^^^^^
+
+Cosmic-ray events consist of signal measurements from each PMT with a
+scintillator detector. Variables like *Pulseheight* and *Arrival time*
+are derived from these signals. These signals are referred to as
+*traces*. When looking at the data for a cosmic-ray dataset the last
+column is called *Traces* and will contains *show* buttons for each
+event. When clicked, the traces are retrieved and them shown in the plot.
+
+
 Multiple detectors
 ------------------
 
