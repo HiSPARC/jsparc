@@ -36,8 +36,9 @@
                     jsparc.download_dataset($('#station_choice select').val(),
                                             $('#startdate_choice').val(),
                                             $('#enddate_choice').val(),
-                                            $('#type_choice input:checked').val());
-                    $('#select_dataset').show();});
+                                            $('#type_choice input:checked').val())
+                    .done(function() {$('#select_dataset').show()})
+                });
 
                 // Show plot button
                 $('#make_plot').on('click', function() {
@@ -70,10 +71,11 @@
                                                          jsparc.get_column(y.val(), yset)));}
                     $('#plot').show();
                     $('#graph').show();
-                    jsparc.show_id('graph');});
+                    jsparc.show_id('plot');
+                });
 
                 // Show trace button
-                $('#results').on('click', 'td.trace', function() {
+                $('#preview').on('click', 'td.trace', function() {
                     var url = $(this).attr('data-url');
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
@@ -84,28 +86,33 @@
                         jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
-                        jsparc.show_id('graph');
+                        jsparc.show_id('plot');
                         jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
-                    })});
+                    })
+                });
 
                 // Dataset list buttons
                 $('#dataset_list').on('click', '.preview', function() {
                     jsparc.create_dataset_table($(this).attr('name'),
-                                                $('#results'), 29);
+                                                $('#preview'), 29);
                     $('#results').show();
-                    jsparc.show_id('results');});
+                    jsparc.show_id('preview');
+                });
 
                 $('#dataset_list').on('click', '.download', function() {
-                    window.open($(this).attr('name'),'_blank');});
+                    window.open($(this).attr('name'),'_blank');
+                });
 
                 // Radio buttons
                 $('#dataset_list').on('change', 'input', function() {
                     jsparc.make_variable_plot_table($(this).val(), $('#' + $(this).attr('name') + '_variables'));
                     $('#plot_type input:checked').trigger('change');
-                    $('#select_variables').show();});
+                    $('#select_variables').show();
+                });
 
                 $('#select_variables').on('change', 'input', function() {
-                    $('#controls').show();});
+                    $('#controls').show();
+                });
 
                 $('#plot_type').on('change', 'input', function() {
                     if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
@@ -113,7 +120,8 @@
                     else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
                                                           jsparc.enable_radio_set('y-axis');}
                     else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
-                                                             jsparc.enable_radio_set('y-axis');}});
+                                                             jsparc.enable_radio_set('y-axis');}
+                });
 
                 $('#plot_settings').on('change', 'input', function() {
                     jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
@@ -174,10 +182,13 @@
         </div>
         <div class="clear"></div>
         <div id="graph">
+            <h3>Plot</h3>
             <a onclick="jsparc.download_plot()" class="save_image right">Save image</a>
             <div id="plot"></div>
         </div>
         <div id="results">
+            <h3>Raw data in the dataset</h3>
+            <p id="preview"></p>
         </div>
     </div>
     </body>
