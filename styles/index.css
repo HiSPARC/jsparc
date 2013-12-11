@@ -30,6 +30,12 @@ html {
     float: left;
     width: 50%;}
 
+#docs-content {
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: 50%;}
+
 h2 {
     margin-top: 25px;}
 

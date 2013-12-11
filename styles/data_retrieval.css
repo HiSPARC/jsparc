@@ -25,12 +25,22 @@ body {
 #pageHeader.animated {
     background: url(../images/HiSPARC_animated.gif) top right no-repeat;}
 
-
 #loading {
     position: absolute;
     top: 5px;
     right: 5px;
     font-weight: bold;}
+
+#doc_link a {
+    font-size: 80%;
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    top: 10px;
+    margin-right: 15px;
+    float: right;}
 
 ul {
     list-style: none;}
