@@ -19,6 +19,13 @@ and two forms with which you can either download data or load local
 datafiles. Whenever the |hisparc| logo becomes animated, it indicates
 that data is being retrieved from the |hisparc| servers.
 
+.. _get_data:
+.. figure:: images/get_data.png
+   :align: center
+   :width: 425
+
+   The two forms to load data and the |hisparc| logo indicating activity.
+
 
 Download data
 ^^^^^^^^^^^^^
@@ -51,6 +58,13 @@ another.
 For each downloaded dataset you can see the options that were used in
 the form, the number of entries it contains. Each row also has controls
 to choose, preview, download and remove a dataset.
+
+.. _data_overview:
+.. figure:: images/data_overview.png
+   :align: center
+   :width: 425
+
+   An overview of the loaded datasets.
 
 
 Controls
@@ -85,6 +99,14 @@ and the plot will be shown in a new section appearing under these
 options. If you wish to create a different plot, simply change the
 options and click *Create Plot* button again.
 
+.. _plot_options:
+.. figure:: images/plot_options.png
+   :align: center
+   :width: 425
+
+   Options for creating plots and variable lists to select which
+   variables to plot.
+
 
 Interpolation
 ^^^^^^^^^^^^^
@@ -107,6 +129,13 @@ right is a *Save image* button that will open a new window with a .png
 version of the plot, which can be saved to your pc. Currently there are
 no options to change axis limits (zoom in, move around).
 
+.. _plot:
+.. figure:: images/plot.png
+   :align: center
+   :width: 425
+
+   An example plot of barometer data.
+
 
 Data preview
 ------------
@@ -118,6 +147,13 @@ would take the browser to long to display all data rows. You can shows
 more by clicking the line in the middle of the shown data. However, if
 you wish to see all data, it is better to download the data to your pc.
 
+.. _data_preview:
+.. figure:: images/data_preview.png
+   :align: center
+   :width: 425
+
+   The data preview table showing the raw values in the dataset.
+
 
 Event traces
 ^^^^^^^^^^^^
@@ -128,6 +164,13 @@ are derived from these signals. These signals are referred to as
 *traces*. When looking at the data for a cosmic-ray dataset the last
 column is called *Traces* and will contains *show* buttons for each
 event. When clicked, the traces are retrieved and them shown in the plot.
+
+.. _event_traces:
+.. figure:: images/event_traces.png
+   :align: center
+   :width: 425
+
+   The traces of a chosen event.
 
 
 Multiple detectors
