@@ -91,6 +91,35 @@ be stored as strings.
                    });
         }
 
+        jsparc.load_dataset = load_dataset;
+        function load_dataset(file, done) {
+            /* Load datafiles from the local machine
+
+            The filename will be used as key to reference the data
+
+            */
+            console.log(file);
+            var reader = new FileReader();
+            if (datasets[file.name]) {
+                alert('That dataset is already available');
+                return;}
+            reader.onload = function(event) {
+                var data = parse_csv(event.target.result),
+                    info = parse_filename(file.name);
+                if (!data.length) {
+                    alert('No data in the chosen file');}
+                else {
+                    datasets[file.name] = ({data: data,
+                                            station_number: info['station_number'],
+                                            startdate: info['startdate'],
+                                            enddate: info['enddate'],
+                                            type: info['type'],
+                                            url: file.name});
+                    update_dataset_table();}
+                };
+            reader.readAsText(file);
+        }
+
         jsparc.remove_dataset = remove_dataset;
         function remove_dataset(url) {
             /* Remove a specific dataset
@@ -925,6 +954,57 @@ be stored as strings.
 
 
         // Helper functions
+
+        jsparc.parse_filename = parse_filename;
+        function parse_filename(filename) {
+            /* Get data type, station number, start and end date from csv name
+
+            name should be of format: '[type]-s[station number]-[date]'
+            where date can be one of the following formats:
+                '[start date]'
+                '[start date]_[end date]'
+                '[start date]_[start time]_[end date]_[end time]'
+
+            */
+            var delimiter = '-',
+                date_delimiter = '_',
+                empty = '',
+                extension = '.csv';
+
+            var start, end;
+
+            var parts = filename.replace(extension, empty).split(delimiter),
+                date = parts[2].split(date_delimiter);
+
+            if (date.length == 1) {
+                start = date[0].substr(0, 4) + '-' +
+                        date[0].substr(4, 2) + '-' +
+                        date[0].substr(6, 2) + ' 00:00';
+                end = '1 day later';}
+            else if (date.length == 2) {
+                start = date[0].substr(0, 4) + '-' +
+                        date[0].substr(4, 2) + '-' +
+                        date[0].substr(6, 2) + '00:00';
+                end = date[1].substr(0, 4) + '-' +
+                      date[1].substr(4, 2) + '-' +
+                      date[1].substr(6, 2) + ' 00:00';}
+            else if (date.length == 4) {
+                start = date[0].substr(0, 4) + '-' +
+                        date[0].substr(4, 2) + '-' +
+                        date[0].substr(6, 2) + ' ' +
+                        date[1].substr(0, 2) + ':' +
+                        date[1].substr(2, 2);
+                end = date[2].substr(0, 4) + '-' +
+                      date[2].substr(4, 2) + '-' +
+                      date[2].substr(6, 2) + ' ' +
+                      date[3].substr(0, 2) + ':' +
+                      date[3].substr(2, 2);}
+
+            return {'type': parts[0],
+                    'station_number': parts[1].substring(1),
+                    'startdate': start,
+                    'enddate': end};
+        }
 
         jsparc.parse_csv = parse_csv;
         function parse_csv(csv) {
