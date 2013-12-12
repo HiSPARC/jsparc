@@ -31,6 +31,10 @@ body {
     right: 5px;
     font-weight: bold;}
 
+#doc_link {
+    width: 100%;
+    height: 16px;}
+
 #doc_link a {
     font-size: 80%;
     cursor: pointer;
@@ -38,7 +42,6 @@ body {
     text-decoration: none;
     font-weight: bold;
     position: relative;
-    top: 10px;
     margin-right: 15px;
     float: right;}
 
@@ -57,6 +60,17 @@ td {
 
 .key {
     font-weight: bold;}
+
+#download_data,
+#load_data {
+    width: 50%;
+    float: left;}
+
+#file_choice {
+    width: 100%;}
+
+#dataset_list table {
+    width: 100%;}
 
 #dataset_list td,
 #set1_variables td:not(:nth-child(n+3)),
@@ -105,11 +119,11 @@ td {
     position: relative;
     right: 15px;}
 
-#graph {
-    padding: 25px;}
+#graph {}
 
 #plot { 
-    clear:both;
+    margin: 25px;
+    clear: both;
     width: 800px;
     height: 400px;}
 
@@ -121,14 +135,18 @@ td {
 #results {
     display: none;}
 
-#set1_variables {
-    margin-right: 20px;}
+#set1_variables,
+#set2_variables {
+    width: 42%;}
 
 #controls {
-    margin-right: 20px;
+    width: 16%;
     font-size: 14px;}
 
 #results {
+    }
+
+#preview {
     overflow: scroll;}
 
 #results td {

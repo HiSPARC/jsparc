@@ -40,6 +40,12 @@
                     .done(function() {$('#select_dataset').show()})
                 });
 
+                // Load data button
+                $('#load_dataset').on('click', function() {
+                    jsparc.load_dataset($('#file_choice')[0].files[0]);
+                    $('#select_dataset').show();
+                });
+
                 // Show plot button
                 $('#make_plot').on('click', function() {
                     var x = $('#select_variables input[name=x-axis]:checked'),
@@ -137,7 +143,8 @@
             <a href="http://docs.hisparc.nl/jsparc/data_retrieval.html" target="jsparc_doc">➔ Documentation</a>
         </div>
         <div id="download_data">
-            <h2>Load datasets</h2>
+            <h2>Download data</h2>
+            <p>Get data from the HiSPARC server.</p>
             <p>Station: <span id="station_choice"></span></p>
             <p>Start date: <input id="startdate_choice" type="datetime"></p>
             <p>End date: <input id="enddate_choice" type="datetime"></p>
@@ -149,6 +156,13 @@
             </p>
             <input type='button' value="Get Data!" id="download_dataset">
         </div>
+        <div id="load_data">
+            <h2>Load local file</h2>
+            <p>Import a downloaded .csv file.</p>
+            <p><input id="file_choice" type="file" accept="text/csv"></p>
+            <input type='button' value="Load Data!" id="load_dataset">
+        </div>
+        <div class="clear"></div>
         <div id="select_dataset">
             <h3>Select datasets to use</h3>
             <p id="dataset_list"></p>

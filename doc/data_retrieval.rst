@@ -15,23 +15,56 @@ Get data
 --------
 
 The page will be quite empty at first and only show the |hisparc| logo
-and a form with which you can download data. First you can choose a
-|hisparc| station, the Start and End date (and time) and the type of
-data you want to get. Once you have made your choices click *Get Data*.
+and two forms with which you can either download data or load local
+datafiles. Whenever the |hisparc| logo becomes animated, it indicates
+that data is being retrieved from the |hisparc| servers.
 
-The |hisparc| logo should become animated, indicating the data is being
-retrieved from the |hisparc| servers. Once the data has been downloaded
-a new section on the website appears, giving you and overview of all the
-datasets that you have downloaded. It is possible to get multiple
-datasets, simply use the form again.
+.. _get_data:
+.. figure:: images/get_data.png
+   :align: center
+   :width: 425
+
+   The two forms to load data and the |hisparc| logo indicating activity.
+
+
+Download data
+^^^^^^^^^^^^^
+
+If you choose to download data you can first select a |hisparc| station,
+the start and end date (and time) and the type of data you want to get.
+Once you have made your choices click *Get Data!*.
+
+
+Local data
+^^^^^^^^^^
+
+If you already have a .csv file (tab-separated values) on your computer,
+you can load that into the web application. The application will try to
+interpert the filename of the .csv the following way: *[data
+type]-s[station number]-[start date]_[end date]*. If the data type is
+one of the types provided by the |hisparc| Public Database the web
+application tries to identify the columns, otherwise it will simply
+give each column a number.
 
 
 Data overview
 -------------
 
-The next section is the overview of all datasets that you have loaded.
-For each dataset you can see the variables that were used in the form to
-download it, the number of entries it contains, and some controls.
+Once the data has been (down)loaded a new section on the website
+appears, giving you and overview of all the datasets that you have. It
+is possible to get multiple datasets, simply use the form again to get
+another.
+
+For each downloaded dataset you can see the options that were used in
+the form, the number of entries it contains. Each row also has controls
+to choose, preview, download and remove a dataset.
+
+.. _data_overview:
+.. figure:: images/data_overview.png
+   :align: center
+   :width: 425
+
+   An overview of the loaded datasets.
 
 
 Controls
@@ -66,6 +99,14 @@ and the plot will be shown in a new section appearing under these
 options. If you wish to create a different plot, simply change the
 options and click *Create Plot* button again.
 
+.. _plot_options:
+.. figure:: images/plot_options.png
+   :align: center
+   :width: 425
+
+   Options for creating plots and variable lists to select which
+   variables to plot.
+
 
 Interpolation
 ^^^^^^^^^^^^^
@@ -88,6 +129,13 @@ right is a *Save image* button that will open a new window with a .png
 version of the plot, which can be saved to your pc. Currently there are
 no options to change axis limits (zoom in, move around).
 
+.. _plot:
+.. figure:: images/plot.png
+   :align: center
+   :width: 425
+
+   An example plot of barometer data.
+
 
 Data preview
 ------------
@@ -99,6 +147,13 @@ would take the browser to long to display all data rows. You can shows
 more by clicking the line in the middle of the shown data. However, if
 you wish to see all data, it is better to download the data to your pc.
 
+.. _data_preview:
+.. figure:: images/data_preview.png
+   :align: center
+   :width: 425
+
+   The data preview table showing the raw values in the dataset.
+
 
 Event traces
 ^^^^^^^^^^^^
@@ -109,6 +164,13 @@ are derived from these signals. These signals are referred to as
 *traces*. When looking at the data for a cosmic-ray dataset the last
 column is called *Traces* and will contains *show* buttons for each
 event. When clicked, the traces are retrieved and them shown in the plot.
+
+.. _event_traces:
+.. figure:: images/event_traces.png
+   :align: center
+   :width: 425
+
+   The traces of a chosen event.
 
 
 Multiple detectors
