@@ -15,23 +15,42 @@ Get data
 --------
 
 The page will be quite empty at first and only show the |hisparc| logo
-and a form with which you can download data. First you can choose a
-|hisparc| station, the Start and End date (and time) and the type of
-data you want to get. Once you have made your choices click *Get Data*.
+and two forms with which you can either download data or load local
+datafiles. Whenever the |hisparc| logo becomes animated, it indicates
+that data is being retrieved from the |hisparc| servers.
 
-The |hisparc| logo should become animated, indicating the data is being
-retrieved from the |hisparc| servers. Once the data has been downloaded
-a new section on the website appears, giving you and overview of all the
-datasets that you have downloaded. It is possible to get multiple
-datasets, simply use the form again.
+
+Download data
+^^^^^^^^^^^^^
+
+If you choose to download data you can first select a |hisparc| station,
+the start and end date (and time) and the type of data you want to get.
+Once you have made your choices click *Get Data!*.
+
+
+Local data
+^^^^^^^^^^
+
+If you already have a .csv file (tab-separated values) on your computer,
+you can load that into the web application. The application will try to
+interpert the filename of the .csv the following way: *[data
+type]-s[station number]-[start date]_[end date]*. If the data type is
+one of the types provided by the |hisparc| Public Database the web
+application tries to identify the columns, otherwise it will simply
+give each column a number.
 
 
 Data overview
 -------------
 
-The next section is the overview of all datasets that you have loaded.
-For each dataset you can see the variables that were used in the form to
-download it, the number of entries it contains, and some controls.
+Once the data has been (down)loaded a new section on the website
+appears, giving you and overview of all the datasets that you have. It
+is possible to get multiple datasets, simply use the form again to get
+another.
+
+For each downloaded dataset you can see the options that were used in
+the form, the number of entries it contains. Each row also has controls
+to choose, preview, download and remove a dataset.
 
 
 Controls
