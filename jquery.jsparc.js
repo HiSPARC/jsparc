@@ -53,8 +53,38 @@ be stored as strings.
                               'rain_rate': {'column': 13, 'units': 'mm/h'},
                               'heat_index': {'column': 14, 'units': '°C'},
                               'dew_point': {'column': 15, 'units': '°C'},
-                              'wind_chill': {'column': 16, 'units': '°C'}};
+                              'wind_chill': {'column': 16, 'units': '°C'}},
+            eventtime_format = {'bin': {'column': 0, 'units': 'hour'},
+                                'events': {'column': 1, 'units': 'count'}},
+            pulseheight_format = {'bin': {'column': 0, 'units': 'mV'},
+                                  'pulseheight': {'column': [1, 2, 3, 4], 'units': 'count'}},
+            pulseintegral_format = {'bin': {'column': 0, 'units': 'mV.ns'},
+                                    'integral': {'column': [1, 2, 3, 4], 'units': 'count'}},
+            temperature_format = {'timestamp': {'column': 0, 'units': 's'},
+                                  'temperature_outside': {'column': 1, 'units': '°C'}},
+            barometer_format = {'timestamp': {'column': 0, 'units': 's'},
+                                'atmospheric_pressure': {'column': 1, 'units': 'hPa'}},
+            voltage_format = {'timestamp': {'column': 0, 'units': 's'},
+                              'pmt_voltage': {'column': [1, 2, 3, 4], 'units': 'V'}},
+            current_format = {'timestamp': {'column': 0, 'units': 's'},
+                              'pmt_current': {'column': [1, 2, 3, 4], 'units': 'mA'}},
+            gps_format = {'timestamp': {'column': 0, 'units': 's'},
+                          'latitude': {'column': 1, 'units': '°'},
+                          'longitude': {'column': 2, 'units': '°'},
+                          'altitude': {'column': 3, 'units': 'm'}};
 
+        // Create format for unknown type
+
+        jsparc.unknown_format = unknown_format;
+        function unknown_format(url) {
+            /* Create a generic column format for unknown dataset types
+            */
+            var unknown_format = {} ,
+                n_columns = datasets[url].data[0].length;
+            for (var i = 0; i < n_columns; i++) {
+                unknown_format['column_' + i] = {'column': i, 'units': ''};}
+            return unknown_format;
+        }
 
         // Data container
 
@@ -89,6 +119,34 @@ be stored as strings.
                                              url: url});
                            update_dataset_table();}
                    });
+        }
+
+        jsparc.load_dataset = load_dataset;
+        function load_dataset(file, done) {
+            /* Load datafiles from the local machine
+
+            The filename will be used as key to reference the data
+
+            */
+            var reader = new FileReader();
+            if (datasets[file.name]) {
+                alert('That dataset is already available');
+                return;}
+            reader.onload = function(event) {
+                var data = parse_csv(event.target.result),
+                    info = parse_filename(file.name);
+                if (!data.length) {
+                    alert('No data in the chosen file');}
+                else {
+                    datasets[file.name] = ({data: data,
+                                            station_number: info['station_number'],
+                                            startdate: info['startdate'],
+                                            enddate: info['enddate'],
+                                            type: info['type'],
+                                            url: file.name});
+                    update_dataset_table();}
+                };
+            reader.readAsText(file);
         }
 
         jsparc.remove_dataset = remove_dataset;
@@ -129,7 +187,7 @@ be stored as strings.
 
         jsparc.sort_extendedtimestamps = sort_extendedtimestamps;
         function sort_extendedtimestamps(a, b) {
-            /* Sort by extended timestamps
+            /* Sort events by extended timestamps
 
             First sort by timestamp, if they are the same, use the nanoseconds
 
@@ -141,7 +199,7 @@ be stored as strings.
 
         jsparc.sort_timestamps = sort_timestamps;
         function sort_timestamps(a, b) {
-            /* Sort by timestamp
+            /* Sort weather data by timestamp
              */
             var t = weather_format.timestamp.column;
             return a[t] - b[t];
@@ -157,7 +215,7 @@ be stored as strings.
                     return false;}} // Not all of same type!
 
             var combined_dataset = [];
-            combined_dataset = combined_dataset.concat.apply([], urls.map(function (url) {return datasets[url].data;}));
+            combined_dataset = combined_dataset.concat.apply([], urls.map(function(url) {return datasets[url].data;}));
             return combined_dataset;
         }
 
@@ -226,7 +284,7 @@ be stored as strings.
             if (type == 'events') {
                 var ext_timestamps = make_ext_timestamp(get_column('timestamp', url),
                                                         get_column('nanoseconds', url));}
-            else if (type == 'weather') {
+            else {
                 var ext_timestamps = make_ext_timestamp(get_column('timestamp', url));}
             return ext_timestamps;
         }
@@ -242,13 +300,23 @@ be stored as strings.
             */
             var data = datasets[url].data,
                 type = datasets[url].type,
-                column = [];
+                column = [],
+                format;
+
             if (column_name == 'event_rate') {
                 return generate_event_rate(url);}
-            else if (type == 'events') {
-                var col = events_format[column_name].column;}
-            else if (type == 'weather') {
-                var col = weather_format[column_name].column;}
+
+            try {
+                format = eval(type + '_format');}
+            catch (e) {
+                format = unknown_format(url);}
+
+            try {
+                var col = format[column_name].column;}
+            catch (e) {
+                var error = 'No column named: ' + column_name + ', in dataset: ' + url;
+                alert(error);
+                throw error;}
 
             if (col.length) {
                 for (var i = 0; i < col.length; i++) {
@@ -362,7 +430,7 @@ be stored as strings.
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
                 row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
                 row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
-                row.append($('<td>').text('↓').addClass('download').attr('name', datasets[i].url + '&download=true'));
+                row.append($('<td>').text('get csv').addClass('download').attr('name', datasets[i].url + '&download=true'));
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
             target.html(list);
@@ -392,11 +460,16 @@ be stored as strings.
             */
             var type = datasets[url].type,
                 target = target || $('#set_variables'),
-                format = (type == 'events') ? events_format : weather_format,
+                format,
                 header = $('<span>').addClass('key').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
                 eventraterow = $('<tr>');
+            try {
+                format = eval(type + '_format');}
+            catch (e) {
+                format = unknown_format(url);}
+
             firstrow.append($('<th>').text('x-Axis'));
             firstrow.append($('<th>').text('y-Axis'));
             firstrow.append($('<th>').text('Variable'));
@@ -404,11 +477,12 @@ be stored as strings.
             list.append(firstrow);
             /* Add Event Rate as variable
             */
-            eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
-            eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
-            eventraterow.append($('<td>').text('Event rate'));
-            eventraterow.append($('<td>').text('Hz').addClass('units'));
-            list.append(eventraterow);
+            if (format.hasOwnProperty('timestamp')) {
+                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
+                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
+                eventraterow.append($('<td>').text('Event rate'));
+                eventraterow.append($('<td>').text('Hz').addClass('units'));
+                list.append(eventraterow);}
             for (var i in format) {
                 if (i == 'date' || i == 'time') {continue}
                 var row = $('<tr>').attr('name', i);
@@ -426,18 +500,28 @@ be stored as strings.
             /* Create a table representation of a dataset
             */
             var dataset = datasets[url],
+                type = dataset.type,
                 target = (target) ? target : $('#dataTable'),
                 limit = (limit) ? limit : dataset.data.length,
                 table = $('<table>').addClass(dataset.type);
 
+            if (limit > dataset.data.length) {
+                limit = dataset.data.length;}
+
             // Header row
             var firstrow = $('<tr>'),
-                type = (dataset.type == 'events') ? events_format : weather_format;
+                format;
+
+            try {
+                format = eval(type + '_format');}
+            catch (e) {
+                format = unknown_format(url);}
+
             firstrow.append($('<th>').text('#'));
-            for (var key in type) {
-                var ncol = (type[key].column.length) ? type[key].column.length : 1;
+            for (var key in format) {
+                var ncol = (format[key].column.length) ? format[key].column.length : 1;
                 firstrow.append($('<th>').text(key).attr('colspan', ncol));}
-            if (dataset.type == 'events') {
+            if (type == 'events') {
                 firstrow.append($('<th>').text('trace'));}
             table.append(firstrow);
 
@@ -447,7 +531,7 @@ be stored as strings.
                 row.append($('<td>').text(i + 1));
                 for (var j = 0; j < dataset.data[i].length; j++) {
                     row.append($('<td>').text(dataset.data[i][j]));}
-                if (dataset.type == 'events') {
+                if (type == 'events') {
                     row.append($('<td>').text('show').addClass('trace').attr('data-url', api_event_trace(dataset.station_number, make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3]))));}
                 table.append(row);
                 if (limit != dataset.data.length && i == Math.floor(limit / 2) - 1) {
@@ -926,6 +1010,69 @@ be stored as strings.
 
         // Helper functions
 
+        jsparc.parse_filename = parse_filename;
+        function parse_filename(filename) {
+            /* Get data type, station number, start and end date from csv name
+
+            name should be of format: '[type]-s[station number]-[date]'
+            where date can be one of the following formats:
+                '[start date]'
+                '[start date]_[end date]'
+                '[start date]_[start time]_[end date]_[end time]'
+            where date should be yyyymmdd and time hhmmss
+
+            */
+            var delimiter = '-',
+                date_delimiter = '_',
+                empty = '',
+                extension = '.csv';
+
+            var start, end;
+
+            try {
+                var parts = filename.replace(extension, empty).split(delimiter);
+
+                if (parts.length > 2) {
+                    var date = parts[2].split(date_delimiter);
+
+                    if (date.length == 1) {
+                        start = date[0].substr(0, 4) + '-' +
+                                date[0].substr(4, 2) + '-' +
+                                date[0].substr(6, 2) + ' 00:00';
+                        end = '1 day later';}
+                    else if (date.length == 2) {
+                        start = date[0].substr(0, 4) + '-' +
+                                date[0].substr(4, 2) + '-' +
+                                date[0].substr(6, 2) + '00:00';
+                        end = date[1].substr(0, 4) + '-' +
+                              date[1].substr(4, 2) + '-' +
+                              date[1].substr(6, 2) + ' 00:00';}
+                    else if (date.length == 4) {
+                        start = date[0].substr(0, 4) + '-' +
+                                date[0].substr(4, 2) + '-' +
+                                date[0].substr(6, 2) + ' ' +
+                                date[1].substr(0, 2) + ':' +
+                                date[1].substr(2, 2);
+                        end = date[2].substr(0, 4) + '-' +
+                              date[2].substr(4, 2) + '-' +
+                              date[2].substr(6, 2) + ' ' +
+                              date[3].substr(0, 2) + ':' +
+                              date[3].substr(2, 2);}}
+                else {
+                    start = 'start';
+                    end = 'now';}
+
+                return {'type': parts[0],
+                        'station_number': parts[1].substring(1),
+                        'startdate': start,
+                        'enddate': end};}
+            catch (e) {
+                return {'type': 'other',
+                        'station_number': filename,
+                        'startdate': 'unknown',
+                        'enddate': 'unknown'};}
+        }
+
         jsparc.parse_csv = parse_csv;
         function parse_csv(csv) {
             /* Convert downloaded csv to 2D Array
@@ -942,8 +1089,9 @@ be stored as strings.
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 values = lines[i].split(delimiter);
-                for (var j = 2; j < values.length; j++) {
-                    values[j] = parseFloat(values[j]);}
+                for (var j = 0; j < values.length; j++) {
+                    // If parsed float value is different from original use the string value (date or time)
+                    values[j] = (parseFloat(values[j]) == values[j]) ? parseFloat(values[j]) : values[j];}
                 data.push(values);}
             return data;
         }
@@ -986,35 +1134,45 @@ be stored as strings.
             when determining the minimum from the data.
 
             */
+            var nbins, mn, mx;
+
             if (bins instanceof Array) {
-                var nbins = bins.length,
-                    mn = bins[0],
-                    mx = bins[nbins - 1] + (bins[1] - bins[0]);}
+                // Use given bins
+                nbins = bins.length;
+                mn = bins[0];
+                mx = bins[nbins - 1] + (bins[1] - bins[0]);}
             else {
-                var nbins = bins || 100,
-                    mn = a[0][0],
-                    mx = a[0][0];
+                // Determine min/max for bin range
+                nbins = bins || 100;
                 if (a[0] instanceof Array) {
+                    mn = a[0][0];
+                    mx = a[0][0];
                     for (var i = 0; i < a.length; i++) {
                         for (var j = 0; j < a[i].length; j++) {
                             mn = (a[i][j] > mn || a[i][j] == -999 || a[i][j] == -1) ? mn : a[i][j];
                             mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
+                    mn = a[0];
+                    mx = a[0];
                     for (var i = 0; i < a.length; i++) {
                         mn = (a[i] > mn || a[i] == -999 || a[i] == -1) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
                 bins = range(mn, mx, (mx - mn) / nbins);}
+
             var n = [];
 
             if (a[0] instanceof Array) {
+                // histogram for each set of values
                 for (var i = 0; i < a.length; i++) {
                     n[i] = histogram(a[i], bins)[0];}
                 return [n, bins];}
 
             for (var i = 0; i < nbins; i++) {
+                // prepare count array
                 n[i] = 0;}
 
             for (var j = 0; j < a.length; j++) {
+                // bin the values
                 if (a[j] == mx) {
                     n[nbins - 1]++;}
                 else {
