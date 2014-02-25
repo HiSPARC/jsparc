@@ -1,7 +1,7 @@
 #datum-id {
     width: 440px;
     height: 25px;
-    background-color: #B8B8E6;
+    background-color: #ddd;
     border-radius: 5px 5px 0px 0px;
     text-align: center;
     font-size: .95em;
@@ -75,10 +75,10 @@
 
 body {
     position: relative;
-    color: #333;
+    color: #000;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1em;
-    background: #ccf;}
+    background: #fff;}
 
 img {
     border: 0px;}
@@ -90,8 +90,8 @@ input {
 
 input[disabled='disabled'] {
     background-color: #fff;
-    color: #222;
-    -webkit-text-fill-color: #222;}
+    color: #111;
+    -webkit-text-fill-color: #111;}
 
 input[type="button"] {
     font-family: "Trebuchet MS", Arial;
@@ -108,18 +108,16 @@ input[type="button"] {
     width: 325px;}
 
 #datum {
-    margin-right: 30px;
-}
+    margin-right: 30px;}
 
 #datum, #gmst {
-    font-family: Arial, Sans-Serif;
-}
+    font-family: Arial, Sans-Serif;}
 
 table {
     border: 0px;}
 
 .tracegraph, .coincidencegraph, .jqplot-yaxis-label {
-    color: #111;}
+    color: #000;}
 
 .olControlAttribution {
     position: absolute;
@@ -142,11 +140,11 @@ table {
 
 .det1 {
     background: #222;
-    color: #ddf;}
+    color: #fff;}
 
 .det2 {
     background: #D22;
-    color: #ddf;}
+    color: #fff;}
 
 .det3 {
     background: #1C2;}
@@ -157,12 +155,12 @@ table {
 #choice0 {
     background: #600;
     visibility: hidden;
-    color: #ddf;}
+    color: #fff;}
 
 #choice1 {
     background: #f00;
     display: none;
-    color: #ddf;}
+    color: #fff;}
 
 #choice2 {
     background: #f90;
