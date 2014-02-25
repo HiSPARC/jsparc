@@ -5,23 +5,24 @@
    About: Copyright & License
 
    Copyright (c) 2010 - 2011 Niek Schultheiss / HiSPARC
-   jSparc is currently available for use in all personal or commercial projects
-   under both the MIT and GPL version 2.0 licenses. This means that you can
-   choose the license that best suits your project and use it accordingly.
+   jSparc is currently available for use in all personal or commercial
+   projects under the GPLv3.0 license.
 
-   See http://www.gnu.org/licenses/gpl-2.0.html
-   and http://www.opensource.org/licenses/mit-license.php for further information.
+   For more information:
+   https://github.com/HiSPARC/jsparc/blob/master/LICENSE
 
    Code available on https://github.com/HiSPARC/jsparc
 
    About: Introduction
 
-   The function "showerEnergy(data)" is used to make a map with the stations and the
-   showerlocation for the HiSPARC-project. The shower can be dragged across the map.
-   The measured number of MIP's (minimal ionising particles) of one station is used to
-   calculate the number of MIP's of the other stations. When the number of measured
-   MIP's is equal to the the number of calculated MIP's, a location of the shower and an
+   The function "makeShowerMap" is used to make a map with the HiSPARC
+   stations and the shower core location. The shower core can be dragged
+   across the map. The measured number of MIP's (minimum ionizing
+   particles) of one station is used to calculate the number of MIP's of
+   the other stations. When the number of measured MIP's is equal to the
+   the number of calculated MIP's, a location of the shower and an
    energy of the shower have been found.
+
    The variable "data" is a JSON of the form:
 
    {timestamp: "coincidence timestamp",
@@ -407,11 +408,11 @@ function plotGraph(htmlInfo, data) {
 
     var eventColors = [];
     var _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"]
-    
+
     for (j=0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
             eventColors.push(_eventColors[j])}}
-    
+
     var _eventPlotStyle = {
         seriesColors: eventColors,
         title: "Coincidence",
@@ -452,7 +453,7 @@ function plotGraph(htmlInfo, data) {
                 yaxis: {
                     min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
                     max: 0}}};
-    
+
         var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
 
         diagramID = htmlInfo.chartId + j;

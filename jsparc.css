@@ -20,11 +20,11 @@
     position: absolute;
     margin: 0px;
     left: 350px;
-    top: 480px;}
+    top: 490px;}
 
 #map-id {
     width: 450px;
-    height: 445px;
+    height: 455px;
     position: absolute;
     margin: 0px;
     left: 350px;
@@ -39,13 +39,32 @@
     left: 805px;
     top: 0px;}
 
+#doc_link {
+    width: 190px;
+    height: 18px;
+    padding: 0px;
+    position: absolute;
+    margin: 0px;
+    left: 805px;
+    top: 65px;}
+
+#doc_link a {
+    font-size: 80%;
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    margin-right: 15px;
+    float: right;}
+
 #dashboard {
     height: 470px;
     padding: 5px;
     position: absolute;
     margin: 0px;
     left: 805px;
-    top: 65px;}
+    top: 80px;}
 
 #graph-id {
     width: 335px;
@@ -58,7 +77,7 @@
 
 #choice {
     width: 335px;
-    margin-bottom: 5px;}
+    margin-bottom: 15px;}
 
 #tracelegend {
     width: 335px;
