@@ -215,7 +215,8 @@ be stored as strings.
                     return false;}} // Not all of same type!
 
             var combined_dataset = [];
-            combined_dataset = combined_dataset.concat.apply([], urls.map(function(url) {return datasets[url].data;}));
+            combined_dataset = combined_dataset.concat.apply(
+                    [], urls.map(function(url) {return datasets[url].data;}));
             return combined_dataset;
         }
 
@@ -371,7 +372,7 @@ be stored as strings.
 
         jsparc.make_station_select = make_station_select;
         function make_station_select(target) {
-            /* Create a select menu to choose a station
+            /* Create a select menu to choose a single station
             */
             var url = api_stations();
             return get_json(url)
@@ -422,15 +423,18 @@ be stored as strings.
             list.append(firstrow);
             for (var i in datasets) {
                 var row = $('<tr>').attr('name', datasets[i].url);
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set1').attr('alt', 'set2').val(i)));
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'set2').attr('alt', 'set1').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('name', 'set1').attr('alt', 'set2').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('name', 'set2').attr('alt', 'set1').val(i)));
                 row.append($('<td>').text(datasets[i].station_number).addClass('station'));
                 row.append($('<td>').text(datasets[i].type).addClass('type'));
                 row.append($('<td>').text(datasets[i].startdate).addClass('start'));
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
                 row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
                 row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
-                row.append($('<td>').text('get csv').addClass('download').attr('name', datasets[i].url + '&download=true'));
+                row.append($('<td>').text('get csv').addClass('download')
+                                    .attr('name', datasets[i].url + '&download=true'));
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
             target.html(list);
@@ -478,16 +482,20 @@ be stored as strings.
             /* Add Event Rate as variable
             */
             if (format.hasOwnProperty('timestamp')) {
-                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
-                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
+                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio')
+                            .attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
+                eventraterow.append($('<td>').append($('<input>').attr('type', 'radio')
+                            .attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
                 eventraterow.append($('<td>').text('Event rate'));
                 eventraterow.append($('<td>').text('Hz').addClass('units'));
                 list.append(eventraterow);}
             for (var i in format) {
                 if (i == 'date' || i == 'time') {continue}
                 var row = $('<tr>').attr('name', i);
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'x-axis').attr('alt', 'y-axis').val(i)));
-                row.append($('<td>').append($('<input>').attr('type', 'radio').attr('name', 'y-axis').attr('alt', 'x-axis').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio')
+                   .attr('name', 'x-axis').attr('alt', 'y-axis').val(i)));
+                row.append($('<td>').append($('<input>').attr('type', 'radio')
+                   .attr('name', 'y-axis').attr('alt', 'x-axis').val(i)));
                 row.append($('<td>').text(i).addClass('variable'));
                 row.append($('<td>').text(format[i].units).addClass('units'));
                 list.append(row);}
@@ -532,12 +540,14 @@ be stored as strings.
                 for (var j = 0; j < dataset.data[i].length; j++) {
                     row.append($('<td>').text(dataset.data[i][j]));}
                 if (type == 'events') {
-                    row.append($('<td>').text('show').addClass('trace').attr('data-url', api_event_trace(dataset.station_number, make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3]))));}
+                    var t = make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3])
+                    var url = api_event_trace(dataset.station_number, t);
+                    row.append($('<td>').text('show').addClass('trace').attr('data-url', url));}
                 table.append(row);
                 if (limit != dataset.data.length && i == Math.floor(limit / 2) - 1) {
                     var truncrow = $('<tr>');
                     truncrow.append($('<td>')
-                                    .text('... truncated table (click to show more)')
+                                    .text('... truncated table, click here to show more rows ...')
                                     .attr('colspan', dataset.data[0].length + 1)
                                     .css('text-align', 'left')
                                     .click(function() {create_dataset_table(url, target, limit * 2);}));
@@ -683,7 +693,7 @@ be stored as strings.
             session_title, session_pin, student_name
 
             */
-            return [JSPARC_URL, 'get_coincidence', ''].join('/') +  '?' + $.param(get_coincidence);}
+            return [JSPARC_URL, 'get_coincidence', ''].join('/') + '?' + $.param(get_coincidence);}
 
         jsparc.jsparc_result = jsparc_result;
         function jsparc_result(result) {
@@ -693,7 +703,7 @@ be stored as strings.
             session_title, session_pin, student_name, pk, logEnergy, error, lon, lat
 
             */
-            return [JSPARC_URL, 'result', ''].join('/')  + '?' + $.param(result);}
+            return [JSPARC_URL, 'result', ''].join('/') + '?' + $.param(result);}
 
 
         // Flot
