@@ -115,7 +115,7 @@ signals detected in the stations. The shower core can be dragged around
 the map. When the core is dragged around the map you can see that
 numbers around the map start to change. For instance, underneath the map
 is the chi-squared value that tells you how well the proposed location
-of the shower core matches the detected signales. The high the
+of the shower core matches the detected signales. The higher the
 chi-squared, the worse the fit, so try to get it as low as possible.
 
 
