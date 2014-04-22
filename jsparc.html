@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+<!doctype html>
+<html>
  <head>
   <link rel="icon" type="image/vnd.microsoft.icon" href="images/favicon.ico">
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -130,9 +129,9 @@
                 if (j < detNum[i]) {
                     if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                         MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-                        txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+                        txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></td>";}
                     else {
-                        txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></input></td>";}}
+                        txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></td>";}}
                 else {
                     txt += "<td></td>";}}
             txt += "</tr>"}
@@ -144,14 +143,14 @@
             txt += "</select></td>";}
         txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
         for (i = 0; i < data.events.length; i++) {
-            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></input></td>";}
+            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></td>";}
         txt += "</tr><tr><td>Calc.</td>";
         for (i = 0; i < data.events.length; i++) {
-            txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></input></td>";
+            txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></td>";
             $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
             infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
         $(txt).appendTo("#coinInfo");
-        $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()"></input>').appendTo('#info');
+        $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()">').appendTo('#info');
 
         showEvent(0);
         $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
@@ -245,8 +244,8 @@
   </div>
   <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
   <div id="map-id"></div>
-  <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8></input> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></input></div>
-  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img src="http://data.hisparc.nl/media/static/header.png" /></a></div>
+  <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></div>
+  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img alt='HiSPARC' src="http://data.hisparc.nl/media/static/header.png" /></a></div>
   <div id="doc_link">
     <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
   </div>
@@ -254,14 +253,14 @@
    <form action="">
    <table>
     <tbody>
-    <tr><td>Title</td><td><input type="text" id="sessionTitle"></input></td></tr>
-    <tr><td>Pin</td><td><input type="text" id="sessionPin"></input></td></tr>
-    <tr><td>Name</td><td><input type="text" id="studentName"></input></td></tr>
+    <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
+    <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
+    <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
     </tbody>
    </table>
    </form>
-   <input type="button" id="dataButton" value="Get data"></input>
-   <input type="button" id="exampleButton" value="Get example"></input>
+   <input type="button" id="dataButton" value="Get data">
+   <input type="button" id="exampleButton" value="Get example">
    <form id="info" action="">
     <table id="coinInfo">
     </table>
