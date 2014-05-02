@@ -54,12 +54,12 @@ be stored as strings.
                               'heat_index': {'column': 14, 'units': '°C'},
                               'dew_point': {'column': 15, 'units': '°C'},
                               'wind_chill': {'column': 16, 'units': '°C'}},
-            eventtime_format = {'bin': {'column': 0, 'units': 'hour'},
-                                'events': {'column': 1, 'units': 'count'}},
-            pulseheight_format = {'bin': {'column': 0, 'units': 'mV'},
-                                  'pulseheight': {'column': [1, 2, 3, 4], 'units': 'count'}},
-            pulseintegral_format = {'bin': {'column': 0, 'units': 'mV.ns'},
-                                    'integral': {'column': [1, 2, 3, 4], 'units': 'count'}},
+            eventtime_format = {'hour_of_day': {'column': 0, 'units': 'hour'},
+                                'n_events': {'column': 1, 'units': 'count'}},
+            pulseheight_format = {'pulseheight_bins': {'column': 0, 'units': 'mV'},
+                                  'n_pulseheight': {'column': [1, 2, 3, 4], 'units': 'count'}},
+            pulseintegral_format = {'integral_bins': {'column': 0, 'units': 'mV.ns'},
+                                    'n_integral': {'column': [1, 2, 3, 4], 'units': 'count'}},
             temperature_format = {'timestamp': {'column': 0, 'units': 's'},
                                   'temperature_outside': {'column': 1, 'units': '°C'}},
             barometer_format = {'timestamp': {'column': 0, 'units': 's'},
@@ -68,6 +68,10 @@ be stored as strings.
                               'pmt_voltage': {'column': [1, 2, 3, 4], 'units': 'V'}},
             current_format = {'timestamp': {'column': 0, 'units': 's'},
                               'pmt_current': {'column': [1, 2, 3, 4], 'units': 'mA'}},
+            coincidencenumber_format = {'n_stations': {'column': 0, 'units': 'count'},
+                                        'n_coincidences': {'column': 1, 'units': 'count'}},
+            coincidencetime_format = {'hour_of_day': {'column': 0, 'units': 'hour'},
+                                      'n_coincidences': {'column': 1, 'units': 'count'}},
             gps_format = {'timestamp': {'column': 0, 'units': 's'},
                           'latitude': {'column': 1, 'units': '°'},
                           'longitude': {'column': 2, 'units': '°'},
@@ -1037,11 +1041,14 @@ be stored as strings.
                 empty = '',
                 extension = '.csv';
 
-            var start, end;
+            var station_number, start, end;
 
             try {
                 var parts = filename.replace(extension, empty).split(delimiter);
-
+                if (parts[1][0] == 's') {
+                    station_number = parts[1].substring(1)}
+                else {
+                    station_number = parts[1]}
                 if (parts.length > 2) {
                     var date = parts[2].split(date_delimiter);
 
@@ -1073,7 +1080,7 @@ be stored as strings.
                     end = 'now';}
 
                 return {'type': parts[0],
-                        'station_number': parts[1].substring(1),
+                        'station_number': station_number,
                         'startdate': start,
                         'enddate': end};}
             catch (e) {
