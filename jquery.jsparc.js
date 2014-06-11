@@ -546,8 +546,8 @@ be stored as strings.
                     row.append($('<td>').text(dataset.data[i][j]));}
                 if (type == 'events') {
                     var t = make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3])
-                    var url = api_event_trace(dataset.station_number, t);
-                    row.append($('<td>').text('show').addClass('trace').attr('data-url', url));}
+                    var trace_url = api_event_trace(dataset.station_number, t);
+                    row.append($('<td>').text('show').addClass('trace').attr('data-url', trace_url));}
                 table.append(row);
                 if (limit != dataset.data.length && i == Math.floor(limit / 2) - 1) {
                     var truncrow = $('<tr>');
