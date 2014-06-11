@@ -19,11 +19,15 @@
         <script>
             var jsparc;
             $(document).ready(function () {
+                // Animate HiSPARC logo during ajax activity
                 $(document).bind('ajaxSend', function() {
                     $('#pageHeader').addClass('animated');})
                            .bind('ajaxComplete', function() {
                     $('#pageHeader').removeClass('animated');});
+
+                // Load jSparc library
                 jsparc = $.jsparc();
+
                 jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'), -2);
                 jsparc.make_datepicker($('#enddate_choice'), -1);
@@ -36,7 +40,7 @@
                                             $('#startdate_choice').val(),
                                             $('#enddate_choice').val(),
                                             $('#type_choice input:checked').val())
-                    .done(function() {$('#select_dataset').show()})
+                          .done(function() {$('#select_dataset').show()})
                 });
 
                 // Load data button
@@ -105,7 +109,7 @@
                 });
 
                 $('#dataset_list').on('click', '.download', function() {
-                    window.open($(this).attr('name'),'_blank');
+                    window.open($(this).attr('name'), '_blank');
                 });
 
                 // Radio buttons
