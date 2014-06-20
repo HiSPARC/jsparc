@@ -368,7 +368,7 @@ be stored as strings.
 
             */
             var offset = (offset) ? offset : -1;
-            target.datetimepicker({minDate: new Date(2012, 12, 1),
+            target.datetimepicker({minDate: new Date(2004, 1, 1),
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
@@ -765,11 +765,11 @@ be stored as strings.
             They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
 
             If x OR y contains multiple arrays each will be zipped with the other:
-            [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...]]
-            [[[x11, y1], [x12, y2], ...], [[x21, y1], [x22, y2], ...]]
+            [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...], ...]
+            [[[x11, y1], [x12, y2], ...], [[x21, y1], [x22, y2], ...], ...]
 
             If both x AND y contain multiple arrays each will be zipped with their counterpart:
-            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...]]
+            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...], ...]
 
             */
             var data = [],
