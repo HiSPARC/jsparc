@@ -155,6 +155,9 @@ td {
     padding-right: 6px;
     text-align: right;}
 
+input:disabled {
+    color: #ddd;}
+
 /* Color pulseheight columns in table
 */
 #results .weather td:nth-child(5),
