@@ -719,7 +719,7 @@ be stored as strings.
             /* Create a plot of data
 
             data can be a single dataset: [[x1, y1], [x2, y2], ... ]
-            or consist of multiple datasets: [[[x11, y11], ... ], [[x21, y21], ... ], ...]
+            or consist of multiple datasets i.e. serie 1 and 2: [[[x11, y11], ... ], [[x21, y21], ...], ...]
 
             Warning: This function filters all data points for which
             either the x or y value is -999 or -1.
