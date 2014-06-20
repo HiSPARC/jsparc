@@ -178,6 +178,7 @@ td {
     font-size: 0.8em;}
 
 /* Flot styling
+Only used for 'css' mode, we now use canvas mode
 */
 .yaxisLabel {
     -moz-transform: none !important;
