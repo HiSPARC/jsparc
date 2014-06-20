@@ -1,3 +1,4 @@
+
 body {
     font-family: sans-serif;}
 
@@ -137,10 +138,10 @@ td {
 
 #set1_variables,
 #set2_variables {
-    width: 42%;}
+    width: 41.5%;}
 
 #controls {
-    width: 16%;
+    width: 17%;
     font-size: 14px;}
 
 #results {
