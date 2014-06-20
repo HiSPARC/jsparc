@@ -985,14 +985,14 @@ be stored as strings.
         function flot_x_axis_labels(x_label) {
             /* Create an flot options object with the x axis labels
             */
-            return {xaxis: {axisLabel: x_label}};
+            return {xaxis: {axisLabel: x_label, axisLabelUseCanvas: true}};
         }
 
         jsparc.flot_y_axis_labels = flot_y_axis_labels;
         function flot_y_axis_labels(y_label) {
             /* Create an flot options object with the y axis labels
             */
-            return {yaxis: {axisLabel: y_label}};
+            return {yaxis: {axisLabel: y_label, axisLabelUseCanvas: true}};
         }
 
         jsparc.flot_none = function() {return flot_none;};
