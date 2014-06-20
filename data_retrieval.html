@@ -15,6 +15,7 @@
         <script type="text/javascript" src="scripts/jquery.flot.time.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.canvas.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.axislabels.js"></script>
+        <script type="text/javascript" src="scripts/regression.js"></script>
         <script type="text/javascript" src="jquery.jsparc.js"></script>
         <script>
             var jsparc;
@@ -59,8 +60,8 @@
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
                         var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(hist[1], hist[0]));}
+                        plot = jsparc.make_plot($('#plot'),
+                                                jsparc.zip_data(hist[1], hist[0]));}
                     if ($('#plot_type input:checked').val() == 'scatter') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
@@ -70,14 +71,14 @@
                                                                      jsparc.get_column(y.val(), yset))}
                         else {
                             var y_data = jsparc.get_column(y.val(), yset)}
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.get_column(x.val(), xset),
-                                                         y_data));}
+                        plot = jsparc.make_plot($('#plot'),
+                                                jsparc.zip_data(jsparc.get_column(x.val(), xset),
+                                                                y_data));}
                     if ($('#plot_type input:checked').val() == 'timeseries') {
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
-                                                         jsparc.get_column(y.val(), yset)));}
+                        plot = jsparc.make_plot($('#plot'),
+                                                jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
+                                                                jsparc.get_column(y.val(), yset)));}
                     $('#plot').show();
                     $('#graph').show();
                     jsparc.show_id('plot');
@@ -92,7 +93,7 @@
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time [ns]'));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('ADCcounts'));
                         var x_data = jsparc.range(0, 2.5 * data[0].length, 2.5);
-                        jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
+                        plot = jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.show_id('plot');
