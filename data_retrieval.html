@@ -152,11 +152,14 @@
 
                 $('#plot_type').on('change', 'input', function() {
                     if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
-                                                       jsparc.disable_radio_set('y-axis');}
+                                                       jsparc.disable_radio_set('y-axis');
+                                                        $('#hist_bins input').prop('disabled', false);}
                     else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
-                                                          jsparc.enable_radio_set('y-axis');}
+                                                          jsparc.enable_radio_set('y-axis');
+                                                           $('#hist_bins input').prop('disabled', true);}
                     else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
-                                                             jsparc.enable_radio_set('y-axis');}
+                                                             jsparc.enable_radio_set('y-axis');
+                                                              $('#hist_bins input').prop('disabled', true);}
                 });
 
                 $('#plot_settings').on('change', 'input', function() {
@@ -231,7 +234,8 @@
                             <option value="logarithmic">Logarithmic</option>
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
-                        </select>     
+                        </select>
+                        Degree: <input name="degree" type="text" style="width: 60px;" value="2"><br />      
                     </span><br />
                     <br />
                 </div>
