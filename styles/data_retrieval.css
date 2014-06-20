@@ -2,7 +2,7 @@ body {
     font-family: sans-serif;}
 
 #container {
-    margin: auto;
+    margin: 0px 5px;
     width: 850px;}
 
 #header {
@@ -147,7 +147,7 @@ td {
     }
 
 #preview {
-    overflow: scroll;}
+    overflow: visible;}
 
 #results td {
     font-size: 12px;

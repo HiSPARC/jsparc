@@ -415,8 +415,7 @@ be stored as strings.
             var target = target || $('#dataset_list'),
                 list = $('<table>'),
                 firstrow = $('<tr>');
-            firstrow.append($('<th>').text('Choice 1'));
-            firstrow.append($('<th>').text('Choice 2'));
+            firstrow.append($('<th>').text('Select').attr('colspan', 2));
             firstrow.append($('<th>').text('Station'));
             firstrow.append($('<th>').text('Type'));
             firstrow.append($('<th>').text('Start date'));
@@ -438,7 +437,7 @@ be stored as strings.
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
                 row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
                 row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
-                row.append($('<td>').text('get csv').addClass('download')
+                row.append($('<td>').text('csv').addClass('download')
                                     .attr('name', datasets[i].url + '&download=true'));
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
