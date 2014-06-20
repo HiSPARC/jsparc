@@ -82,7 +82,10 @@
                         data_to_plot = jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)), jsparc.get_column(y.val(), yset));}
 
                     // Get value of the fit selection
-                    var fit_type = $("#fit option:selected").val();
+                    var fit_type = $("#fit_options").val();
+
+                    // Get user defined degree of polynomial
+                    var degree = $('#fit input').val();
 
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
@@ -92,12 +95,12 @@
                             // Loop over each single dataset
                             var length = data_to_plot.length;
                             for (var i = 0; i < length; i++) {
-                                trend = regression(fit_type, data_to_plot[i]).points;
+                                trend = regression(fit_type, data_to_plot[i], degree).points;
                                 data_to_plot.push(trend);
                             }
                         } else {
                             // Single dataset so just add trend points array after original data
-                            trend = regression(fit_type, data_to_plot).points;
+                            trend = regression(fit_type, data_to_plot, degree).points;
                             data_to_plot = [data_to_plot, trend];
                         }
                     }
@@ -160,6 +163,15 @@
                     else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
                                                              jsparc.enable_radio_set('y-axis');
                                                               $('#hist_bins input').prop('disabled', true);}
+                });
+
+                // Set Degree to disabled if polynomial not selected
+                $("#fit_options").on('change', function(){
+                    if ($(this).val() != "polynomial") {
+                        $('#fit input').prop('disabled', true);
+                    } else {
+                        $('#fit input').prop('disabled', false);
+                    }
                 });
 
                 $('#plot_settings').on('change', 'input', function() {
@@ -227,7 +239,7 @@
                     <span class="key">Fit:</span><br />
                     <span id="fit"> 
                         Type:   
-                        <select>
+                        <select id="fit_options">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="exponential">Exponential</option>
