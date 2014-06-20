@@ -28,30 +28,31 @@
                 // Load jSparc library
                 jsparc = $.jsparc();
 
-                make_station_select = jsparc.make_station_select($('#station_choice'));
+                station_events_select = jsparc.make_station_select($('#station_events_choice'), 'events');
+                station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather');
                 jsparc.make_datepicker($('#startdate_choice'), -2);
                 jsparc.make_datepicker($('#enddate_choice'), -1);
                 jsparc.set_dataset_list_controls($('#dataset_list'));
                 jsparc.set_flot_options([jsparc.flot_scatter()]);
 
-                // Type selection for station
-                make_station_select.done(function() {
-                    $('#station_choice select').change(function() {
-                        jsparc.get_json(jsparc.api_has_weather($(this).val()))
-                            .done(function(has_weather) {
-                                $('#type_choice input[value="weather"]').prop('disabled', !has_weather);});
-                        jsparc.get_json(jsparc.api_has_data($(this).val()))
-                            .done(function(has_data) {
-                                $('#type_choice input[value="events"]').prop('disabled', !has_data);});
-                    });
+                // Show station list for specific data type
+                $('#type_choice input').change(function() {
+                    if ($(this).val() == 'weather') {
+                        $('#station_events_choice').hide();
+                        $('#station_weather_choice').show();}
+                    else if ($(this).val() == 'events') {
+                        $('#station_events_choice').show();
+                        $('#station_weather_choice').hide();}
                 });
 
                 // Download button
                 $('#download_dataset').on('click', function() {
-                    jsparc.download_dataset($('#station_choice select').val(),
+                    var data_type = $('#type_choice input:checked').val()
+                    
+                    jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
                                             $('#startdate_choice').val(),
                                             $('#enddate_choice').val(),
-                                            $('#type_choice input:checked').val())
+                                            data_type)
                           .done(function() {$('#select_dataset').show()})
                 });
 
@@ -160,15 +161,17 @@
         <div id="download_data">
             <h2>Download data</h2>
             <p>Get data from the HiSPARC server.</p>
-            <p>Station: <span id="station_choice"></span></p>
-            <p>Start date: <input id="startdate_choice" type="datetime"></p>
-            <p>End date: <input id="enddate_choice" type="datetime"></p>
             <p>Data type:
                 <span id="type_choice">
                     <input name="data_type" type="radio" value="events" checked="checked"> Events
                     <input name="data_type" type="radio" value="weather"> Weather
                 </span>
             </p>
+            <p>Station:
+                <span id="station_events_choice"><select><option>Loading stations..</option></select></span>
+                <span style="display:none;" id="station_weather_choice"></span></p>
+            <p>Start date: <input id="startdate_choice" type="datetime"></p>
+            <p>End date: <input id="enddate_choice" type="datetime"></p>
             <input type='button' value="Get Data!" id="download_dataset">
         </div>
         <div id="load_data">

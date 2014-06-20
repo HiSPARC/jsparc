@@ -376,10 +376,16 @@ be stored as strings.
         }
 
         jsparc.make_station_select = make_station_select;
-        function make_station_select(target) {
+        function make_station_select(target, type) {
             /* Create a select menu to choose a single station
             */
-            var url = api_stations();
+            var url;
+            if (type == 'events') {
+                url = api_stations_with_data();}
+            else if (type == 'weather') {
+                url = api_stations_with_weather();}
+            else {
+                url = api_stations();}
             return get_json(url)
                    .done(function(station_json) {
                        var select = $('<select>'),
