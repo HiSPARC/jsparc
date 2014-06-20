@@ -60,8 +60,9 @@
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
                         var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
-                        plot = jsparc.make_plot($('#plot'),
-                                                jsparc.zip_data(hist[1], hist[0]));}
+                        
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(hist[1], hist[0]);}
                     if ($('#plot_type input:checked').val() == 'scatter') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
@@ -71,14 +72,21 @@
                                                                      jsparc.get_column(y.val(), yset))}
                         else {
                             var y_data = jsparc.get_column(y.val(), yset)}
-                        plot = jsparc.make_plot($('#plot'),
-                                                jsparc.zip_data(jsparc.get_column(x.val(), xset),
-                                                                y_data));}
+
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(jsparc.get_column(x.val(), xset), y_data);}
                     if ($('#plot_type input:checked').val() == 'timeseries') {
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
-                        plot = jsparc.make_plot($('#plot'),
-                                                jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
-                                                                jsparc.get_column(y.val(), yset)));}
+
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)), jsparc.get_column(y.val(), yset));}
+
+                    // Get value of the fit selection
+                    var fit = $("#fit option:selected").val();
+
+                    // Create the plot
+                    plot = jsparc.make_plot($('#plot'), data_to_plot);
+
                     $('#plot').show();
                     $('#graph').show();
                     jsparc.show_id('plot');
@@ -199,6 +207,7 @@
                     <span id="fit"> 
                         Type:   
                         <select>
+                            <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="exponential">Exponential</option>
                             <option value="logarithmic">Logarithmic</option>
