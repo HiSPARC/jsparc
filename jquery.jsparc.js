@@ -608,64 +608,68 @@ be stored as strings.
 
         jsparc.api_stations = api_stations;
         function api_stations() {
-            return [API_URL, 'stations', ''].join('/');}
+            return build_url([API_URL, 'stations', '']);}
 
         jsparc.api_stations_in_subcluster = api_stations_in_subcluster;
         function api_stations_in_subcluster(subcluster_number) {
-            return [API_URL, 'subclusters', subcluster_number, ''].join('/');}
+            return build_url([API_URL, 'subclusters', subcluster_number, '']);}
 
         jsparc.api_subclusters = api_subclusters;
         function api_subclusters() {
-            return [API_URL, 'subclusters', ''].join('/');}
+            return build_url([API_URL, 'subclusters', '']);}
 
         jsparc.api_subclusters_in_cluster = api_subclusters_in_cluster;
         function api_subclusters_in_cluster(cluster_number) {
-            return [API_URL, 'clusters', cluster_number, ''].join('/');}
+            return build_url([API_URL, 'clusters', cluster_number, '']);}
 
         jsparc.api_clusters = api_clusters;
         function api_clusters() {
-            return [API_URL, 'clusters', ''].join('/');}
+            return build_url([API_URL, 'clusters', '']);}
 
         jsparc.api_clusters_in_country = api_clusters_in_country;
         function api_clusters_in_country(country_number) {
-            return [API_URL, 'countries', country_number, ''].join('/');}
+            return build_url([API_URL, 'countries', country_number, '']);}
 
         jsparc.api_countries = api_countries;
         function api_countries() {
-            return [API_URL, 'countries', ''].join('/');}
+            return build_url([API_URL, 'countries', '']);}
 
         jsparc.api_stations_with_data = api_stations_with_data;
         function api_stations_with_data(year, month, day) {
-            return [API_URL, 'stations/data', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'stations/data', year, month, day, '']);}
 
         jsparc.api_stations_with_weather = api_stations_with_weather;
         function api_stations_with_weather(year, month, day) {
-            return [API_URL, 'stations/weather', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'stations/weather', year, month, day, '']);}
 
         jsparc.api_station_info = api_station_info;
         function api_station_info(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, year, month, day, '']);}
 
         jsparc.api_has_data = api_has_data;
         function api_has_data(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'data', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'data', year, month, day, '']);}
 
         jsparc.api_has_weather = api_has_weather;
         function api_has_weather(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'weather', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'weather', year, month, day, '']);}
 
         jsparc.api_configuration = api_configuration;
         function api_configuration(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'config', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'config', year, month, day, '']);}
 
         jsparc.api_number_of_events = api_number_of_events;
         function api_number_of_events(station_number, year, month, day, hour) {
-            return [API_URL, 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'num_events', year, month, day, hour, '']);}
 
         jsparc.api_event_trace = api_event_trace;
         function api_event_trace(station_number, ext_timestamp) {
-            return [API_URL, 'station', station_number, 'trace', ext_timestamp, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'trace', ext_timestamp, '']);}
 
+        // Process urls
+        jsparc.build_url = build_url;
+        function build_url(components) {
+            return components.join('/').replace(/\/+$/,'/');}
 
         // Data Download
 

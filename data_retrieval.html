@@ -28,11 +28,23 @@
                 // Load jSparc library
                 jsparc = $.jsparc();
 
-                jsparc.make_station_select($('#station_choice'));
+                make_station_select = jsparc.make_station_select($('#station_choice'));
                 jsparc.make_datepicker($('#startdate_choice'), -2);
                 jsparc.make_datepicker($('#enddate_choice'), -1);
                 jsparc.set_dataset_list_controls($('#dataset_list'));
                 jsparc.set_flot_options([jsparc.flot_scatter()]);
+
+                // Type selection for station
+                make_station_select.done(function() {
+                    $('#station_choice select').change(function() {
+                        jsparc.get_json(jsparc.api_has_weather($(this).val()))
+                            .done(function(has_weather) {
+                                $('#type_choice input[value="weather"]').prop('disabled', !has_weather);});
+                        jsparc.get_json(jsparc.api_has_data($(this).val()))
+                            .done(function(has_data) {
+                                $('#type_choice input[value="events"]').prop('disabled', !has_data);});
+                    });
+                });
 
                 // Download button
                 $('#download_dataset').on('click', function() {
