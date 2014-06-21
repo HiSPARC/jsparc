@@ -45,6 +45,11 @@
                         $('#station_weather_choice').hide();}
                 });
 
+                // Synchronize the two station choice lists
+                $('#station_choice').on('change', 'select', function() {
+                    $('#station_choice select').val($(this).val());
+                });
+
                 // Download button
                 $('#download_dataset').on('click', function() {
                     var data_type = $('#type_choice input:checked').val()
@@ -167,7 +172,7 @@
                     <input name="data_type" type="radio" value="weather"> Weather
                 </span>
             </p>
-            <p>Station:
+            <p id="station_choice">Station:
                 <span id="station_events_choice"><select><option>Loading stations..</option></select></span>
                 <span style="display:none;" id="station_weather_choice"></span></p>
             <p>Start date: <input id="startdate_choice" type="datetime"></p>
