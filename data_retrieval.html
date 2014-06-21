@@ -234,9 +234,9 @@
                     </span><br />
                     <span class="key">Histogram:</span><br />
                     <span id="hist_bins">
-                        Bins: <input name="hist_bins" type="text" style="width: 60px;" value="100"><br />
                     </span><br />
                     <span class="key">Fit:</span><br />
+                        Bins: <input name="hist_bins" type="number" min=0 step=10 style="width: 60px;" value="100"><br>
                     <span id="fit"> 
                         Type:   
                         <select id="fit_options">
@@ -247,9 +247,9 @@
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
                         </select>
-                        Degree: <input name="degree" type="text" style="width: 60px;" disabled value="2"><br />      
                     </span><br />
                     <br />
+                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
             </div>
