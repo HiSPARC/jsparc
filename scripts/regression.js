@@ -65,7 +65,8 @@
 
                 var string = 'y = ' + (Math.round(gradient*100) / 100).toExponential() + 'x + ' + (Math.round(intercept*100) / 100).toExponential();
 
-                return {equation: [gradient, intercept], points: results, string: string};
+                // The string needs to be in Tex in order for MathJax to render in propertly, so use regex to do so
+                return {equation: [gradient, intercept], points: results, string: '$$' + string.replace(/e\D{1}(\d+)/g,'\\cdot10^{$1}') + '$$'};
             },
 
             exponential: function(data) {
