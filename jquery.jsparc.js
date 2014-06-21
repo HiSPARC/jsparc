@@ -368,7 +368,7 @@ be stored as strings.
 
             */
             var offset = (offset) ? offset : -1;
-            target.datetimepicker({minDate: new Date(2012, 12, 1),
+            target.datetimepicker({minDate: new Date(2004, 1, 1),
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
@@ -376,10 +376,16 @@ be stored as strings.
         }
 
         jsparc.make_station_select = make_station_select;
-        function make_station_select(target) {
+        function make_station_select(target, type) {
             /* Create a select menu to choose a single station
             */
-            var url = api_stations();
+            var url;
+            if (type == 'events') {
+                url = api_stations_with_data();}
+            else if (type == 'weather') {
+                url = api_stations_with_weather();}
+            else {
+                url = api_stations();}
             return get_json(url)
                    .done(function(station_json) {
                        var select = $('<select>'),
@@ -415,8 +421,7 @@ be stored as strings.
             var target = target || $('#dataset_list'),
                 list = $('<table>'),
                 firstrow = $('<tr>');
-            firstrow.append($('<th>').text('Choice 1'));
-            firstrow.append($('<th>').text('Choice 2'));
+            firstrow.append($('<th>').text('Select').attr('colspan', 2));
             firstrow.append($('<th>').text('Station'));
             firstrow.append($('<th>').text('Type'));
             firstrow.append($('<th>').text('Start date'));
@@ -438,7 +443,7 @@ be stored as strings.
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
                 row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
                 row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
-                row.append($('<td>').text('get csv').addClass('download')
+                row.append($('<td>').text('csv').addClass('download')
                                     .attr('name', datasets[i].url + '&download=true'));
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
@@ -609,64 +614,68 @@ be stored as strings.
 
         jsparc.api_stations = api_stations;
         function api_stations() {
-            return [API_URL, 'stations', ''].join('/');}
+            return build_url([API_URL, 'stations', '']);}
 
         jsparc.api_stations_in_subcluster = api_stations_in_subcluster;
         function api_stations_in_subcluster(subcluster_number) {
-            return [API_URL, 'subclusters', subcluster_number, ''].join('/');}
+            return build_url([API_URL, 'subclusters', subcluster_number, '']);}
 
         jsparc.api_subclusters = api_subclusters;
         function api_subclusters() {
-            return [API_URL, 'subclusters', ''].join('/');}
+            return build_url([API_URL, 'subclusters', '']);}
 
         jsparc.api_subclusters_in_cluster = api_subclusters_in_cluster;
         function api_subclusters_in_cluster(cluster_number) {
-            return [API_URL, 'clusters', cluster_number, ''].join('/');}
+            return build_url([API_URL, 'clusters', cluster_number, '']);}
 
         jsparc.api_clusters = api_clusters;
         function api_clusters() {
-            return [API_URL, 'clusters', ''].join('/');}
+            return build_url([API_URL, 'clusters', '']);}
 
         jsparc.api_clusters_in_country = api_clusters_in_country;
         function api_clusters_in_country(country_number) {
-            return [API_URL, 'countries', country_number, ''].join('/');}
+            return build_url([API_URL, 'countries', country_number, '']);}
 
         jsparc.api_countries = api_countries;
         function api_countries() {
-            return [API_URL, 'countries', ''].join('/');}
+            return build_url([API_URL, 'countries', '']);}
 
         jsparc.api_stations_with_data = api_stations_with_data;
         function api_stations_with_data(year, month, day) {
-            return [API_URL, 'stations/data', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'stations/data', year, month, day, '']);}
 
         jsparc.api_stations_with_weather = api_stations_with_weather;
         function api_stations_with_weather(year, month, day) {
-            return [API_URL, 'stations/weather', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'stations/weather', year, month, day, '']);}
 
         jsparc.api_station_info = api_station_info;
         function api_station_info(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, year, month, day, '']);}
 
         jsparc.api_has_data = api_has_data;
         function api_has_data(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'data', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'data', year, month, day, '']);}
 
         jsparc.api_has_weather = api_has_weather;
         function api_has_weather(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'weather', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'weather', year, month, day, '']);}
 
         jsparc.api_configuration = api_configuration;
         function api_configuration(station_number, year, month, day) {
-            return [API_URL, 'station', station_number, 'config', year, month, day, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'config', year, month, day, '']);}
 
         jsparc.api_number_of_events = api_number_of_events;
         function api_number_of_events(station_number, year, month, day, hour) {
-            return [API_URL, 'station', station_number, 'num_events', year, month, day, hour, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'num_events', year, month, day, hour, '']);}
 
         jsparc.api_event_trace = api_event_trace;
         function api_event_trace(station_number, ext_timestamp) {
-            return [API_URL, 'station', station_number, 'trace', ext_timestamp, ''].join('/');}
+            return build_url([API_URL, 'station', station_number, 'trace', ext_timestamp, '']);}
 
+        // Process urls
+        jsparc.build_url = build_url;
+        function build_url(components) {
+            return components.join('/').replace(/\/+$/,'/');}
 
         // Data Download
 
@@ -765,11 +774,11 @@ be stored as strings.
             They will be zipped to: [[x1, y1], [x2, y2], [x3, y3], ...]
 
             If x OR y contains multiple arrays each will be zipped with the other:
-            [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...]]
-            [[[x11, y1], [x12, y2], ...], [[x21, y1], [x22, y2], ...]]
+            [[[x1, y11], [x2, y12], ...], [[x1, y21], [x2, y22], ...], ...]
+            [[[x11, y1], [x12, y2], ...], [[x21, y1], [x22, y2], ...], ...]
 
             If both x AND y contain multiple arrays each will be zipped with their counterpart:
-            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...]]
+            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...], ...]
 
             */
             var data = [],
@@ -982,14 +991,14 @@ be stored as strings.
         function flot_x_axis_labels(x_label) {
             /* Create an flot options object with the x axis labels
             */
-            return {xaxis: {axisLabel: x_label}};
+            return {xaxis: {axisLabel: x_label, axisLabelUseCanvas: true}};
         }
 
         jsparc.flot_y_axis_labels = flot_y_axis_labels;
         function flot_y_axis_labels(y_label) {
             /* Create an flot options object with the y axis labels
             */
-            return {yaxis: {axisLabel: y_label}};
+            return {yaxis: {axisLabel: y_label, axisLabelUseCanvas: true}};
         }
 
         jsparc.flot_none = function() {return flot_none;};

@@ -3,7 +3,7 @@ body {
     font-family: sans-serif;}
 
 #container {
-    margin: auto;
+    margin: 0px 5px;
     width: 850px;}
 
 #header {
@@ -21,10 +21,22 @@ body {
     height: 63px;}
 
 #pageHeader {
-    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;}
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 180px 63px;}
 
 #pageHeader.animated {
-    background: url(../images/HiSPARC_animated.gif) top right no-repeat;}
+    background: url(../images/HiSPARC_animated.gif) top right no-repeat;
+    background-size: 180px 63px;}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2.0), screen and (min--moz-device-pixel-ratio: 2.0), screen and (-o-min-device-pixel-ratio: 200/100), screen and (min-device-pixel-ratio: 2.0), screen and (min-resolution: 2.0dppx) {
+    #pageHeader {
+        background: url(../images/HiSPARC_animated_traces@2x.png) top right no-repeat;
+        background-size: 180px 63px;}
+
+    #pageHeader.animated {
+        background: url(../images/HiSPARC_animated@2x.gif) top right no-repeat;
+        background-size: 180px 63px;}
+}
 
 #loading {
     position: absolute;
@@ -148,7 +160,7 @@ td {
     }
 
 #preview {
-    overflow: scroll;}
+    overflow: visible;}
 
 #results td {
     font-size: 12px;
@@ -182,6 +194,7 @@ input:disabled {
     font-size: 0.8em;}
 
 /* Flot styling
+Only used for 'css' mode, we now use canvas mode
 */
 .yaxisLabel {
     -moz-transform: none !important;
