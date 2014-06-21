@@ -216,27 +216,27 @@
             <h3>Select variables and settings to plot</h3>
             <div id="controls" class="left">
                 <div id="plot_settings">
-                    <span class="key">Plot type:</span><br />
+                    <span class="key">Plot type:</span><br>
                     <span id="plot_type">
-                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br />
-                        <input name="plot_type" type="radio" value="histogram"> Histogram<br />
-                        <input name="plot_type" type="radio" value="timeseries"> Time series<br />
-                    </span><br />
-                    <span class="key">x-Axis:</span><br />
+                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br>
+                        <input name="plot_type" type="radio" value="histogram"> Histogram<br>
+                        <input name="plot_type" type="radio" value="timeseries"> Time series<br>
+                    </span><br>
+                    <span class="key">x-Axis:</span><br>
                     <span id="plot_x_axis">
-                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br />
-                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br />
-                    </span><br />
-                    <span class="key">y-Axis:</span><br />
+                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br>
+                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br>
+                    </span><br>
+                    <span class="key">y-Axis:</span><br>
                     <span id="plot_y_axis">
-                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br />
-                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br />
-                    </span><br />
-                    <span class="key">Histogram:</span><br />
+                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br>
+                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br>
+                    </span><br>
+                    <span class="key">Histogram:</span><br>
                     <span id="hist_bins">
-                    </span><br />
-                    <span class="key">Fit:</span><br />
                         Bins: <input name="hist_bins" type="number" min=0 step=10 style="width: 60px;" value="100"><br>
+                    </span><br>
+                    <span class="key">Fit:</span><br>
                     <span id="fit"> 
                         Type:   
                         <select id="fit_options">
@@ -247,9 +247,8 @@
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
                         </select>
-                    </span><br />
-                    <br />
                         Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
+                    </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
             </div>
