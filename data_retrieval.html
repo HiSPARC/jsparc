@@ -17,6 +17,8 @@
         <script type="text/javascript" src="scripts/jquery.flot.axislabels.js"></script>
         <script type="text/javascript" src="scripts/regression.js"></script>
         <script type="text/javascript" src="jquery.jsparc.js"></script>
+        <!-- Add MathJax to enhance the look of the fit formulas -->
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>
             var jsparc;
             $(document).ready(function () {
@@ -105,22 +107,33 @@
                     if (fit_type != 'none') {
                         // Check for multidimensional array
                         if (data_to_plot[0][0] instanceof Array) {
+                            // unhide results div
+                            $("div#results").show();
+
                             // Loop over each single dataset
                             var length = data_to_plot.length;
                             for (var i = 0; i < length; i++) {
+                                // And for each dataset calculate the fit
                                 var summary = regression(fit_type, data_to_plot[i], degree);
-                                var trend = summary.points;
-                                alert(summary.string);
-                                data_to_plot.push(trend);
+
+                                // The calculated fit is returned as summary.points
+                                data_to_plot.push(summary.points);
+                                $("div#results").append('<p>' + summary.string + '<\p>');
                             }
                         } else {
                             // Single dataset so just add trend points array after original data
                             var summary = regression(fit_type, data_to_plot[i], degree);
-                            var trend = summary.points;
-                            alert(summary.string);
-                            data_to_plot = [data_to_plot, trend];
+                            
+                            // The calculated fit is returned as summary.points
+                            data_to_plot = [data_to_plot, summary.points];
+                            $("div#results").append('<p>' + summary.string + '<\p>');
                         }
+                    } else {
+                        $("div#results").hide();
                     }
+
+                    // Update MathJax to render new text
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"results"]);
 
                     // Create the plot
                     plot = jsparc.make_plot($('#plot'), data_to_plot);
@@ -281,7 +294,7 @@
             <div id="plot"></div>
         </div>
         <div id="results">
-            <h3>Raw data in the dataset</h3>
+            <h3>Formulas for fit(s):</h3>
             <p id="preview"></p>
         </div>
     </div>
