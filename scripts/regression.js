@@ -63,7 +63,7 @@
                     results.push(coordinate);
                 }
 
-                var string = 'y = ' + Math.round(gradient*100) / 100 + 'x + ' + Math.round(intercept*100) / 100;
+                var string = 'y = ' + (Math.round(gradient*100) / 100).toExponential() + 'x + ' + (Math.round(intercept*100) / 100).toExponential();
 
                 return {equation: [gradient, intercept], points: results, string: string};
             },
@@ -91,7 +91,7 @@
                     results.push(coordinate);
                 }
 
-                var string = 'y = ' + Math.round(A*100) / 100 + 'e^(' + Math.round(B*100) / 100 + 'x)';
+                var string = 'y = ' + (Math.round(A*100) / 100).toExponential() + 'e^(' + (Math.round(B*100) / 100).toExponential() + 'x)';
 
                 return {equation: [A, B], points: results, string: string};
             },
@@ -116,7 +116,7 @@
                     results.push(coordinate);
                 }
 
-                var string = 'y = ' + Math.round(A*100) / 100 + ' + ' + Math.round(B*100) / 100 + ' ln(x)';
+                var string = 'y = ' + (Math.round(A*100) / 100).toExponential() + ' + ' + (Math.round(B*100) / 100).toExponential() + ' ln(x)';
 
                 return {equation: [A, B], points: results, string: string};
             },
@@ -141,7 +141,7 @@
                     results.push(coordinate);
                 }
 
-                 var string = 'y = ' + Math.round(A*100) / 100 + 'x^' + Math.round(B*100) / 100;
+                 var string = 'y = ' + (Math.round(A*100) / 100).toExponential() + 'x^' + (Math.round(B*100) / 100).toExponential();
 
                 return {equation: [A, B], points: results, string: string};
             },
@@ -185,9 +185,9 @@
                     var string = 'y = ';
 
                     for(var i = equation.length-1; i >= 0; i--){
-                      if(i > 1) string += Math.round(equation[i]*100) / 100 + 'x^' + i + ' + ';
-                      else if (i == 1) string += Math.round(equation[i]*100) / 100 + 'x' + ' + ';
-                      else string += Math.round(equation[i]*100) / 100;
+                      if(i > 1) string += (Math.round(equation[i]*100) / 100).toExponential() + 'x^' + i + ' + ';
+                      else if (i == 1) string += (Math.round(equation[i]*100) / 100).toExponential() + 'x' + ' + ';
+                      else string += (Math.round(equation[i]*100) / 100).toExponential();
                     }
 
                 return {equation: equation, points: results, string: string};
