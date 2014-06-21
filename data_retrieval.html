@@ -71,7 +71,7 @@
                         yset = y.parents('table').attr('name');
                     if ($('#plot_type input:checked').val() == 'histogram') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
                         var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
                         
                         // The data that needs to be plotted

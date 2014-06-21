@@ -46,7 +46,7 @@ be stored as strings.
                               'temperature': {'column': [3, 4], 'units': '°C'},
                               'humidity': {'column': [5, 6], 'units': '%'},
                               'atmospheric_pressure': {'column': 7, 'units': 'hPa'},
-                              'wind_direction': {'column': 8, 'units': 'deg'},
+                              'wind_direction': {'column': 8, 'units': '°'},
                               'wind_speed': {'column': 9, 'units': 'm/s'},
                               'solar_radiation': {'column': 10, 'units': 'W/m/m'},
                               'uv_index': {'column': 11, 'units': '0-16'},
@@ -888,7 +888,8 @@ be stored as strings.
                 color: '#000',
                 tickColor: '#000',
                 labelHeight: 23,
-                tickLength: 4},
+                tickLength: 4,
+                axisLabelUseCanvas: true},
             yaxis: {
                 show: true,
                 font: {
@@ -898,7 +899,8 @@ be stored as strings.
                     color: '#000'},
                 color: '#000',
                 tickColor: '#000',
-                tickLength: 4},
+                tickLength: 4,
+                axisLabelUseCanvas: true},
             y2axis: {
                 show: true,
                 position: 'right',
@@ -991,14 +993,16 @@ be stored as strings.
         function flot_x_axis_labels(x_label) {
             /* Create an flot options object with the x axis labels
             */
-            return {xaxis: {axisLabel: x_label, axisLabelUseCanvas: true}};
+            return {xaxis: {
+                        axisLabel: x_label}};
         }
 
         jsparc.flot_y_axis_labels = flot_y_axis_labels;
         function flot_y_axis_labels(y_label) {
             /* Create an flot options object with the y axis labels
             */
-            return {yaxis: {axisLabel: y_label, axisLabelUseCanvas: true}};
+            return {yaxis: {
+                        axisLabel: y_label}};
         }
 
         jsparc.flot_none = function() {return flot_none;};
