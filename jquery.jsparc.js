@@ -31,52 +31,52 @@ be stored as strings.
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
             JSPARC_URL = 'http://data.hisparc.nl/jsparc',
-            events_format = {'date': {'column': 0, 'units': 'GPS date'},
-                             'time': {'column': 1, 'units': 'GPS time'},
-                             'timestamp': {'column': 2, 'units': 's'},
-                             'nanoseconds': {'column': 3, 'units': 'ns'},
-                             'pulseheights': {'column': [4, 5, 6, 7], 'units': 'ADC'},
-                             'integral': {'column': [8, 9, 10, 11], 'units': 'ADC.ns'},
-                             'number_of_mips': {'column': [12, 13, 14, 15], 'units': 'N'},
-                             'arrival_times': {'column': [16, 17, 18, 19], 'units': 'ns'},
-                             't_trigger': {'column': 20, 'units': 'ns'}},
-            weather_format = {'date': {'column': 0, 'units': 'GPS date'},
-                              'time': {'column': 1, 'units': 'GPS time'},
-                              'timestamp': {'column': 2, 'units': 's'},
-                              'temperature': {'column': [3, 4], 'units': '°C'},
-                              'humidity': {'column': [5, 6], 'units': '%'},
-                              'atmospheric_pressure': {'column': 7, 'units': 'hPa'},
-                              'wind_direction': {'column': 8, 'units': '°'},
-                              'wind_speed': {'column': 9, 'units': 'm/s'},
-                              'solar_radiation': {'column': 10, 'units': 'W/m/m'},
-                              'uv_index': {'column': 11, 'units': '0-16'},
-                              'evapotranspiration': {'column': 12, 'units': 'mm'},
-                              'rain_rate': {'column': 13, 'units': 'mm/h'},
-                              'heat_index': {'column': 14, 'units': '°C'},
-                              'dew_point': {'column': 15, 'units': '°C'},
-                              'wind_chill': {'column': 16, 'units': '°C'}},
-            eventtime_format = {'hour_of_day': {'column': 0, 'units': 'hour'},
-                                'n_events': {'column': 1, 'units': 'count'}},
-            pulseheight_format = {'pulseheight_bins': {'column': 0, 'units': 'mV'},
-                                  'n_pulseheight': {'column': [1, 2, 3, 4], 'units': 'count'}},
-            pulseintegral_format = {'integral_bins': {'column': 0, 'units': 'mV.ns'},
-                                    'n_integral': {'column': [1, 2, 3, 4], 'units': 'count'}},
-            temperature_format = {'timestamp': {'column': 0, 'units': 's'},
-                                  'temperature_outside': {'column': 1, 'units': '°C'}},
-            barometer_format = {'timestamp': {'column': 0, 'units': 's'},
-                                'atmospheric_pressure': {'column': 1, 'units': 'hPa'}},
-            voltage_format = {'timestamp': {'column': 0, 'units': 's'},
-                              'pmt_voltage': {'column': [1, 2, 3, 4], 'units': 'V'}},
-            current_format = {'timestamp': {'column': 0, 'units': 's'},
-                              'pmt_current': {'column': [1, 2, 3, 4], 'units': 'mA'}},
-            coincidencenumber_format = {'n_stations': {'column': 0, 'units': 'count'},
-                                        'n_coincidences': {'column': 1, 'units': 'count'}},
-            coincidencetime_format = {'hour_of_day': {'column': 0, 'units': 'hour'},
-                                      'n_coincidences': {'column': 1, 'units': 'count'}},
-            gps_format = {'timestamp': {'column': 0, 'units': 's'},
-                          'latitude': {'column': 1, 'units': '°'},
-                          'longitude': {'column': 2, 'units': '°'},
-                          'altitude': {'column': 3, 'units': 'm'}};
+            events_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
+                             'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
+                             'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
+                             'nanoseconds': {'column': 3, 'name': 'Nanoseconds', 'units': 'ns'},
+                             'pulseheights': {'column': [4, 5, 6, 7], 'name': 'Pulseheight', 'units': 'ADC'},
+                             'integral': {'column': [8, 9, 10, 11], 'name': 'Pulseintegral', 'units': 'ADC.ns'},
+                             'number_of_mips': {'column': [12, 13, 14, 15], 'name': 'Number of MIPs', 'units': 'N'},
+                             'arrival_times': {'column': [16, 17, 18, 19], 'name': 'Arrival time', 'units': 'ns'},
+                             't_trigger': {'column': 20, 'name': 'Trigger time', 'units': 'ns'}},
+            weather_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
+                              'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
+                              'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
+                              'temperature': {'column': [3, 4], 'name': 'Temperature', 'units': '°C'},
+                              'humidity': {'column': [5, 6], 'name': 'Humidity', 'units': '%'},
+                              'atmospheric_pressure': {'column': 7, 'name': 'Atmospheric pressure', 'units': 'hPa'},
+                              'wind_direction': {'column': 8, 'name': 'Wind direction', 'units': '°'},
+                              'wind_speed': {'column': 9, 'name': 'Wind speed', 'units': 'm/s'},
+                              'solar_radiation': {'column': 10, 'name': 'Solar radiation', 'units': 'W/m/m'},
+                              'uv_index': {'column': 11, 'name': 'UV index', 'units': '0-16'},
+                              'evapotranspiration': {'column': 12, 'name': 'Evapotranspiration', 'units': 'mm'},
+                              'rain_rate': {'column': 13, 'name': 'Rain rate', 'units': 'mm/h'},
+                              'heat_index': {'column': 14, 'name': 'Heat index', 'units': '°C'},
+                              'dew_point': {'column': 15, 'name': 'Dew point', 'units': '°C'},
+                              'wind_chill': {'column': 16, 'name': 'Wind chill', 'units': '°C'}},
+            eventtime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
+                                'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
+            pulseheight_format = {'pulseheight_bins': {'column': 0, 'name': 'Pulseheight', 'units': 'mV'},
+                                  'n_pulseheight': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
+            pulseintegral_format = {'integral_bins': {'column': 0, 'name': 'Pulseintegral', 'units': 'mV.ns'},
+                                    'n_integral': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
+            temperature_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                  'temperature_outside': {'column': 1, 'name': 'Temperature', 'units': '°C'}},
+            barometer_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                'atmospheric_pressure': {'column': 1, 'name': 'Atmospheric pressure', 'units': 'hPa'}},
+            voltage_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                              'pmt_voltage': {'column': [1, 2, 3, 4], 'name': 'PMT voltage', 'units': 'V'}},
+            current_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                              'pmt_current': {'column': [1, 2, 3, 4], 'name': 'PMT current', 'units': 'mA'}},
+            coincidencenumber_format = {'n_stations': {'column': 0, 'name': 'Number of stations', 'units': 'count'},
+                                        'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
+            coincidencetime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
+                                      'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
+            gps_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                          'latitude': {'column': 1, 'name': 'Latitude', 'units': '°'},
+                          'longitude': {'column': 2, 'name': 'Longitude', 'units': '°'},
+                          'altitude': {'column': 3, 'name': 'Altitude', 'units': 'm'}};
 
         // Create format for unknown type
 
@@ -87,7 +87,7 @@ be stored as strings.
             var unknown_format = {} ,
                 n_columns = datasets[url].data[0].length;
             for (var i = 0; i < n_columns; i++) {
-                unknown_format['column_' + i] = {'column': i, 'units': ''};}
+                unknown_format['column_' + i] = {'column': i, 'name': 'Column ' + i, 'units': '?'};}
             return unknown_format;
         }
 
@@ -493,9 +493,11 @@ be stored as strings.
             */
             if (format.hasOwnProperty('timestamp')) {
                 eventraterow.append($('<td>').append($('<input>').attr('type', 'radio')
-                            .attr('name', 'x-axis').attr('alt', 'y-axis').val('event_rate')));
+                            .attr('name', 'x-axis').attr('alt', 'y-axis')
+                            .data('label', 'Event rate [Hz]').val('event_rate')));
                 eventraterow.append($('<td>').append($('<input>').attr('type', 'radio')
-                            .attr('name', 'y-axis').attr('alt', 'x-axis').val('event_rate')));
+                            .attr('name', 'y-axis').attr('alt', 'x-axis')
+                            .data('label', 'Event rate [Hz]').val('event_rate')));
                 eventraterow.append($('<td>').text('Event rate'));
                 eventraterow.append($('<td>').text('Hz').addClass('units'));
                 list.append(eventraterow);}
@@ -503,10 +505,12 @@ be stored as strings.
                 if (i == 'date' || i == 'time') {continue}
                 var row = $('<tr>').attr('name', i);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
-                   .attr('name', 'x-axis').attr('alt', 'y-axis').val(i)));
+                   .attr('name', 'x-axis').attr('alt', 'y-axis')
+                   .data('label', format[i].name + ' [' + format[i].units + ']').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
-                   .attr('name', 'y-axis').attr('alt', 'x-axis').val(i)));
-                row.append($('<td>').text(i).addClass('variable'));
+                   .attr('name', 'y-axis').attr('alt', 'x-axis')
+                   .data('label', format[i].name + ' [' + format[i].units + ']').val(i)));
+                row.append($('<td>').text(format[i].name).addClass('variable'));
                 row.append($('<td>').text(format[i].units).addClass('units'));
                 list.append(row);}
             target.html(header);

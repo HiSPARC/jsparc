@@ -113,9 +113,6 @@ td {
     text-decoration: none;
     font-weight: bold;}
 
-.variable {
-    text-transform: capitalize;}
-
 .units:before {
     content: '[';}
 
