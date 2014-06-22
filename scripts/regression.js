@@ -40,6 +40,13 @@
         return (x);
     };
 
+    var prepare_for_MathJax = function(string) {
+        // Add $$ before and after string, replace 'e' notation with '10^'
+        // and remove redundant '+' in case it is directly followed by '-'.
+        return '$$' + string.replace(/e\+?(-?\d+)/g,'\\cdot10^{$1}')
+                            .replace(/\+ -/g, '-') + '$$';
+    };
+
     var methods = {
         linear: function(data) {
             var sum = [0, 0, 0, 0, 0], n = 0, results = [];
@@ -66,7 +73,7 @@
             var string = 'y = ' + gradient.toExponential(2) + 'x + ' + intercept.toExponential(2);
 
             // The string needs to be in Tex in order for MathJax to render in propertly, so use regex to do so
-            return {equation: [gradient, intercept], points: results, string: '$$' + string.replace(/e(\D{1}?\d+)/g,'\\cdot10^{$1}') + '$$'};
+            return {equation: [gradient, intercept], points: results, string: prepare_for_MathJax(string)};
         },
 
         exponential: function(data) {
@@ -94,7 +101,7 @@
 
             var string = 'y = ' + A.toExponential(2) + 'e^{' + B.toExponential(2) + 'x}';
 
-            return {equation: [A, B], points: results, string: '$$' + string.replace(/e(\D{1}?\d+)/g,'\\cdot10^{$1}') + '$$'};
+            return {equation: [A, B], points: results, string: prepare_for_MathJax(string)};
         },
 
         logarithmic: function(data) {
@@ -119,7 +126,7 @@
 
             var string = 'y = ' + A.toExponential(2) + ' + ' + B.toExponential(2) + ' ln(x)';
 
-            return {equation: [A, B], points: results, string: '$$' + string.replace(/e(\D{1}?\d+)/g,'\\cdot10^{$1}') + '$$'};
+            return {equation: [A, B], points: results, string: prepare_for_MathJax(string)};
         },
 
         power: function(data) {
@@ -144,7 +151,7 @@
 
              var string = 'y = ' + A.toExponential(2) + 'x^{' + B.toExponential(2) + '}';
 
-            return {equation: [A, B], points: results, string: '$$' + string.replace(/e(\D{1}?\d+)/g,'\\cdot10^{$1}') + '$$'};
+            return {equation: [A, B], points: results, string: prepare_for_MathJax(string)};
         },
 
         polynomial: function(data, order) {
@@ -191,7 +198,7 @@
                 else string += equation[i].toExponential(2);
             }
 
-            return {equation: equation, points: results, string: '$$' + string.replace(/e(\D{1}?\d+)/g,'\\cdot10^{$1}') + '$$'};
+            return {equation: equation, points: results, string: prepare_for_MathJax(string)};
         },
 
         lastvalue: function(data) {
