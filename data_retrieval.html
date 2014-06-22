@@ -132,12 +132,12 @@
                             // The calculated fit is returned as summary.points
                             data_to_plot = [data_to_plot, summary.points];
                             formula.append($('<p>').text(summary.string));}
-                        $("div#results").html(formula);
-                        $("div#results").show();
+                        $("#preview").html(formula);
+                        $("#results").show();
                         // Update MathJax to render new text
                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);
                     } else {
-                        $("div#results").hide();
+                        $("#results").hide();
                     }
 
                     // Create the plot
@@ -299,7 +299,6 @@
             <div id="plot"></div>
         </div>
         <div id="results">
-            <h3>Formulas for fit(s):</h3>
             <p id="preview"></p>
         </div>
     </div>
