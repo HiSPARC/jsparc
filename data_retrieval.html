@@ -15,7 +15,10 @@
         <script type="text/javascript" src="scripts/jquery.flot.time.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.canvas.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.axislabels.js"></script>
+        <script type="text/javascript" src="scripts/regression.js"></script>
         <script type="text/javascript" src="jquery.jsparc.js"></script>
+        <!-- Add MathJax to enhance the look of the fit formulas -->
+        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>
             var jsparc;
             $(document).ready(function () {
@@ -74,28 +77,77 @@
                         xset = x.parents('table').attr('name'),
                         yset = y.parents('table').attr('name');
                     if ($('#plot_type input:checked').val() == 'histogram') {
-                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('counts'));
-                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(hist[1], hist[0]));}
-                    if ($('#plot_type input:checked').val() == 'scatter') {
-                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.val()));
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), parseInt($('#hist_bins input').val()));
+                        
+                        // Add another bin at the end (can mess up a fit)
+                        if (hist[0][0] instanceof Array) {
+                            for (var i = 0; i < hist[0].length; i++) {
+                                hist[0][i].push(hist[0][i][hist[0][i].length - 1])}}
+                        else {
+                            hist[0].push(hist[0][hist[0].length - 1])}
+                        var n_bins = hist[1].length,
+                            bin_width = (hist[1][n_bins - 1] - hist[1][n_bins - 2]);
+                        hist[1].push(hist[1][n_bins - 1] + bin_width);
+
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(hist[1], hist[0]);}
+                    else if ($('#plot_type input:checked').val() == 'scatter') {
+                        jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
                         if (xset != yset) {
                             var y_data = jsparc.linear_interpolation(jsparc.get_ext_timestamp(xset),
                                                                      jsparc.get_ext_timestamp(yset),
                                                                      jsparc.get_column(y.val(), yset))}
                         else {
                             var y_data = jsparc.get_column(y.val(), yset)}
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.get_column(x.val(), xset),
-                                                         y_data));}
-                    if ($('#plot_type input:checked').val() == 'timeseries') {
-                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.val()));
-                        jsparc.make_plot($('#plot'),
-                                         jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)),
-                                                         jsparc.get_column(y.val(), yset)));}
+
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(jsparc.get_column(x.val(), xset), y_data);}
+                    else if ($('#plot_type input:checked').val() == 'timeseries') {
+                        jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
+
+                        // The data that needs to be plotted
+                        data_to_plot = jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)), jsparc.get_column(y.val(), yset));}
+
+                    // Get selected fit options
+                    var fit_type = $("#fit_options").val(),
+                        degree = parseInt($('#fit input').val());
+
+                    // If a fit type is selected use regression.js to get trend 
+                    // points and add them to data to plot
+                    if (fit_type != 'none') {
+                        var formula = $('<div>').text('Fit formula: ');
+                        // Check for multidimensional array
+                        if (data_to_plot[0][0] instanceof Array) {
+                            // Loop over each single dataset
+                            var length = data_to_plot.length;
+                            for (var i = 0; i < length; i++) {
+                                // And for each dataset calculate the fit
+                                var summary = regression(fit_type, data_to_plot[i], degree);
+
+                                // The calculated fit is returned as summary.points
+                                data_to_plot.push(summary.points);
+                                formula.append($('<p>').text(summary.string));}}
+                        else {
+                            // Single dataset so just add trend points array after original data
+                            var summary = regression(fit_type, data_to_plot, degree);
+                            
+                            // The calculated fit is returned as summary.points
+                            data_to_plot = [data_to_plot, summary.points];
+                            formula.append($('<p>').text(summary.string));}
+                        $("#preview").html(formula);
+                        $("#results").show();
+                        // Update MathJax to render new text
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);
+                    } else {
+                        $("#results").hide();
+                    }
+
+                    // Create the plot
+                    plot = jsparc.make_plot($('#plot'), data_to_plot);
+
                     $('#plot').show();
                     $('#graph').show();
                     jsparc.show_id('plot');
@@ -110,7 +162,7 @@
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time [ns]'));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('ADCcounts'));
                         var x_data = jsparc.range(0, 2.5 * data[0].length, 2.5);
-                        jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
+                        plot = jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.show_id('plot');
@@ -143,11 +195,23 @@
 
                 $('#plot_type').on('change', 'input', function() {
                     if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
-                                                       jsparc.disable_radio_set('y-axis');}
+                                                       jsparc.disable_radio_set('y-axis');
+                                                        $('#hist_bins input').prop('disabled', false);}
                     else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
-                                                          jsparc.enable_radio_set('y-axis');}
+                                                          jsparc.enable_radio_set('y-axis');
+                                                           $('#hist_bins input').prop('disabled', true);}
                     else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
-                                                             jsparc.enable_radio_set('y-axis');}
+                                                             jsparc.enable_radio_set('y-axis');
+                                                              $('#hist_bins input').prop('disabled', true);}
+                });
+
+                // Set Degree to disabled if polynomial not selected
+                $("#fit_options").on('change', function(){
+                    if ($(this).val() != "polynomial") {
+                        $('#fit input').prop('disabled', true);
+                    } else {
+                        $('#fit input').prop('disabled', false);
+                    }
                 });
 
                 $('#plot_settings').on('change', 'input', function() {
@@ -194,26 +258,39 @@
             <h3>Select variables and settings to plot</h3>
             <div id="controls" class="left">
                 <div id="plot_settings">
-                    <span class="key">Plot type:</span><br />
+                    <span class="key">Plot type:</span><br>
                     <span id="plot_type">
-                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br />
-                        <input name="plot_type" type="radio" value="histogram"> Histogram<br />
-                        <input name="plot_type" type="radio" value="timeseries"> Time series<br />
-                    </span><br />
-                    <span class="key">x-Axis:</span><br />
+                        <input name="plot_type" type="radio" value="scatter" checked> Scatter<br>
+                        <input name="plot_type" type="radio" value="histogram"> Histogram<br>
+                        <input name="plot_type" type="radio" value="timeseries"> Time series<br>
+                    </span><br>
+                    <span class="key">x-Axis:</span><br>
                     <span id="plot_x_axis">
-                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br />
-                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br />
-                    </span><br />
-                    <span class="key">y-Axis:</span><br />
+                        <input name="plot_x_axis" type="radio" value="none" checked> Linear<br>
+                        <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br>
+                    </span><br>
+                    <span class="key">y-Axis:</span><br>
                     <span id="plot_y_axis">
-                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br />
-                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br />
-                    </span><br />
-                    <span class="key">Histogram:</span><br />
+                        <input name="plot_y_axis" type="radio" value="none" checked> Linear<br>
+                        <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br>
+                    </span><br>
+                    <span class="key">Histogram:</span><br>
                     <span id="hist_bins">
-                        Bins: <input name="hist_bins" type="text" style="width: 60px;" value="100"><br />
-                    </span><br />
+                        Bins: <input name="hist_bins" type="number" min=0 step=10 style="width: 60px;" value="100"><br>
+                    </span><br>
+                    <span class="key">Fit:</span><br>
+                    <span id="fit"> 
+                        Type:   
+                        <select id="fit_options">
+                            <option value="none">No fit</option>
+                            <option value="linear">Linear</option>
+                            <option value="exponential">Exponential</option>
+                            <option value="logarithmic">Logarithmic</option>
+                            <option value="power">Power</option>
+                            <option value="polynomial">Polynomial</option>
+                        </select>
+                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
+                    </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
             </div>
@@ -227,7 +304,6 @@
             <div id="plot"></div>
         </div>
         <div id="results">
-            <h3>Raw data in the dataset</h3>
             <p id="preview"></p>
         </div>
     </div>

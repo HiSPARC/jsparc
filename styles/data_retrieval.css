@@ -1,3 +1,4 @@
+
 body {
     font-family: sans-serif;}
 
@@ -112,9 +113,6 @@ td {
     text-decoration: none;
     font-weight: bold;}
 
-.variable {
-    text-transform: capitalize;}
-
 .units:before {
     content: '[';}
 
@@ -149,10 +147,10 @@ td {
 
 #set1_variables,
 #set2_variables {
-    width: 42%;}
+    width: 41.5%;}
 
 #controls {
-    width: 16%;
+    width: 17%;
     font-size: 14px;}
 
 #results {
@@ -165,6 +163,9 @@ td {
     font-size: 12px;
     padding-right: 6px;
     text-align: right;}
+
+input:disabled {
+    color: #ddd;}
 
 /* Color pulseheight columns in table
 */
