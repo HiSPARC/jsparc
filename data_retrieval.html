@@ -122,7 +122,7 @@
                             }
                         } else {
                             // Single dataset so just add trend points array after original data
-                            var summary = regression(fit_type, data_to_plot[i], degree);
+                            var summary = regression(fit_type, data_to_plot, degree);
                             
                             // The calculated fit is returned as summary.points
                             data_to_plot = [data_to_plot, summary.points];
