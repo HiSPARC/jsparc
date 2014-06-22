@@ -76,9 +76,19 @@
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
                         var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
                         
+                        // Add another bin at the end (can mess up a fit)
+                        if (hist[0][0] instanceof Array) {
+                            for (var i = 0; i < hist[0].length; i++) {
+                                hist[0][i].push(hist[0][i][hist[0][i].length - 1])}}
+                        else {
+                            hist[0].push(hist[0][hist[0].length - 1])}
+                        var n_bins = hist[1].length,
+                            bin_width = (hist[1][n_bins - 1] - hist[1][n_bins - 2]);
+                        hist[1].push(hist[1][n_bins - 1] + bin_width);
+
                         // The data that needs to be plotted
                         data_to_plot = jsparc.zip_data(hist[1], hist[0]);}
-                    if ($('#plot_type input:checked').val() == 'scatter') {
+                    else if ($('#plot_type input:checked').val() == 'scatter') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
                         if (xset != yset) {
@@ -90,7 +100,7 @@
 
                         // The data that needs to be plotted
                         data_to_plot = jsparc.zip_data(jsparc.get_column(x.val(), xset), y_data);}
-                    if ($('#plot_type input:checked').val() == 'timeseries') {
+                    else if ($('#plot_type input:checked').val() == 'timeseries') {
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
 
                         // The data that needs to be plotted
