@@ -113,7 +113,7 @@
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
                     if (fit_type != 'none') {
-                        var formula = $('<div>');
+                        var formula = $('<div>').text('Fit formula: ');
                         // Check for multidimensional array
                         if (data_to_plot[0][0] instanceof Array) {
                             // Loop over each single dataset
