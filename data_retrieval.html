@@ -106,20 +106,15 @@
                         // The data that needs to be plotted
                         data_to_plot = jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)), jsparc.get_column(y.val(), yset));}
 
-                    // Get value of the fit selection
-                    var fit_type = $("#fit_options").val();
-
-                    // Get user defined degree of polynomial
-                    var degree = $('#fit input').val();
+                    // Get selected fit options
+                    var fit_type = $("#fit_options").val(),
+                        degree = $('#fit input').val();
 
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
                     if (fit_type != 'none') {
                         // Check for multidimensional array
                         if (data_to_plot[0][0] instanceof Array) {
-                            // unhide results div
-                            $("div#results").show();
-
                             // Loop over each single dataset
                             var length = data_to_plot.length;
                             for (var i = 0; i < length; i++) {
@@ -138,12 +133,12 @@
                             data_to_plot = [data_to_plot, summary.points];
                             $("div#results").append('<p>' + summary.string + '<\p>');
                         }
+                        $("div#results").show();
+                        // Update MathJax to render new text
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);
                     } else {
                         $("div#results").hide();
                     }
-
-                    // Update MathJax to render new text
-                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"results"]);
 
                     // Create the plot
                     plot = jsparc.make_plot($('#plot'), data_to_plot);
