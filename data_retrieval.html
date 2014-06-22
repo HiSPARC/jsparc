@@ -74,7 +74,7 @@
                     if ($('#plot_type input:checked').val() == 'histogram') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
-                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), $('#hist_bins input').val());
+                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), parseInt($('#hist_bins input').val()));
                         
                         // Add another bin at the end (can mess up a fit)
                         if (hist[0][0] instanceof Array) {
@@ -108,7 +108,7 @@
 
                     // Get selected fit options
                     var fit_type = $("#fit_options").val(),
-                        degree = $('#fit input').val();
+                        degree = parseInt($('#fit input').val());
 
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
