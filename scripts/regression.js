@@ -13,30 +13,25 @@
     'use strict';
 
     var gaussianElimination = function(a, o) {
-        var i = 0, j = 0, k = 0, maxrow = 0, tmp = 0, n = a.length - 1, x = new Array(o);
-        for (i = 0; i < n; i++) {
-            maxrow = i;
-            for (j = i + 1; j < n; j++) {
-                if (Math.abs(a[i][j]) > Math.abs(a[i][maxrow]))
-                    maxrow = j;
-            }
-            for (k = i; k < n + 1; k++) {
-                tmp = a[k][i];
+        var n = a.length - 1,
+            x = new Array(o);
+        for (var i = 0; i < n; i++) {
+            var maxrow = i;
+            for (var j = i + 1; j < n; j++) {
+                if (Math.abs(a[i][j]) > Math.abs(a[i][maxrow])) {
+                    maxrow = j;}}
+            for (var k = i; k < n + 1; k++) {
+                var tmp = a[k][i];
                 a[k][i] = a[k][maxrow];
-                a[k][maxrow] = tmp;
-            }
-            for (j = i + 1; j < n; j++) {
+                a[k][maxrow] = tmp;}
+            for (var j = i + 1; j < n; j++) {
                 for (k = n; k >= i; k--) {
-                    a[k][j] -= a[k][i] * a[i][j] / a[i][i];
-                }
-            }
-        }
-        for (j = n - 1; j >= 0; j--) {
-            tmp = 0;
-            for (k = j + 1; k < n; k++)
-                tmp += a[k][j] * x[k];
-            x[j] = (a[n][j] - tmp) / a[j][j];
-        }
+                    a[k][j] -= a[k][i] * a[i][j] / a[i][i];}}}
+        for (var j = n - 1; j >= 0; j--) {
+            var tmp = 0;
+            for (var k = j + 1; k < n; k++) {
+                tmp += a[k][j] * x[k];}
+            x[j] = (a[n][j] - tmp) / a[j][j];}
         return (x);
     };
 
@@ -57,9 +52,7 @@
                     sum[1] += data[n][1];
                     sum[2] += data[n][0] * data[n][0];
                     sum[3] += data[n][0] * data[n][1];
-                    sum[4] += data[n][1] * data[n][1];
-                }
-            }
+                    sum[4] += data[n][1] * data[n][1];}}
 
             var gradient = (n * sum[3] - sum[0] * sum[1]) / (n * sum[2] - sum[0] * sum[0]);
             var intercept = (sum[1] / n) - (gradient * sum[0]) / n;
@@ -67,8 +60,7 @@
 
             for (var i = 0, len = data.length; i < len; i++) {
                 var coordinate = [data[i][0], data[i][0] * gradient + intercept];
-                results.push(coordinate);
-            }
+                results.push(coordinate);}
 
             var string = 'y = ' + gradient.toExponential(2) + 'x + ' + intercept.toExponential(2);
 
@@ -86,9 +78,7 @@
                     sum[2] += data[n][0] * data[n][0] * data[n][1];
                     sum[3] += data[n][1] * Math.log(data[n][1]);
                     sum[4] += data[n][0] * data[n][1] * Math.log(data[n][1]);
-                    sum[5] += data[n][0] * data[n][1];
-                }
-            }
+                    sum[5] += data[n][0] * data[n][1];}}
 
             var denominator = (sum[1] * sum[2] - sum[5] * sum[5]);
             var A = Math.pow(Math.E, (sum[2] * sum[3] - sum[5] * sum[4]) / denominator);
@@ -96,8 +86,7 @@
 
             for (var i = 0, len = data.length; i < len; i++) {
                 var coordinate = [data[i][0], A * Math.pow(Math.E, B * data[i][0])];
-                results.push(coordinate);
-            }
+                results.push(coordinate);}
 
             var string = 'y = ' + A.toExponential(2) + 'e^{' + B.toExponential(2) + 'x}';
 
@@ -112,17 +101,14 @@
                     sum[0] += Math.log(data[n][0]);
                     sum[1] += data[n][1] * Math.log(data[n][0]);
                     sum[2] += data[n][1];
-                    sum[3] += Math.pow(Math.log(data[n][0]), 2);
-                }
-            }
+                    sum[3] += Math.pow(Math.log(data[n][0]), 2);}}
 
             var B = (n * sum[1] - sum[2] * sum[0]) / (n * sum[3] - sum[0] * sum[0]);
             var A = (sum[2] - B * sum[0]) / n;
 
             for (var i = 0, len = data.length; i < len; i++) {
                 var coordinate = [data[i][0], A + B * Math.log(data[i][0])];
-                results.push(coordinate);
-            }
+                results.push(coordinate);}
 
             var string = 'y = ' + A.toExponential(2) + ' + ' + B.toExponential(2) + ' ln(x)';
 
@@ -137,17 +123,14 @@
                     sum[0] += Math.log(data[n][0]);
                     sum[1] += Math.log(data[n][1]) * Math.log(data[n][0]);
                     sum[2] += Math.log(data[n][1]);
-                    sum[3] += Math.pow(Math.log(data[n][0]), 2);
-                }
-            }
+                    sum[3] += Math.pow(Math.log(data[n][0]), 2);}}
 
             var B = (n * sum[1] - sum[2] * sum[0]) / (n * sum[3] - sum[0] * sum[0]);
             var A = Math.pow(Math.E, (sum[2] - B * sum[0]) / n);
 
             for (var i = 0, len = data.length; i < len; i++) {
                 var coordinate = [data[i][0], A * Math.pow(data[i][0] , B)];
-                results.push(coordinate);
-            }
+                results.push(coordinate);}
 
              var string = 'y = ' + A.toExponential(2) + 'x^{' + B.toExponential(2) + '}';
 
@@ -158,26 +141,24 @@
             if (typeof order == 'undefined') {
                 order = 2;
             }
-            var lhs = [], rhs = [], results = [], a = 0, b = 0, i = 0, k = order + 1;
+            var lhs = [], rhs = [], results = [],
+                a = 0, b = 0,
+                k = order + 1;
 
-            for (; i < k; i++) {
+            for (var i = 0; i < k; i++) {
                 for (var l = 0, len = data.length; l < len; l++) {
                     if (data[l][1]) {
-                        a += Math.pow(data[l][0], i) * data[l][1];
-                    }
-                }
-                lhs.push(a), a = 0;
+                        a += Math.pow(data[l][0], i) * data[l][1];}}
+                lhs.push(a);
+                a = 0;
                 var c = [];
                 for (var j = 0; j < k; j++) {
                     for (var l = 0, len = data.length; l < len; l++) {
                         if (data[l][1]) {
-                            b += Math.pow(data[l][0], i + j);
-                        }
-                    }
-                    c.push(b), b = 0;
-                }
-                rhs.push(c);
-            }
+                            b += Math.pow(data[l][0], i + j);}}
+                    c.push(b);
+                    b = 0;}
+                rhs.push(c);}
             rhs.push(lhs);
 
             var equation = gaussianElimination(rhs, k);
@@ -185,18 +166,15 @@
             for (var i = 0, len = data.length; i < len; i++) {
                 var answer = 0;
                 for (var w = 0; w < equation.length; w++) {
-                    answer += equation[w] * Math.pow(data[i][0], w);
-                }
-                results.push([data[i][0], answer]);
-            }
+                    answer += equation[w] * Math.pow(data[i][0], w);}
+                results.push([data[i][0], answer]);}
 
             var string = 'y = ';
 
-            for(var i = equation.length-1; i >= 0; i--){
+            for (var i = equation.length-1; i >= 0; i--) {
                 if (i > 1) string += equation[i].toExponential(2) + 'x^{' + i + '} + ';
                 else if (i == 1) string += equation[i].toExponential(2) + 'x' + ' + ';
-                else string += equation[i].toExponential(2);
-            }
+                else string += equation[i].toExponential(2);}
 
             return {equation: equation, points: results, string: prepare_for_MathJax(string)};
         },
@@ -207,12 +185,9 @@
             for (var i = 0; i < data.length; i++) {
                 if (data[i][1]) {
                     lastvalue = data[i][1];
-                    results.push([data[i][0], data[i][1]]);
-                }
+                    results.push([data[i][0], data[i][1]]);}
                 else {
-                    results.push([data[i][0], lastvalue]);
-                }
-            }
+                    results.push([data[i][0], lastvalue]);}}
   
             return {equation: [lastvalue], points: results, string: "" + lastvalue};
         }
