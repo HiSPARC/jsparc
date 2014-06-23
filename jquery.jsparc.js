@@ -152,6 +152,10 @@ be stored as strings.
                     update_dataset_table();}
                 };
             reader.readAsText(file);
+
+            // Return the reader object so we can listen for the onloadend event
+            // and easily recheck all previous checked radio buttons
+            return reader;
         }
 
         jsparc.remove_dataset = remove_dataset;
