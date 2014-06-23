@@ -542,7 +542,7 @@ be stored as strings.
             firstrow.append($('<th>').text('#'));
             for (var key in format) {
                 var ncol = (format[key].column.length) ? format[key].column.length : 1;
-                firstrow.append($('<th>').text(key).attr('colspan', ncol));}
+                firstrow.append($('<th>').text(format[key].name).attr('colspan', ncol));}
             if (type == 'events') {
                 firstrow.append($('<th>').text('trace'));}
             table.append(firstrow);
@@ -948,7 +948,7 @@ be stored as strings.
         jsparc.flot_histogram = function() {return flot_histogram;};
         var flot_histogram = {
             yaxis: {
-                min: 0},
+                min: 0.6},
             series: {
                 lines: {
                     steps: true}}
