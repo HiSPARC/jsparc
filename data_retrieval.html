@@ -48,20 +48,64 @@
                         $('#station_weather_choice').hide();}
                 });
 
+                // Recheck all radio buttons that were checked before loading new data
+                // This function does only work for the specific 'select data' radio buttons
+                function recheck_buttons(array) {
+                    $.each(array, function(key, value){
+                        $('#select_dataset table input:radio[name=' + key + '][value="' + value + '"]').prop("checked", true);
+                    });
+                }
+
                 // Download button
                 $('#download_dataset').on('click', function() {
                     var data_type = $('#type_choice input:checked').val()
-                    
+                    var input_array = {};
+                    var checked_input = $('#select_dataset table input:checked');
+
+                    // Make sure check_input exists
+                    if (typeof checked_input != "undefined") {
+                        for (var i = 0; i < checked_input.length; i++) {
+                            input_array[checked_input[i]["name"]] = checked_input[i]["value"];
+                        }
+                    }                    
+
                     jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
                                             $('#startdate_choice').val(),
                                             $('#enddate_choice').val(),
                                             data_type)
-                          .done(function() {$('#select_dataset').show()})
+                          .done(function() {
+                                //if (typeof $(this) != "undefined") {
+                                //    recheck_buttons(input_array);
+                                //}
+
+                                $('#select_dataset').show();
+                               })
                 });
 
                 // Load data button
                 $('#load_dataset').on('click', function() {
-                    jsparc.load_dataset($('#file_choice')[0].files[0]);
+                    // Remember all checked input
+                    // Create array to store name and value of checked input, because key should be unique we use name as key
+                    var input_array = {};
+                    var checked_input = $('#select_dataset table input:checked');
+
+                    // Make sure check_input exists
+                    if (typeof checked_input != "undefined") {
+                        for (var i = 0; i < checked_input.length; i++) {
+                            input_array[checked_input[i]["name"]] = checked_input[i]["value"];
+                        }
+                    }
+
+                    var reader_return = jsparc.load_dataset($('#file_choice')[0].files[0]);
+
+                    // Check return type because if for example dataset is already available
+                    // the object return is not a reader object
+                    if (typeof reader_return != "undefined") {
+                        reader_return.onloadend = function() {
+                            recheck_buttons(input_array);
+                        };
+                    }
+
                     $('#select_dataset').show();
                 });
 
