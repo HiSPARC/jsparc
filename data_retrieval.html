@@ -113,7 +113,7 @@
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
                     if (fit_type != 'none') {
-                        var formula = $('<div>').text('Fit formula: ');
+                        var formula = $('<div>').append($('<h3>').text('Fit formula'));
                         // Check for multidimensional array
                         if (data_to_plot[0][0] instanceof Array) {
                             // Loop over each single dataset
@@ -122,6 +122,10 @@
                                 // And for each dataset calculate the fit
                                 var summary = regression(fit_type, data_to_plot[i], degree);
 
+                                 // Only show fit if NaN not present
+                                if (summary.string.indexOf("NaN") != -1) {
+                                    summary.string = "Fit not possible";}
+
                                 // The calculated fit is returned as summary.points
                                 data_to_plot.push(summary.points);
                                 formula.append($('<p>').text(summary.string));}}
@@ -129,6 +133,10 @@
                             // Single dataset so just add trend points array after original data
                             var summary = regression(fit_type, data_to_plot, degree);
                             
+                            // Only show fit if NaN not present
+                            if (summary.string.indexOf("NaN") != -1) {
+                                    summary.string = "Fit not possible";}
+
                             // The calculated fit is returned as summary.points
                             data_to_plot = [data_to_plot, summary.points];
                             formula.append($('<p>').text(summary.string));}
