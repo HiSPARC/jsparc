@@ -434,8 +434,10 @@ be stored as strings.
             for (var i in datasets) {
                 var row = $('<tr>').attr('name', datasets[i].url);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('title', 'Choose which dataset you want to use. Using both radio buttons you could select different datasets to interpolate data.')
                                     .attr('name', 'set1').attr('alt', 'set2').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('title', 'Select a different dataset, for example from a different row, to interpolate data.')
                                     .attr('name', 'set2').attr('alt', 'set1').val(i)));
                 row.append($('<td>').text(datasets[i].station_number).addClass('station'));
                 row.append($('<td>').text(datasets[i].type).addClass('type'));
