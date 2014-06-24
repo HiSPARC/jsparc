@@ -69,17 +69,17 @@
                         }
                     }                    
 
-                    jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
+                    var download_return = jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
                                             $('#startdate_choice').val(),
                                             $('#enddate_choice').val(),
                                             data_type)
-                          .done(function() {
-                                //if (typeof $(this) != "undefined") {
-                                //    recheck_buttons(input_array);
-                                //}
-
-                                $('#select_dataset').show();
-                               })
+                          
+                    // Check return type because if for example dataset is already available
+                    // the object return is not a reader object
+                    if (typeof download_return != "undefined") {
+                        download_return.done(function(data) {
+                            recheck_buttons(input_array);
+                            $('#select_dataset').show();});}
                 });
 
                 // Load data button
@@ -103,10 +103,7 @@
                     if (typeof reader_return != "undefined") {
                         reader_return.onloadend = function() {
                             recheck_buttons(input_array);
-                        };
-                    }
-
-                    $('#select_dataset').show();
+                            $('#select_dataset').show();};}
                 });
 
                 // Show plot button
