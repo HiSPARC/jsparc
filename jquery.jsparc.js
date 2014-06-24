@@ -1124,9 +1124,9 @@ be stored as strings.
                 comments = '#';
             var data = [];
             var lines = csv.split(eol);
-            while (lines[0][0] == comments) {
+            while (lines.length != 0 && lines[0][0] == comments) {
                 lines.splice(0, 1);}
-            while (lines[lines.length - 1] == empty) {
+            while (lines.length != 0 && lines[lines.length - 1] == empty) {
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 values = lines[i].split(delimiter);
