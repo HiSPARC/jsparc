@@ -414,6 +414,21 @@ be stored as strings.
         function set_dataset_list_controls(target) {
             var target = target || $('#dataset_list');
             target.on('click', 'td.delete', function() {
+                // Use array to store the set names ('set1' or 'set2') of div's 
+                // that should be deleted
+                var set_array = [];
+
+                // Get selected radio button i.e. set1 or set2 in row we want
+                // to remove to know which div to empty out
+                $(this).parent().find('input:checked').each(function() {
+                    set_array.push($(this).attr('name'));});
+
+                // find and empty divs
+                if (set_array.length) {
+                    $.each(set_array, function( index, value ){
+                        $('#' + value + '_variables').empty();});}
+
+                // remove the dataset
                 remove_dataset_from_list(this);
                 $(this).parent().remove();});
         }
