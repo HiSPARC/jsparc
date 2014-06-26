@@ -414,7 +414,7 @@ be stored as strings.
         function set_dataset_list_controls(target) {
             var target = target || $('#dataset_list');
             target.on('click', 'td.delete', function() {
-                // Use array to store the set names ('set1' or 'set2') of div's 
+                // Use array to store the set names ('set1' or 'set2') of div's
                 // that should be deleted
                 var set_array = [];
 
@@ -456,7 +456,7 @@ be stored as strings.
                                     .attr('title', 'Choose which dataset you want to use. Using both radio buttons you could select different datasets to interpolate data.')
                                     .attr('name', 'set1').attr('alt', 'set2').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
-                                    .attr('title', 'Select a different dataset, for example from a different row, to interpolate data.')
+                                    .attr('title', 'Select a second dataset, for example from a different row, to interpolate data.')
                                     .attr('name', 'set2').attr('alt', 'set1').val(i)));
                 row.append($('<td>').text(datasets[i].station_number).addClass('station'));
                 row.append($('<td>').text(datasets[i].type).addClass('type'));

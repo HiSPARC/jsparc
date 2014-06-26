@@ -258,6 +258,7 @@
                     }
                 });
 
+                // Update plot settings
                 $('#plot_settings').on('change', 'input', function() {
                     jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
                 });
