@@ -1,17 +1,24 @@
 /* Pretty handling of logarithmic axes.
 
-Set axis.mode to "log" to enable.
+Copyright (c) 2007-2014 IOLA and Ole Laursen.
+Licensed under the MIT license.
+
+* Created by Arne de Laat
+
+Set axis.mode to "log" and make the axis logarithmic using transform:
+
+    axis: {
+        mode: 'log',
+        transform: function(v) {v <= 0 ? Math.log(v) / Math.LN10 : null},
+        inverseTransform: function(v) {Math.pow(10, v)}
+    }
+
+The transform filters negative and zero values, because those are
+invalid on logarithmic scales.
 
 */
 
 (function($) {
-
-    var options = {
-        yaxis: {},
-        xaxis: {}
-    };
-
-    // round to nearby lower multiple of base
 
     function log10(value) {
         /* Get the Log10 of the value
@@ -31,6 +38,8 @@ Set axis.mode to "log" to enable.
         return Math.ceil(log10(value));
     }
 
+
+    // round to nearby lower multiple of base
     function floorInBase(n, base) {
         return base * Math.floor(n / base);
     }
