@@ -454,7 +454,8 @@ be stored as strings.
             for (var i in datasets) {
                 var row = $('<tr>').attr('name', datasets[i].url);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
-                                    .attr('title', 'Choose which dataset you want to use. Using both radio buttons you could select different datasets to interpolate data.')
+                                    .attr('title', 'Choose which dataset you want to use.' +
+                                                   'Using both radio buttons you could select different datasets to interpolate data.')
                                     .attr('name', 'set1').attr('alt', 'set2').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
                                     .attr('title', 'Select a second dataset, for example from a different row, to interpolate data.')
@@ -1251,11 +1252,7 @@ be stored as strings.
             Choose axis 0 for x values and axis 1 for y values.
 
             */
-            for (var i = 0; i < data.length; i++) {
-                if (data[i][axis] <= 0) {
-                    data.splice(i, 1);
-                    i--}}
-            return data
+            return data.filter(function(v) {return v[0] > 0 && v[1] > 0;})
         }
 
         jsparc.remove_invalid_log_values_1d = remove_invalid_log_values_1d;
@@ -1265,11 +1262,7 @@ be stored as strings.
             These values are not valid for logarithmic axes.
 
             */
-            for (var i = 0; i < data.length; i++) {
-                if (data[i] <= 0) {
-                    data.splice(i, 1);
-                    i--}}
-            return data
+            return data.filter(function(v) {return v > 0;})
         }
 
         jsparc.remove_error_values = remove_error_values;
@@ -1279,12 +1272,8 @@ be stored as strings.
             Removes a point if either the x or y value is -999 or -1.
 
             */
-            for (var i = 0; i < data.length; i++) {
-                if (data[i][0] == -999 || data[i][1] == -999 ||
-                    data[i][0] == -1 || data[i][1] == -1) {
-                    data.splice(i, 1);
-                    i--}}
-            return data
+            return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 &&
+                                                   v[1] !== -999 && v[1] !== -1;})
         }
 
         jsparc.remove_error_values_1d = remove_error_values_1d;
@@ -1294,11 +1283,7 @@ be stored as strings.
             Removes an element if the value is -999 or -1.
 
             */
-            for (var i = 0; i < data.length; i++) {
-                if (data[i] == -999 || data[i] == -1) {
-                    data.splice(i, 1);
-                    i--}}
-            return data
+            return data.filter(function(v) {return v !== -999 && v !== -1;})
         }
 
         jsparc.sort_stringvalues = sort_stringvalues;
