@@ -141,7 +141,6 @@ invalid on logarithmic scales.
 
     $.plot.plugins.push({
         init: init,
-        options: options,
         name: 'log',
         version: '0.9'
     });
