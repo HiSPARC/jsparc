@@ -84,11 +84,11 @@ be stored as strings.
         function unknown_format(url) {
             /* Create a generic column format for unknown dataset types
             */
-            var unknown_format = {} ,
+            var generic_format = {} ,
                 n_columns = datasets[url].data[0].length;
             for (var i = 0; i < n_columns; i++) {
-                unknown_format['column_' + i] = {'column': i, 'name': 'Column ' + i, 'units': '?'};}
-            return unknown_format;
+                generic_format['column_' + i] = {'column': i, 'name': 'Column ' + i, 'units': '?'};}
+            return generic_format;
         }
 
         // Data container
@@ -144,14 +144,18 @@ be stored as strings.
                     alert('No data in the chosen file');}
                 else {
                     datasets[file.name] = ({data: data,
-                                            station_number: info['station_number'],
-                                            startdate: info['startdate'],
-                                            enddate: info['enddate'],
-                                            type: info['type'],
+                                            station_number: info.station_number,
+                                            startdate: info.startdate,
+                                            enddate: info.enddate,
+                                            type: info.type,
                                             url: file.name});
                     update_dataset_table();}
                 };
             reader.readAsText(file);
+
+            // Return the reader object so we can listen for the onloadend event
+            // and easily recheck all previous checked radio buttons
+            return reader;
         }
 
         jsparc.remove_dataset = remove_dataset;
@@ -238,7 +242,7 @@ be stored as strings.
                     var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
                     ext_timestamps.push(make_ext_timestamp(timestamp[i], ns));}
                 return ext_timestamps;}
-            var nanoseconds = nanoseconds || null;
+            nanoseconds = nanoseconds || null;
             // return timestamp * 1e9 + nanoseconds;
             return timestamp.toString() + pad_zero(nanoseconds, 9);
         }
@@ -256,7 +260,7 @@ be stored as strings.
                     var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
                     ext_timestamps.push(make_ext_timestamp(timestamp[i], ns));}
                 return ext_timestamps;}
-            var nanoseconds = nanoseconds || null;
+            nanoseconds = nanoseconds || null;
             return timestamp * 1e9 + nanoseconds;
             // return timestamp.toString() + pad_zero(nanoseconds, 9);
         }
@@ -269,13 +273,13 @@ be stored as strings.
 
             */
             if (timestamp instanceof Array) {
-                var nanoseconds = nanoseconds || [];
+                nanoseconds = nanoseconds || [];
                 var js_timestamps = [];
                 for (var i = 0; i < timestamp.length; i++) {
                     var ns = nanoseconds instanceof Array ? nanoseconds[i] : null;
                     js_timestamps.push(make_javascript_timestamp(timestamp[i], ns));}
                 return js_timestamps;}
-            var nanoseconds = nanoseconds || null;
+            nanoseconds = nanoseconds || null;
             return timestamp * 1e3 + Math.round(nanoseconds / 1e6);
         }
 
@@ -286,12 +290,13 @@ be stored as strings.
             See Warnings
 
             */
-            var type = datasets[url].type;
+            var type = datasets[url].type,
+                ext_timestamps;
             if (type == 'events') {
-                var ext_timestamps = make_ext_timestamp(get_column('timestamp', url),
-                                                        get_column('nanoseconds', url));}
+                ext_timestamps = make_ext_timestamp(get_column('timestamp', url),
+                                                    get_column('nanoseconds', url));}
             else {
-                var ext_timestamps = make_ext_timestamp(get_column('timestamp', url));}
+                ext_timestamps = make_ext_timestamp(get_column('timestamp', url));}
             return ext_timestamps;
         }
 
@@ -346,7 +351,7 @@ be stored as strings.
                 bins = range(data[0], data[data.length-1], window),
                 hist = histogram(data, bins),
                 rate = linear_interpolation(data, bins, hist[0]);
-            for(var i = 0; i < rate.length; i++) {
+            for (var i = 0; i < rate.length; i++) {
                 rate[i] /= window;}
             return rate;
         }
@@ -410,6 +415,21 @@ be stored as strings.
         function set_dataset_list_controls(target) {
             var target = target || $('#dataset_list');
             target.on('click', 'td.delete', function() {
+                // Use array to store the set names ('set1' or 'set2') of div's
+                // that should be deleted
+                var set_array = [];
+
+                // Get selected radio button i.e. set1 or set2 in row we want
+                // to remove to know which div to empty out
+                $(this).parent().find('input:checked').each(function() {
+                    set_array.push($(this).attr('name'));});
+
+                // find and empty divs
+                if (set_array.length) {
+                    $.each(set_array, function( index, value ){
+                        $('#' + value + '_variables').empty();});}
+
+                // remove the dataset
                 remove_dataset_from_list(this);
                 $(this).parent().remove();});
         }
@@ -434,8 +454,10 @@ be stored as strings.
             for (var i in datasets) {
                 var row = $('<tr>').attr('name', datasets[i].url);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('title', 'Choose which dataset you want to use. Using both radio buttons you could select different datasets to interpolate data.')
                                     .attr('name', 'set1').attr('alt', 'set2').val(i)));
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
+                                    .attr('title', 'Select a second dataset, for example from a different row, to interpolate data.')
                                     .attr('name', 'set2').attr('alt', 'set1').val(i)));
                 row.append($('<td>').text(datasets[i].station_number).addClass('station'));
                 row.append($('<td>').text(datasets[i].type).addClass('type'));
@@ -542,7 +564,7 @@ be stored as strings.
             firstrow.append($('<th>').text('#'));
             for (var key in format) {
                 var ncol = (format[key].column.length) ? format[key].column.length : 1;
-                firstrow.append($('<th>').text(key).attr('colspan', ncol));}
+                firstrow.append($('<th>').text(format[key].name).attr('colspan', ncol));}
             if (type == 'events') {
                 firstrow.append($('<th>').text('trace'));}
             table.append(firstrow);
@@ -554,7 +576,7 @@ be stored as strings.
                 for (var j = 0; j < dataset.data[i].length; j++) {
                     row.append($('<td>').text(dataset.data[i][j]));}
                 if (type == 'events') {
-                    var t = make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3])
+                    var t = make_ext_timestamp_str(dataset.data[i][2], dataset.data[i][3]);
                     var trace_url = api_event_trace(dataset.station_number, t);
                     row.append($('<td>').text('show').addClass('trace').attr('data-url', trace_url));}
                 table.append(row);
@@ -739,25 +761,14 @@ be stored as strings.
 
             */
             var target = (target) ? target : $('#plot'),
-                datas = [{data: [0, 0], lines: {show: false}, xaxis: 2, yaxis: 2}];
+                datas = [{data: [1, 1], lines: {show: false}, xaxis: 2, yaxis: 2}];
 
             if (data[0][0] instanceof Array) {
                 for (var i = data.length - 1; i >= 0; i--) {
-                    for (var j = 0; j < data[i].length; j++) {
-                        if (data[i][j][0] == -999 || data[i][j][1] == -999 ||
-                            data[i][j][0] == -1 || data[i][j][1] == -1) {
-                            data[i].splice(j, 1);
-                            j--}}
-                    // if (data[i].length) {
-                    //     while (data[i][0][1] == 0) {
-                    //         data[i].splice(0,1);}}
                     datas.unshift({data: data[i], yaxis: 1});}}
             else {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i][0] == -999 || data[i][1] == -999 ||
-                        data[i][0] == -1 || data[i][1] == -1) {
-                        data.splice(i, 1);}}
                 datas.unshift({data: data, yaxis: 1});}
+
             return $.plot(target, datas, flot_active);
         }
 
@@ -767,7 +778,7 @@ be stored as strings.
             */
             var target = (target) ? target : $('#plot');
             var dataurl = target.find('.flot-base')[0].toDataURL();
-            window.open(dataurl, '_blank', 'height=450, width=630, toolbar=yes');
+            window.open(dataurl, '_blank', 'height=450, width=820, toolbar=yes');
         }
 
         jsparc.zip_data = zip_data;
@@ -885,8 +896,8 @@ be stored as strings.
             xaxis: {
                 show: true,
                 font: {
-                    size: 12,
-                    lineHeight: 13,
+                    size: 14,
+                    lineHeight: 14,
                     family: 'sans-serif',
                     color: '#000'},
                 color: '#000',
@@ -897,8 +908,8 @@ be stored as strings.
             yaxis: {
                 show: true,
                 font: {
-                    size: 12,
-                    lineHeight: 13,
+                    size: 14,
+                    lineHeight: 14,
                     family: 'sans-serif',
                     color: '#000'},
                 color: '#000',
@@ -947,8 +958,6 @@ be stored as strings.
 
         jsparc.flot_histogram = function() {return flot_histogram;};
         var flot_histogram = {
-            yaxis: {
-                min: 0},
             series: {
                 lines: {
                     steps: true}}
@@ -970,6 +979,7 @@ be stored as strings.
         jsparc.flot_ylog = function() {return flot_ylog;};
         var flot_ylog = {
             yaxis: {
+                mode: 'log',
                 transform: _make_log_axis,
                 inverseTransform: _inverse_make_log_axis}
         };
@@ -977,6 +987,7 @@ be stored as strings.
         jsparc.flot_xlog = function() {return flot_xlog;};
         var flot_xlog = {
             xaxis: {
+                mode: 'log',
                 transform: _make_log_axis,
                 inverseTransform: _inverse_make_log_axis}
         };
@@ -1118,9 +1129,9 @@ be stored as strings.
                 comments = '#';
             var data = [];
             var lines = csv.split(eol);
-            while (lines[0][0] == comments) {
+            while (lines.length != 0 && lines[0][0] == comments) {
                 lines.splice(0, 1);}
-            while (lines[lines.length - 1] == empty) {
+            while (lines.length != 0 && lines[lines.length - 1] == empty) {
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 values = lines[i].split(delimiter);
@@ -1165,9 +1176,6 @@ be stored as strings.
             of the next bin, i.e. [[1, 2), [2, 3), [3, 4), [4, 5]].
             The returned bins are the left edges of the bins.
 
-            Warning: This function ignores values of -999 and -1
-            when determining the minimum from the data.
-
             */
             var nbins, mn, mx;
 
@@ -1184,15 +1192,18 @@ be stored as strings.
                     mx = a[0][0];
                     for (var i = 0; i < a.length; i++) {
                         for (var j = 0; j < a[i].length; j++) {
-                            mn = (a[i][j] > mn || a[i][j] == -999 || a[i][j] == -1) ? mn : a[i][j];
+                            mn = (a[i][j] > mn) ? mn : a[i][j];
                             mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
                     mn = a[0];
                     mx = a[0];
                     for (var i = 0; i < a.length; i++) {
-                        mn = (a[i] > mn || a[i] == -999 || a[i] == -1) ? mn : a[i];
+                        mn = (a[i] > mn) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
                 bins = range(mn, mx, (mx - mn) / nbins);}
+
+            if (bins[0] === undefined) {
+                return [[], []]}
 
             var n = [];
 
@@ -1215,6 +1226,79 @@ be stored as strings.
                     n[i]++;}}
 
             return [n, bins];
+        }
+
+        jsparc.is_data_empty = is_data_empty
+        function is_data_empty(data) {
+            /* returns true if there is no data in the array
+
+            Expects data in the form of:
+            [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...], ...]
+            Empty:
+            [[], [], []]
+            */
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].length) {
+                    return false;}}
+            return true;
+        }
+
+        jsparc.remove_invalid_log_values = remove_invalid_log_values;
+        function remove_invalid_log_values(data, axis) {
+            /* Remove all zero and negative values from the chosen axis
+
+            These points are not valid for logarithmic axes.
+            Choose axis 0 for x values and axis 1 for y values.
+
+            */
+            for (var i = 0; i < data.length; i++) {
+                if (data[i][axis] <= 0) {
+                    data.splice(i, 1);
+                    i--}}
+            return data
+        }
+
+        jsparc.remove_invalid_log_values_1d = remove_invalid_log_values_1d;
+        function remove_invalid_log_values_1d(data) {
+            /* Remove all zero and negative values
+
+            These values are not valid for logarithmic axes.
+
+            */
+            for (var i = 0; i < data.length; i++) {
+                if (data[i] <= 0) {
+                    data.splice(i, 1);
+                    i--}}
+            return data
+        }
+
+        jsparc.remove_error_values = remove_error_values;
+        function remove_error_values(data) {
+            /* Remove error values from the data points
+
+            Removes a point if either the x or y value is -999 or -1.
+
+            */
+            for (var i = 0; i < data.length; i++) {
+                if (data[i][0] == -999 || data[i][1] == -999 ||
+                    data[i][0] == -1 || data[i][1] == -1) {
+                    data.splice(i, 1);
+                    i--}}
+            return data
+        }
+
+        jsparc.remove_error_values_1d = remove_error_values_1d;
+        function remove_error_values_1d(data) {
+            /* Remove error values from the data points from 1d array
+
+            Removes an element if the value is -999 or -1.
+
+            */
+            for (var i = 0; i < data.length; i++) {
+                if (data[i] == -999 || data[i] == -1) {
+                    data.splice(i, 1);
+                    i--}}
+            return data
         }
 
         jsparc.sort_stringvalues = sort_stringvalues;
