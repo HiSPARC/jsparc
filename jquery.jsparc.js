@@ -1222,6 +1222,11 @@ be stored as strings.
                 // bin the values
                 if (a[j] == mx) {
                     n[nbins - 1]++;}
+                else if (a[j] < mn || a[j] > mx) {
+                    // Due to rounding issues the max value in the
+                    // array may be larger than the max bin edge.
+                    // This value is currently ignored..
+                    }
                 else {
                     var i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
                     n[i]++;}}
