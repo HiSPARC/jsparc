@@ -131,7 +131,7 @@
                 $('#api_urls').html(select);
 
                 $('#api_urls').on('change', 'select', function() {
-                    var url = jsparc.API_URL + "/" + eval('man.' + $(this).val());
+                    var url = jsparc.API_URL + "/" + man[$(this).val()];
                     $('#url_options').html(replace_options_with_inputs(url));
                     $('#url_options [name=year]').replaceWith(year_options());
                     $('#url_options [name=month]').replaceWith(month_options());
@@ -143,7 +143,7 @@
                     var options = [],
                         inputs = $('#url_options input, #url_options select').each(function() {options.push($(this).val());});
 
-                    var url = eval('jsparc.' + $('#api_urls select').val()).apply(this, options);
+                    var url = jsparc[$('#api_urls select').val()].apply(this, options);
                     
                     $('#result_url').text(url);
                     jsparc.get_json(url)
