@@ -13,6 +13,7 @@
         <script type="text/javascript" src="scripts/jquery-ui-timepicker-addon.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.time.js"></script>
+        <script type="text/javascript" src="scripts/jquery.flot.log.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.canvas.js"></script>
         <script type="text/javascript" src="scripts/jquery.flot.axislabels.js"></script>
         <script type="text/javascript" src="scripts/regression.js"></script>
@@ -111,24 +112,51 @@
                     var x = $('#select_variables input[name=x-axis]:checked'),
                         y = $('#select_variables input[name=y-axis]:checked'),
                         xset = x.parents('table').attr('name'),
-                        yset = y.parents('table').attr('name');
+                        yset = y.parents('table').attr('name'),
+                        ylog = $("#plot_y_axis :checked").val() !== 'none',
+                        xlog = $("#plot_x_axis :checked").val() !== 'none',
+                        data_to_plot;
+                    // Here the plot data is prepared, each section results in
+                    // a multidimensional array `data_to_plot`
+                    // [[[x, y], [x, y], ...], [set2], ...]
                     if ($('#plot_type input:checked').val() == 'histogram') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
-                        var hist = jsparc.histogram(jsparc.get_column(x.val(), xset), parseInt($('#hist_bins input').val()));
-                        
-                        // Add another bin at the end (can mess up a fit)
-                        if (hist[0][0] instanceof Array) {
-                            for (var i = 0; i < hist[0].length; i++) {
-                                hist[0][i].push(hist[0][i][hist[0][i].length - 1])}}
-                        else {
-                            hist[0].push(hist[0][hist[0].length - 1])}
-                        var n_bins = hist[1].length,
-                            bin_width = (hist[1][n_bins - 1] - hist[1][n_bins - 2]);
-                        hist[1].push(hist[1][n_bins - 1] + bin_width);
+                        var x_data = jsparc.get_column(x.val(), xset);
 
-                        // The data that needs to be plotted
-                        data_to_plot = jsparc.zip_data(hist[1], hist[0]);}
+                        // Filter error values before determining bins and making the histogram
+                        if (x_data[0] instanceof Array) {
+                            for (var i = 0; i < x_data.length; i++) {
+                                x_data[i] = jsparc.remove_error_values_1d(x_data[i]);
+                                if (xlog) {
+                                    x_data[i] = jsparc.remove_invalid_log_values_1d(x_data[i]);}}}
+                        else {
+                            x_data = jsparc.remove_error_values_1d(x_data);
+                            if (xlog) {
+                                x_data = jsparc.remove_invalid_log_values_1d(x_data);}}
+
+                        var hist = jsparc.histogram(x_data, parseInt($('#hist_bins input').val()));
+
+                        if (hist[1][0] === undefined) {
+                            // If there are no bins
+                            data_to_plot = [[]]}
+                        else {
+                            // Add another bin at the end (can mess up a fit)
+                            if (hist[0][0] instanceof Array) {
+                                for (var i = 0; i < hist[0].length; i++) {
+                                    hist[0][i].push(hist[0][i][hist[0][i].length - 1])}}
+                            else {
+                                hist[0].push(hist[0][hist[0].length - 1])}
+                            var n_bins = hist[1].length,
+                                bin_width = (hist[1][n_bins - 1] - hist[1][n_bins - 2]);
+                            hist[1].push(hist[1][n_bins - 1] + bin_width);
+
+                            // The data that needs to be plotted
+                            data_to_plot = jsparc.zip_data(hist[1], hist[0]);
+
+                            if (data_to_plot[0][0] instanceof Array == false) {
+                                data_to_plot = [data_to_plot]}}
+                    }
                     else if ($('#plot_type input:checked').val() == 'scatter') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
@@ -140,12 +168,39 @@
                             var y_data = jsparc.get_column(y.val(), yset)}
 
                         // The data that needs to be plotted
-                        data_to_plot = jsparc.zip_data(jsparc.get_column(x.val(), xset), y_data);}
+                        data_to_plot = jsparc.zip_data(jsparc.get_column(x.val(), xset), y_data);
+
+                        if (data_to_plot[0][0] instanceof Array == false) {
+                            data_to_plot = [data_to_plot]}
+
+                        for (var i = 0; i < data_to_plot.length; i++) {
+                            if (ylog) {
+                                data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 1)}
+                            if (xlog) {
+                                data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 0)}}
+                    }
                     else if ($('#plot_type input:checked').val() == 'timeseries') {
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
 
                         // The data that needs to be plotted
-                        data_to_plot = jsparc.zip_data(jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset)), jsparc.get_column(y.val(), yset));}
+                        var y_data = jsparc.get_column(y.val(), yset),
+                            x_data = jsparc.make_javascript_timestamp(jsparc.get_column('timestamp', yset));
+                        data_to_plot = jsparc.zip_data(x_data, y_data);
+
+                        if (data_to_plot[0][0] instanceof Array == false) {
+                            data_to_plot = [data_to_plot]}
+
+                        if (ylog) {
+                            for (var i = 0; i < data_to_plot.length; i++) {
+                                data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 1)}}
+                    }
+
+                    for (var i = 0; i < data_to_plot.length; i++) {
+                        data_to_plot[i] = jsparc.remove_error_values(data_to_plot[i])}
+
+                    if (jsparc.is_data_empty(data_to_plot)) {
+                        alert('No data to plot. The selected data may contain only error values or invalid values for logarithmic axes.');
+                        return}
 
                     // Get selected fit options
                     var fit_type = $("#fit_options").val(),
@@ -156,42 +211,26 @@
                     if (fit_type != 'none') {
                         var formula = $('<div>').append($('<h3>').text('Fit formula'));
                         // Check for multidimensional array
-                        if (data_to_plot[0][0] instanceof Array) {
-                            // Loop over each single dataset
-                            var length = data_to_plot.length;
-                            for (var i = 0; i < length; i++) {
-                                // And for each dataset calculate the fit
-                                var summary = regression(fit_type, data_to_plot[i], degree);
+                        // Loop over each single dataset
+                        var length = data_to_plot.length;
+                        for (var i = 0; i < length; i++) {
+                            // And for each dataset calculate the fit
+                            var summary = regression(fit_type, data_to_plot[i], degree);
 
-                                 // Only show fit if NaN not present
-                                if (summary.string.indexOf("NaN") != -1) {
-                                    summary.string = "Fit not possible";
-                                    summary.corrstring = "correlation not of application";}
-                                
-                                // The calculated fit is returned as summary.points
-                                data_to_plot.push(summary.points);
-                                formula.append($('<p>').text(summary.string));
-                                formula.append($('<p>').text(summary.corrstring));}}
-                        else {
-                            // Single dataset so just add trend points array after original data
-                            var summary = regression(fit_type, data_to_plot, degree);
-                            
-                            // Only show fit if NaN not present
+                             // Only show fit if NaN not present
                             if (summary.string.indexOf("NaN") != -1) {
-                                    summary.string = "Fit not possible";
-                                    summary.corrstring = "correlation not of application";}
+                                summary.string = "Fit not possible";}
 
                             // The calculated fit is returned as summary.points
-                            data_to_plot = [data_to_plot, summary.points];
+                            data_to_plot.push(summary.points);
                             formula.append($('<p>').text(summary.string));
                             formula.append($('<p>').text(summary.corrstring));}
                         $("#preview").html(formula);
                         $("#results").show();
                         // Update MathJax to render new text
-                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);
-                    } else {
-                        $("#results").hide();
-                    }
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);}
+                    else {
+                        $("#results").hide();}
 
                     // Create the plot
                     plot = jsparc.make_plot($('#plot'), data_to_plot);
@@ -262,6 +301,7 @@
                     }
                 });
 
+                // Update plot settings
                 $('#plot_settings').on('change', 'input', function() {
                     jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
                 });
