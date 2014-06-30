@@ -1,0 +1,56 @@
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;}
+                
+body {
+    font-family: sans-serif;}
+
+#header {
+    height: 65px;
+    width: 100%;}
+
+#pageHeader {
+    float: right;
+    position: relative;
+    right: 10px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 180px;
+    height: 63px;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 180px 63px;}
+
+#pageHeader.animated {
+    background: url(../images/HiSPARC_animated.gif) top right no-repeat;
+    background-size: 180px 63px;}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2.0), screen and (min--moz-device-pixel-ratio: 2.0), screen and (-o-min-device-pixel-ratio: 200/100), screen and (min-device-pixel-ratio: 2.0), screen and (min-resolution: 2.0dppx) {
+    #pageHeader {
+        background: url(../images/HiSPARC_animated_traces@2x.png) top right no-repeat;
+        background-size: 180px 63px;}
+
+    #pageHeader.animated {
+        background: url(../images/HiSPARC_animated@2x.gif) top right no-repeat;
+        background-size: 180px 63px;}
+}
+
+#station_choice {
+    text-align: center;}
+
+
+#menu, #header, #map {
+    display: table-row;
+}
+
+#map, #olmap {
+    height: 100%;}
+
+#wrapper {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
