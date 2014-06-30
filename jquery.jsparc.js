@@ -78,6 +78,10 @@ be stored as strings.
                           'longitude': {'column': 2, 'name': 'Longitude', 'units': '°'},
                           'altitude': {'column': 3, 'name': 'Altitude', 'units': 'm'}};
 
+        jsparc.API_URL = API_URL;
+        jsparc.DATA_URL = DATA_URL;
+        jsparc.JSPARC_URL = JSPARC_URL;
+
         // Create format for unknown type
 
         jsparc.unknown_format = unknown_format;
@@ -638,6 +642,10 @@ be stored as strings.
         // API
         /* Functions to construct URLs to access the publicdb API
         */
+
+        jsparc.api_man = api_man;
+        function api_man() {
+            return API_URL;}
 
         jsparc.api_stations = api_stations;
         function api_stations() {

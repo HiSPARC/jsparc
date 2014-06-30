@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>HiSPARC - jSparc - API interface</title>
+        <link rel="icon" type="image/vnd.microsoft.icon" href="images/favicon.ico">
+        <link rel="stylesheet" href="styles/api_interface.css" />
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="scripts/excanvas.js"></script><![endif]-->
+        <script src="scripts/jquery-1.10.2.min.js"></script>
+        <script src="jquery.jsparc.js"></script>
+        <script>
+            var jsparc,
+                man = {"api_clusters": "clusters/",
+                       "api_clusters_in_country": "countries/{country_number}/",
+                       "api_configuration": "station/{station_number}/config/{year}/{month}/{day}/",
+                       "api_countries": "countries/",
+                       "api_event_trace": "station/{station_number}/trace/{ext_timestamp}/",
+                       "api_has_data": "station/{station_number}/data/{year}/{month}/{day}/",
+                       "api_has_weather": "station/{station_number}/weather/{year}/{month}/{day}/",
+                       "api_number_of_events": "station/{station_number}/num_events/{year}/{month}/{day}/{hour}/",
+                       "api_pulseheight_drift": "station/{station_number}/plate/{plate_number}/pulseheight/drift/{year}/{month}/{day}/{number_of_days}/",
+                       "api_pulseheight_fit": "station/{station_number}/plate/{plate_number}/pulseheight/fit/{year}/{month}/{day}/",
+                       "api_station_info": "station/{station_number}/{year}/{month}/{day}/",
+                       "api_stations": "stations/",
+                       "api_stations_in_subcluster": "subclusters/{subcluster_number}/",
+                       "api_stations_with_data": "stations/data/{year}/{month}/{day}/",
+                       "api_stations_with_weather": "stations/weather/{year}/{month}/{day}/",
+                       "api_subclusters": "subclusters/",
+                       "api_subclusters_in_cluster": "clusters/{cluster_number}/"}
+
+            function syntaxHighlight(json) {
+                /* Syntax highlighting for JSON
+                
+                from: http://stackoverflow.com/a/7220510/1033535
+
+                */
+                if (typeof json != 'string') {
+                     json = JSON.stringify(json, undefined, 4);}
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+                                    function (match) {
+                                        var cls = 'number';
+                                        if (/^"/.test(match)) {
+                                            if (/:$/.test(match)) {
+                                                cls = 'key';}
+                                            else {
+                                                cls = 'string';}}
+                                        else if (/true|false/.test(match)) {
+                                            cls = 'boolean';}
+                                        else if (/null/.test(match)) {
+                                            cls = 'null';}
+                                        return '<span class="' + cls + '">' + match + '</span>';});
+            }
+
+            function year_options() {
+                var select = $('<select>'),
+                    years = jsparc.range(2004, 2015);
+                select.append($('<option>').attr('value', '').text('year'));
+                for (var i = 0; i < years.length; i++) {
+                    select.append($('<option>').attr('value', years[i]).text(years[i]));}
+                return select;
+            }
+
+            function month_options() {
+                var select = $('<select>'),
+                    months = jsparc.range(1, 13);
+                select.append($('<option>').attr('value', '').text('month'));
+                for (var i = 0; i < months.length; i++) {
+                    select.append($('<option>').attr('value', months[i]).text(months[i]));}
+                return select;
+            }
+
+            function day_options() {
+                var select = $('<select>'),
+                    days = jsparc.range(1, 32);
+                select.append($('<option>').attr('value', '').text('day'));
+                for (var i = 0; i < days.length; i++) {
+                    select.append($('<option>').attr('value', days[i]).text(days[i]));}
+                return select;
+            }
+
+            function hour_options() {
+                var select = $('<select>'),
+                    hours = jsparc.range(0, 23);
+                select.append($('<option>').attr('value', '').text('hour'));
+                for (var i = 0; i < hours.length; i++) {
+                    select.append($('<option>').attr('value', hours[i]).text(hours[i]));}
+                return select;
+            }
+
+            function replace_options_with_inputs(url) {
+                var options = /{(\w+)}/g,
+                    input = "<input type='text' name='$1' size='19' placeholder='$1'>";
+                return url.replace(options, input);
+            }
+
+            function getParamNames(func) {
+                /* Get param names
+                
+                from: http://stackoverflow.com/a/9924463/1033535
+
+                */
+                var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
+                    ARGUMENT_NAMES = /([^\s,]+)/g,
+                    fnStr = func.toString().replace(STRIP_COMMENTS, ''),
+                    result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+                if (result === null)
+                    {result = [];}
+                return result
+            }
+	
+            $(document).ready(function () {
+                // Animate HiSPARC logo during ajax activity
+                $(document).bind('ajaxSend', function() {
+                    $('#pageHeader').addClass('animated');})
+                           .bind('ajaxComplete', function() {
+                    $('#pageHeader').removeClass('animated');});
+
+                // Load jSparc library
+                jsparc = $.jsparc();
+
+                var api_list = [];
+                // Get all api functions 
+                for (i in jsparc) {
+                    if (i.slice(0, 4) == 'api_') {
+                        api_list.push(i)}}
+                var select = $('<select>');
+                for (var i = 0; i < api_list.length; i++) {
+                    select.append($('<option>').text(api_list[i].slice(4))
+                                               .attr('value', api_list[i]));}
+                $('#api_urls').html(select);
+
+                $('#api_urls').on('change', 'select', function() {
+                    var url = jsparc.API_URL + "/" + eval('man.' + $(this).val());
+                    $('#url_options').html(replace_options_with_inputs(url));
+                    $('#url_options [name=year]').replaceWith(year_options());
+                    $('#url_options [name=month]').replaceWith(month_options());
+                    $('#url_options [name=day]').replaceWith(day_options());
+                    $('#url_options [name=hour]').replaceWith(hour_options());
+                });
+
+                $('#execute').on('click', function() {
+                    var options = [],
+                        inputs = $('#url_options input, #url_options select').each(function() {options.push($(this).val());});
+
+                    var url = eval('jsparc.' + $('#api_urls select').val()).apply(this, options);
+                    
+                    $('#result_url').text(url);
+                    jsparc.get_json(url)
+                        .done(function (data) {
+                            $('#result_json').html(syntaxHighlight(data));})
+                        .fail(function () {
+                            $('#result_json').html('Failed to retrieve url, possibly missing arguments.');});
+                    $('#url, #result').show();
+                });
+            });
+        </script>
+    </head>
+    <body>
+    <div id="container">
+        <div id="header"><div id="pageHeader"></div></div>
+        <div id="api">
+            <div id="api_url">
+                <h3>Choose API option</h3>
+                <span id="api_urls"></span>
+            </div>
+            <div id="options">
+                <h3>URL</h3>
+                <pre id="url_options">http://data.hisparc.nl/api/</pre>
+            </div>
+            <input type='button' value="Execute!" id="execute">
+        </div>
+        <div id="url">
+            <h3>Executed url</h3>
+            <pre id="result_url"></pre>
+        </div>
+        <div id="result">
+            <h3>Retrieved JSON</h3>
+            <pre id="result_json"></pre>
+        </div>
+    </div>
+    </body>
+</html>
