@@ -10,13 +10,22 @@ html {
     width: 100%;}
 
 #pageHeader {
-    background: url(../images/header.png) top right no-repeat;
     height: 63px;
-    width: 189px;
+    width: 180px;
     margin: 0;
     padding: 0;
     float: right;
     display: inline-block;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 180px 63px;}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2.0), screen and (min--moz-device-pixel-ratio: 2.0), screen and (-o-min-device-pixel-ratio: 200/100), screen and (min-device-pixel-ratio: 2.0), screen and (min-resolution: 2.0dppx) {
+    #pageHeader {
+        background: url(../images/HiSPARC_animated_traces@2x.png) top right no-repeat;
+        background-size: 180px 63px;}
+}
 
 #pageHeader span {
     display: none;}
