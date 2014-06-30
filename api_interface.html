@@ -81,7 +81,7 @@
 
             function hour_options() {
                 var select = $('<select>'),
-                    hours = jsparc.range(0, 23);
+                    hours = jsparc.range(0, 24);
                 select.append($('<option>').attr('value', '').text('hour'));
                 for (var i = 0; i < hours.length; i++) {
                     select.append($('<option>').attr('value', hours[i]).text(hours[i]));}
