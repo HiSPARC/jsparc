@@ -10,9 +10,6 @@ body {
     height: 65px;
     width: 100%;}
 
-#container {
-    height: 100%;}
-
 #pageHeader {
     float: right;
     position: relative;
@@ -44,5 +41,16 @@ body {
 #station_choice {
     text-align: center;}
 
-#map {
-    height: 80%;}
+
+#menu, #header, #map {
+    display: table-row;
+}
+
+#map, #olmap {
+    height: 100%;}
+
+#wrapper {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
