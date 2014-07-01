@@ -199,3 +199,11 @@ Only used for 'css' mode, we now use canvas mode
     -webkit-transform: none !important;
     -o-transform: none !important;
     -ms-transform: none !important;}
+
+/* Formula styling
+*/
+#results .formula {
+    margin-right: 40px;}
+
+#results .correlation {
+    color: gray;}
