@@ -14,19 +14,47 @@
         <script>
             var jsparc, map;
 
-            function radians(degree) {
+            function radians(degrees) {
                 /* Convert degrees to radians
                 */
-                return degree * (Math.PI / 180);}
+                return degrees * (Math.PI / 180);}
+
+            function degrees(radians) {
+                /* Convert radians to degrees
+                */
+                return radians * (180 / Math.PI);}
+
+            function calculate_bearing(station1, station2) {
+                /* Calculate bearing between two stations in meters
+                
+                from: http://www.movable-type.co.uk/scripts/latlong.html
+
+                */
+                var latitude1 = radians(station1.latitude),
+                    latitude2 = radians(station2.latitude),
+                    d_longitude = radians(station2.longitude - station1.longitude);
+
+                var y = Math.sin(d_longitude) * Math.cos(latitude2),
+                    x = Math.cos(latitude1) * Math.sin(latitude2) -
+                        Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(d_longitude);
+                var bearing = Math.atan2(y, x);
+
+                return (degrees(bearing) + 360) % 360;
+            }
 
             function calculate_distance(station1, station2) {
                 /* Calculate distance between two stations in meters
+                
+                from: http://www.movable-type.co.uk/scripts/latlong.html
+
                 */
                 var R = 6371000, // Radius of Earth in meters
-                    dLat = radians(station2.latitude - station1.latitude),
-                    dLon = radians(station2.longitude - station1.longitude),
-                    a = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(radians(station1.latitude)) *
-                        Math.cos(radians(station2.latitude)) * Math.pow(Math.sin(dLon / 2), 2),
+                    latitude1 = radians(station1.latitude),
+                    latitude2 = radians(station2.latitude),
+                    d_latitude = radians(station2.latitude - station1.latitude),
+                    d_longitude = radians(station2.longitude - station1.longitude),
+                    a = Math.pow(Math.sin(d_latitude / 2), 2) + Math.cos(latitude1) *
+                        Math.cos(latitude2) * Math.pow(Math.sin(d_longitude / 2), 2),
                     c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                     return R * c;
             }
