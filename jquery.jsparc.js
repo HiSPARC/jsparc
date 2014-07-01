@@ -1209,7 +1209,8 @@ be stored as strings.
                     for (var i = 0; i < a.length; i++) {
                         mn = (a[i] > mn) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
-                bins = range(mn, mx, (mx - mn) / nbins);}
+                var bin_width = (mx - mn) / nbins;
+                bins = range(mn, mx - (0.001 * bin_width), bin_width);}
 
             if (bins[0] === undefined) {
                 return [[], []]}
