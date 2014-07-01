@@ -214,7 +214,7 @@
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
                     if (fit_type != 'none') {
-                        var formula = $('<div>').append($('<h3>').text('Fit formula'));
+                        var formulas = $('<div>').append($('<h3>').text('Fit formula with correlation coefficient'));
                         // Check for multidimensional array
                         // Loop over each single dataset
                         var length = data_to_plot.length;
@@ -224,12 +224,16 @@
 
                              // Only show fit if NaN not present
                             if (summary.string.indexOf("NaN") != -1) {
-                                summary.string = "Fit not possible";}
+                                summary.string = "Fit not possible"
+                                summary.corrstring = "";}
 
                             // The calculated fit is returned as summary.points
                             data_to_plot.push(summary.points);
-                            formula.append($('<p>').text(summary.string));}
-                        $("#preview").html(formula);
+                            formula = $('<p>');
+                            formula.append($('<span>').addClass('formula').text(summary.string));
+                            formula.append($('<span>').addClass('correlation').text(summary.corrstring));
+                            formulas.append(formula);}
+                        $("#preview").html(formulas);
                         $("#results").show();
                         // Update MathJax to render new text
                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "results"]);}
@@ -376,7 +380,9 @@
                         <select id="fit_options">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
+                            <option value="gaussian">Gaussian</option>
                             <option value="exponential">Exponential</option>
+                            <option value="wexponential">Exponential*</option>
                             <option value="logarithmic">Logarithmic</option>
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
