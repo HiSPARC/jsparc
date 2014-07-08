@@ -45,23 +45,30 @@
 
     var methods = {
         linear: function(data) {
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
-
+             
             // Linear regression. For instance, see http://mathworld.wolfram.com/LeastSquaresFitting.html
             // To fit y = A + Bx the function Sum((A + Bx - y)^2) is mimimized.
             // Correlation coefficient r. For instance, see http://mathworld.wolfram.com/CorrelationCoefficient.html
             // Correlation is calculated between (x, y) of the data and (x, y) of the regression function.
 
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
+
+            var cleandata = [];
+            var n = 0;
             for (; n < data.length; n++) {
-                if (!isNaN(data[n][1])) {
-                    x = data[n][0];
-                    y = data[n][1];
+                if (!isNaN(data[n][1])){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+
+            for (n = 0; n < cleandata.length; n++) {
+                    x = cleandata[n][0];
+                    y = cleandata[n][1];
                     sum[0] += x;
                     sum[1] += y;
                     sum[2] += x * x;
                     sum[3] += x * y;
                     sum[4] += y * y;
-                    sum[5] += 1;}}
+                    sum[5] += 1;}
 
             n = sum[5];
             var denominator = (n * sum[2] - sum[0] * sum[0]);
@@ -97,20 +104,23 @@
             // with respect to y-regression and where SST is the sum of the deviations of y-data with respect to the mean of y-data.
 
             var n = 0;
-            var sumdata = [];
+            var cleandata = [], sumdata = [];
             for (n = 0; n < data.length; n++) {
-                sumdata.push([data[n][0], data[n][1]]);}
+                if (!isNaN(data[n][1])){
+                    cleandata.push([data[n][0], data[n][1]]);
+                    sumdata.push([data[n][0], data[n][1]]);}}
 
-            for (n = 0; n < sumdata.length - 1; n++) {
-                sumdata[n+1][1] = data[n+1][1] + sumdata[n][1];}
+            for (n = 0; n < cleandata.length - 1; n++) {
+                var oldsum = sumdata[n][1];
+                sumdata[n+1][1] = cleandata[n+1][1] + oldsum;}
 
-            var max = sumdata[sumdata.length - 1][1];
-            var width = sumdata[sumdata.length - 1][0] - sumdata[0][0];
-            var reldata = sumdata;
-            for (n = 0; n < reldata.length ; n++) {
-                reldata[n][1] = sumdata[n][1] / max;}
+            var max = sumdata[cleandata.length - 1][1];
+            var width = sumdata[cleandata.length - 1][0] - sumdata[0][0];
+            var reldata = [];
+            for (n = 0; n < cleandata.length ; n++) {
+                reldata.push([sumdata[n][0], sumdata[n][1] / max]);}
 
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
+            var sum = [0, 0, 0, 0, 0, 0], x = 0, y = 0, results = [];
             var p = 22.64172356, q = 0, psi = 0, root2 = 0, root3 = 0, z = 0;
             for (n = 0; n < reldata.length ; n++) {
                 psi = reldata[n][1];
@@ -136,13 +146,17 @@
             var mu = - A / B;
             var sigma = 1 / B;
             var norm = max * width / reldata.length * 0.3989423 * B;
-            for (var i = 0, len = reldata.length; i < len; i++) {
+            var yg = max / reldata.length
+            for (var i = 0, len = cleandata.length; i < len; i++) {
+                x = cleandata[i][0];
+                y = cleandata[i][1];
+                var yf = norm * Math.exp(-0.5 * (A + B * x) * (A + B * x));
+                SSE += (y - yf) * (y - yf);
+                SST += (y - yg) * (y - yg);}
+                
+            for (var i = 0, len = data.length; i < len; i++) {
                 x = data[i][0];
                 var yf = norm * Math.exp(-0.5 * (A + B * x) * (A + B * x));
-                var yg = max / data.length
-                y = data[i][1];
-                SSE += (y - yf) * (y - yf);
-                SST += (y - yg) * (y - yg);
                 var coordinate = [x, yf];
                 results.push(coordinate);}
 
@@ -155,24 +169,101 @@
         },
 
 
+        sine: function(data, period) {
+        
+            // Sine regression. With a guessed value for the period p the function Sum((A*sin(2*pi*x/p + c) - y*)^2) is mimimized, where y* = y- <y>.
+            // Correlation coefficient is calculated according to r^2 = 1 - SSE/SST, where SSE is the sum of the squared deviations of y-data
+            // with respect to y-regression and where SST is the sum of the deviations of y-data with respect to the mean of y-data.
+
+        
+            if (typeof period == 'undefined') {
+                period = data[data.length - 1][0] - data[0][0];}
+                
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, b = 2 * Math.PI / period, x = 0, bx = 0, y = 0, cos = 0, sin = 0, results = [];
+            
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (!isNaN(data[n][1])){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+            for (n = 0; n < cleandata.length; n++) {
+                sum[0] += cleandata[n][1];}
+            var yg = sum[0] / n;
+            sum[0] = 0;
+
+            for (n = 0; n < cleandata.length; n++) {
+                x = cleandata[n][0];
+                y = cleandata[n][1] - yg;
+                bx = b * x;
+                cos = Math.cos(bx);
+                sin = Math.sin(bx);
+                sum[0] += cos * cos;
+                sum[1] += cos * sin;
+                sum[2] += sin * sin;
+                sum[3] += y * cos;
+                sum[4] += y * sin;
+                sum[5] += 1;}
+
+            var termA = sum[0] * sum[4] - sum[1] * sum[3];
+            var termB = sum[2] * sum[3] - sum[1] * sum[4];
+            var termC = sum[2] * sum[0] - sum[1] * sum[1];
+            var sqrad = termA * termA + termB * termB;
+            var sqC = termC * termC;        
+            var a = Math.sqrt(sqrad / sqC);
+            var c = Math.atan2(termB, termA);
+            if (c < 0) {
+                c += 2 * Math.PI;}
+            
+            
+            var SSE = 0, SST = 0;
+            var d = yg;
+            for (var i = 0, len = cleandata.length; i < len; i++) {
+                x = cleandata[i][0];
+                y = cleandata[i][1];
+                var yf = a * Math.sin(2 * Math.PI * x / period + c) + d;
+                SSE += (y - yf) * (y - yf);
+                SST += (y - yg) * (y - yg);}
+                
+            for (var i = 0, len = data.length; i < len; i++) {
+                x = data[i][0];
+                var yf = a * Math.sin(2 * Math.PI * x / period + c) + d;
+                var coordinate = [x, yf];
+                results.push(coordinate);}
+
+            var corr = Math.sqrt(1 - SSE / SST) * Math.sqrt(1 - SSE / SST);
+            var corrstring = 'r^2 = ' + corr.toFixed(3);
+            var string = 'y = ' + a.toExponential(2) +'\\cdot \\sin \\left( \\frac{2 \\pi}{' + period.toExponential(2) + '} \\cdot x + ' + c.toExponential(2) + ' \\right) + ' + d.toExponential(2);
+
+            return {equation: [a, c], points: results, string: prepare_for_MathJax(string), corrstring: prepare_for_MathJax(corrstring)};
+        },
+
+
+
+
         exponential: function(data) {
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
 
             // Exponential regression, see http://mathworld.wolfram.com/LeastSquaresFittingExponential.html
             // To fit y = A exp(Bx) --> ln y = ln A + Bx  the function Sum((ln A + Bx - ln y)^2) is mimimized.
             // Correlation coefficient r. For instance, see http://mathworld.wolfram.com/CorrelationCoefficient.html
             // Correlation is calculated between (x, ln y) of the data and (x, ln y) of the regression function.
 
-            for (; n < data.length; n++) {
-                if (data[n][1] > 0) {
-                    x = data[n][0];
-                    y = Math.log(data[n][1]);
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
+
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (data[n][1] > 0){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+
+            for (n = 0; n < cleandata.length; n++) {
+                    x = cleandata[n][0];
+                    y = Math.log(cleandata[n][1]);
                     sum[0] += x;
                     sum[1] += y;
                     sum[2] += x * x;
                     sum[3] += x * y;
                     sum[4] += y * y;
-                    sum[5] += 1;}}
+                    sum[5] += 1;}
 
             n = sum[5];
             var denominator = (n * sum[2] - sum[0] * sum[0]);
@@ -199,24 +290,30 @@
 
 
         wexponential: function(data) {
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, lny = 0, results = [];
 
             // Exponential regression with equally weights, see http://mathworld.wolfram.com/LeastSquaresFittingExponential.html
             // To fit y = A exp(Bx) --> ln y = ln A + Bx  the function Sum(y(ln A + Bx - ln y)^2) is mimimized.
             // Correlation coefficient is calculated according to r^2 = 1 - SSE/SST, where SSE is the sum of the squared deviations of y-data
             // with respect to y-regression and where SST is the sum of the deviations of y-data with respect to the mean of y-data.
 
-            for (len = data.length; n < len; n++) {
-                if (data[n][1] > 0) {
-                    x = data[n][0];
-                    y = data[n][1];
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, lny = 0, results = [];
+
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (data[n][1] > 0){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+
+            for (n = 0; n < cleandata.length; n++) {
+                    x = cleandata[n][0];
+                    y = cleandata[n][1];
                     lny = Math.log(y);
                     sum[0] += x;
                     sum[1] += y;
                     sum[2] += x * x * y;
                     sum[3] += y * lny;
                     sum[4] += x * y * lny;
-                    sum[5] += x * y;}}
+                    sum[5] += x * y;}
 
             var denominator = (sum[1] * sum[2] - sum[5] * sum[5]);
             var A = Math.exp((sum[2] * sum[3] - sum[5] * sum[4]) / denominator);
@@ -248,23 +345,28 @@
         },
 
         logarithmic: function(data) {
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
 
             // Linear regression, see http://mathworld.wolfram.com/LeastSquaresFittingLogarithmic.html
             // To fit y = A + B ln x the function Sum((A + B ln x - y)^2) is mimimized.
             // Correlation coefficient r. For instance, see http://mathworld.wolfram.com/CorrelationCoefficient.html
             // Correlation is calculated between (ln x, y) of the data and (ln x, y) of the regression function.
 
-            for (; n < data.length; n++) {
-                if (!isNaN(data[n][1]) && data[n][0] > 0) {
-                    x = Math.log(data[n][0]);
-                    y = data[n][1];
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
+
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (!isNaN(data[n][1]) && data[n][0] > 0){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+            for (n = 0; n < cleandata.length; n++) {
+                    x = Math.log(cleandata[n][0]);
+                    y = cleandata[n][1];
                     sum[0] += x;
                     sum[1] += y;
                     sum[2] += x * x;
                     sum[3] += x * y;
                     sum[4] += y * y;
-                    sum[5] += 1;}}
+                    sum[5] += 1;}
 
             n = sum[5];
             var denominator = (n * sum[2] - sum[0] * sum[0]);
@@ -291,23 +393,28 @@
 
 
         power: function(data) {
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
-
+            
             // Linear regression, see http://mathworld.wolfram.com/LeastSquaresFittingPowerLaw.html
             // To fit y = A x^B  -->  ln y = ln A + B ln x the function Sum((ln A + B ln x - ln y)^2) is mimimized.
             // Correlation coefficient r. For instance, see http://mathworld.wolfram.com/CorrelationCoefficient.html
             // Correlation is calculated between (ln x, ln y) of the data and (ln x, ln y) of the regression function.
 
-            for (; n < data.length; n++) {
-                if (data[n][1] > 0 && data[n][0] > 0) {
-                    x = Math.log(data[n][0]);
-                    y = Math.log(data[n][1]);
+            var sum = [0, 0, 0, 0, 0, 0], n = 0, x = 0, y = 0, results = [];
+            
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (data[n][1] > 0 && data[n][0] > 0){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+            for (n = 0; n < cleandata.length; n++) {
+                    x = Math.log(cleandata[n][0]);
+                    y = Math.log(cleandata[n][1]);
                     sum[0] += x;
                     sum[1] += y;
                     sum[2] += x * x;
                     sum[3] += x * y;
                     sum[4] += y * y;
-                    sum[5] += 1;}}
+                    sum[5] += 1;}
 
             n = sum[5];
             var denominator = (n * sum[2] - sum[0] * sum[0]);
@@ -339,23 +446,28 @@
             // with respect to y-regression and where SST is the sum of the deviations of y-data with respect to the mean of y-data.
 
             if (typeof order == 'undefined') {
-                order = 2;
-            }
+                order = 2;}
+                
             var lhs = [], rhs = [], results = [],
                 a = 0, b = 0,
                 k = order + 1;
 
+            var cleandata = [];
+            for (n = 0; n < data.length; n++) {
+                if (!isNaN(data[n][1])){
+                    cleandata.push([data[n][0], data[n][1]]);}}
+
+
+
             for (var i = 0; i < k; i++) {
-                for (var l = 0, len = data.length; l < len; l++) {
-                    if (data[l][1]) {
-                        a += Math.pow(data[l][0], i) * data[l][1];}}
+                for (var l = 0, len = cleandata.length; l < len; l++) {
+                        a += Math.pow(cleandata[l][0], i) * cleandata[l][1];}
                 lhs.push(a);
                 a = 0;
                 var c = [];
                 for (var j = 0; j < k; j++) {
-                    for (var l = 0, len = data.length; l < len; l++) {
-                        if (data[l][1]) {
-                            b += Math.pow(data[l][0], i + j);}}
+                    for (var l = 0, len = cleandata.length; l < len; l++) {
+                            b += Math.pow(cleandata[l][0], i + j);}
                     c.push(b);
                     b = 0;}
                 rhs.push(c);}
@@ -363,19 +475,22 @@
 
             var equation = gaussianElimination(rhs, k);
 
-            var SSE = 0, sy = 0, syy = 0, n = 0, y = 0;
             for (var i = 0, len = data.length; i < len; i++) {
                 var answer = 0;
                 for (var w = 0; w < equation.length; w++) {
                     answer += equation[w] * Math.pow(data[i][0], w);}
+                results.push([data[i][0], answer]);}
 
-                y = data[i][1];
+            var SSE = 0, sy = 0, syy = 0, n = 0, y = 0;
+            for (var i = 0, len = cleandata.length; i < len; i++) {
+                var answer = 0;
+                for (var w = 0; w < equation.length; w++) {
+                    answer += equation[w] * Math.pow(cleandata[i][0], w);}
+                y = cleandata[i][1];
                 sy += y;
                 syy += y * y;
                 n += 1;
-                SSE += (y-answer) * (y-answer);
-
-                results.push([data[i][0], answer]);}
+                SSE += (y-answer) * (y-answer);}
 
             var SST = syy - sy * sy / n;
             var corr = Math.sqrt(1 - SSE / SST) * Math.sqrt(1 - SSE / SST);

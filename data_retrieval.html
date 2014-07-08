@@ -219,20 +219,23 @@
                         // Loop over each single dataset
                         var length = data_to_plot.length;
                         for (var i = 0; i < length; i++) {
-                            // And for each dataset calculate the fit
-                            var summary = regression(fit_type, data_to_plot[i], degree);
+                            // Check if dataset is not empty
+                            if (!jsparc.is_data_empty(data_to_plot[i])) {
+                                // And for each dataset calculate the fit
+                                var summary = regression(fit_type, data_to_plot[i], degree);
 
-                             // Only show fit if NaN not present
-                            if (summary.string.indexOf("NaN") != -1) {
-                                summary.string = "Fit not possible"
-                                summary.corrstring = "";}
+                                // Only show fit if NaN not present
+                                if (summary.string.indexOf("NaN") != -1) {
+                                    summary.string = "Fit not possible"
+                                    summary.corrstring = "";}
 
-                            // The calculated fit is returned as summary.points
-                            data_to_plot.push(summary.points);
-                            formula = $('<p>');
-                            formula.append($('<span>').addClass('formula').text(summary.string));
-                            formula.append($('<span>').addClass('correlation').text(summary.corrstring));
-                            formulas.append(formula);}
+                                // The calculated fit is returned as summary.points
+                                data_to_plot.push(summary.points);
+                                formula = $('<p>');
+                                formula.append($('<span>').addClass('formula').text(summary.string));
+                                formula.append($('<span>').addClass('correlation').text(summary.corrstring));
+                                formulas.append(formula);}
+                            }        
                         $("#preview").html(formulas);
                         $("#results").show();
                         // Update MathJax to render new text
@@ -302,11 +305,11 @@
 
                 // Set Degree to disabled if polynomial not selected
                 $("#fit_options").on('change', function(){
-                    if ($(this).val() != "polynomial") {
-                        $('#fit input').prop('disabled', true);
-                    } else {
-                        $('#fit input').prop('disabled', false);
-                    }
+                    $('#fit input').prop('disabled', true);
+                    if ($(this).val() === "polynomial") {
+                        $('#fit input[name=degree]').prop('disabled', false);}
+                    else if ($(this).val() === "sine") {
+                        $('#fit input[name=period]').prop('disabled', false);}
                 });
 
                 // Update plot settings
@@ -380,12 +383,14 @@
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="gaussian">Gaussian</option>
+                            <option value="sine">Sine</option>
                             <option value="exponential">Exponential</option>
                             <option value="wexponential">Exponential*</option>
                             <option value="logarithmic">Logarithmic</option>
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
                         </select>
+                        Period: <input name="period" type="number" style="width: 66px;" disabled value="86400000"><br>
                         Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
                     </span><br>
                 </div>
