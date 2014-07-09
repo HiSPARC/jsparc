@@ -250,6 +250,8 @@
 
                 // Show trace button
                 $('#preview').on('click', 'td.trace', function() {
+                    $('#preview tr.selectedEvent').removeClass('selectedEvent');
+                    $(this).parent().addClass('selectedEvent');
                     var url = $(this).attr('data-url');
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
