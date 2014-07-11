@@ -98,6 +98,11 @@
         plotGraph(htmlInfo, data);
         // interactionTrace(data);
 
+        // Disable session options
+        $('#sessionTitle').attr('disabled', true);
+        $('#sessionPin').attr('disabled', true);
+        $('#studentName').attr('disabled', true);
+
         $("#datum-id").css('visibility', 'visible');
         $("#result-id").css('visibility', 'visible');
         $("#tracelegend").css('visibility', 'visible');
@@ -193,6 +198,13 @@
     }
 
     $(function() {
+        // Animate HiSPARC logo during ajax activity
+        $(document).bind('ajaxStart', function() {
+            $('#pageHeader').addClass('animated');})
+                   .bind('ajaxStop', function() {
+            $('#pageHeader').removeClass('animated');});
+
+
         $("#sessionHash").val(get_coincidence.session_hash);
 
         $("#exampleButton").bind('click', function (event) {
@@ -210,61 +222,59 @@
     });
   </script>
  </head>
- <body>
-  <div id="graph-id">
-   <div id="chartdiv" class="coincidencegraph"></div>
-   <table id="choice">
-    <tr>
-     <td id="choice0">&nbsp;</td>
-     <td id="choice1"></td>
-     <td id="choice2"></td>
-     <td id="choice3"></td>
-     <td id="choice4"></td>
-     <td id="choice5"></td>
-     <td id="choice6"></td>
-     <td id="choice7"></td>
-    </tr>
-   </table>
-   <div id="chartdiv0" class="tracegraph"></div>
-   <div id="chartdiv1" class="tracegraph"></div>
-   <div id="chartdiv2" class="tracegraph"></div>
-   <div id="chartdiv3" class="tracegraph"></div>
-   <div id="chartdiv4" class="tracegraph"></div>
-   <div id="chartdiv5" class="tracegraph"></div>
-   <div id="chartdiv6" class="tracegraph"></div>
-   <div id="chartdiv7" class="tracegraph"></div>
-   <table id="tracelegend">
-    <tr>
-     <td class="det1">Detector 1</td>
-     <td class="det2">Detector 2</td>
-     <td class="det3">Detector 3</td>
-     <td class="det4">Detector 4</td>
-    </tr>
-   </table>
-  </div>
-  <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
-  <div id="map-id"></div>
-  <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></div>
-  <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><img alt='HiSPARC' src="http://data.hisparc.nl/media/static/header.png" /></a></div>
-  <div id="doc_link">
-    <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
-  </div>
-  <div id="dashboard">
-   <form action="">
-   <table>
-    <tbody>
-    <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
-    <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
-    <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
-    </tbody>
-   </table>
-   </form>
-   <input type="button" id="dataButton" value="Get data">
-   <input type="button" id="exampleButton" value="Get example">
-   <form id="info" action="">
-    <table id="coinInfo">
-    </table>
-   </form>
-  </div>
- </body>
+<body>
+    <div id="graph-id">
+        <div id="chartdiv" class="coincidencegraph"></div>
+        <table id="choice">
+            <tr>
+                <td id="choice0">&nbsp;</td>
+                <td id="choice1"></td>
+                <td id="choice2"></td>
+                <td id="choice3"></td>
+                <td id="choice4"></td>
+                <td id="choice5"></td>
+                <td id="choice6"></td>
+                <td id="choice7"></td>
+            </tr>
+        </table>
+        <div id="chartdiv0" class="tracegraph"></div>
+        <div id="chartdiv1" class="tracegraph"></div>
+        <div id="chartdiv2" class="tracegraph"></div>
+        <div id="chartdiv3" class="tracegraph"></div>
+        <div id="chartdiv4" class="tracegraph"></div>
+        <div id="chartdiv5" class="tracegraph"></div>
+        <div id="chartdiv6" class="tracegraph"></div>
+        <div id="chartdiv7" class="tracegraph"></div>
+        <table id="tracelegend">
+            <tr>
+                <td class="det1">Detector 1</td>
+                <td class="det2">Detector 2</td>
+                <td class="det3">Detector 3</td>
+                <td class="det4">Detector 4</td>
+            </tr>
+        </table>
+    </div>
+    <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
+    <div id="map-id"></div>
+    <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></div>
+    <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
+    <div id="doc_link">
+        <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
+    </div>
+    <div id="dashboard">
+        <form action="">
+            <table>
+                <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
+                <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
+                <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
+            </table>
+        </form>
+        <input type="button" id="dataButton" value="Get data">
+        <input type="button" id="exampleButton" value="Get example">
+        <form id="info" action="">
+            <table id="coinInfo">
+            </table>
+        </form>
+    </div>
+</body>
 </html>

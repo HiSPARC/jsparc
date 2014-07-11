@@ -29,9 +29,9 @@
             var jsparc;
             $(document).ready(function () {
                 // Animate HiSPARC logo during ajax activity
-                $(document).bind('ajaxSend', function() {
+                $(document).bind('ajaxStart', function() {
                     $('#pageHeader').addClass('animated');})
-                           .bind('ajaxComplete', function() {
+                           .bind('ajaxStop', function() {
                     $('#pageHeader').removeClass('animated');});
 
                 // Load jSparc library
