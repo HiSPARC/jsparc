@@ -179,7 +179,7 @@
             if (typeof period == 'undefined') {
                 period = data[data.length - 1][0] - data[0][0];}
                 
-            var sum = [0, 0, 0, 0, 0, 0], n = 0, b = 2 * Math.PI / period, x = 0, bx = 0, y = 0, cos = 0, sin = 0, results = [];
+            var sum = [0, 0, 0, 0, 0, 0, 0, 0, 0], n = 0, b = 2 * Math.PI / period, x = 0, bx = 0, y = 0, cos = 0, sin = 0, results = [];
             
             var cleandata = [];
             for (n = 0; n < data.length; n++) {
@@ -187,13 +187,8 @@
                     cleandata.push([data[n][0], data[n][1]]);}}
 
             for (n = 0; n < cleandata.length; n++) {
-                sum[0] += cleandata[n][1];}
-            var yg = sum[0] / n;
-            sum[0] = 0;
-
-            for (n = 0; n < cleandata.length; n++) {
                 x = cleandata[n][0];
-                y = cleandata[n][1] - yg;
+                y = cleandata[n][1];
                 bx = b * x;
                 cos = Math.cos(bx);
                 sin = Math.sin(bx);
@@ -202,21 +197,36 @@
                 sum[2] += sin * sin;
                 sum[3] += y * cos;
                 sum[4] += y * sin;
-                sum[5] += 1;}
+                sum[5] += 1;
+                sum[6] += cos;
+                sum[7] += sin;
+                sum[8] += y;}
 
-            var termA = sum[0] * sum[4] - sum[1] * sum[3];
-            var termB = sum[2] * sum[3] - sum[1] * sum[4];
-            var termC = sum[2] * sum[0] - sum[1] * sum[1];
-            var sqrad = termA * termA + termB * termB;
-            var sqC = termC * termC;        
-            var a = Math.sqrt(sqrad / sqC);
-            var c = Math.atan2(termB, termA);
+            var n = sum[5];
+            var termss = sum[2] - sum[7] * sum[7] / n;
+            var termsc = sum[1] - sum[6] * sum[7] / n;
+            var termcc = sum[0] - sum[6] * sum[6] / n;
+            var termys = sum[4] - sum[8] * sum[7] / n;
+            var termyc = sum[3] - sum[8] * sum[6] / n;
+
+            var termA = termcc * termys - termsc * termyc;
+            var termB = termss * termyc - termsc * termys;
+            var termC = termss * termcc - termsc * termsc;
+            
+            var sqAB = termA * termA + termB * termB;
+            var sqB = termB * termB;  
+            var ratio = sqB / sqAB;      
+            var a = Math.sqrt(sqAB * sqB) / termC / termB;
+            var c = Math.atan2(ratio, ratio * termA / termB);
+            if (a < 0) {
+                a = - a;
+                c = c + Math.PI;}
             if (c < 0) {
                 c += 2 * Math.PI;}
-            
-            
+                   
             var SSE = 0, SST = 0;
-            var d = yg;
+            var d = (sum[8] - a * Math.cos(c) * sum[7] - a * Math.sin(c) * sum[6]) / n;
+            var yg = sum[8] / n;
             for (var i = 0, len = cleandata.length; i < len; i++) {
                 x = cleandata[i][0];
                 y = cleandata[i][1];
