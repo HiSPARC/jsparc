@@ -54,3 +54,15 @@ body {
     height: 100%;
     width: 100%;
 }
+
+#error {
+    display: none;
+    background: #c55;
+    padding: 10px;
+}
+
+#error p {
+    text-align: center;
+    color: white;
+    margin: 0px;
+}
