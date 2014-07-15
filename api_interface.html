@@ -153,6 +153,11 @@
                             $('#result_json').html('Failed to retrieve url, possibly missing arguments.');});
                     $('#url, #result').show();
                 });
+
+                $(window).keyup(function (e) {
+                    if (e.keyCode === 13) {
+                        $('#execute').click();}
+                });
             });
         </script>
     </head>
