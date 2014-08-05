@@ -590,7 +590,8 @@ be stored as strings.
                     truncrow.append($('<td>')
                                     .text('... truncated table, click here to show more rows ...')
                                     .attr('colspan', dataset.data[0].length + 1)
-                                    .css('text-align', 'left')
+                                    .css({'text-align': 'left',
+                                    	  'cursor': 'pointer'})
                                     .click(function() {create_dataset_table(url, target, limit * 2);}));
                     table.append(truncrow);
                     i = dataset.data.length - 1 - Math.ceil(limit / 2);}}
