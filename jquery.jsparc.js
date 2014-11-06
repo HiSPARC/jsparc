@@ -900,7 +900,7 @@ be stored as strings.
 
         jsparc.flot_base = function() {return flot_base;};
         var flot_base = {
-            colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
+            colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#AA1', '#C51'],
             legend: {show: false},
             xaxis: {
                 show: true,

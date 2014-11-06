@@ -205,11 +205,12 @@
                                 data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 1)}}
                     }
 
+                    // Clean the data by removing all values of -1 and -999.
                     for (var i = 0; i < data_to_plot.length; i++) {
                         data_to_plot[i] = jsparc.remove_error_values(data_to_plot[i])}
 
                     if (jsparc.is_data_empty(data_to_plot)) {
-                        alert('No data to plot. The selected data may contain only error values or invalid values for logarithmic axes.');
+                        alert('No data to plot. The selected data may contain only error values or values invalid for logarithmic axes.');
                         return}
 
                     // Get selected fit options
@@ -237,10 +238,11 @@
                                 // The calculated fit is returned as summary.points
                                 data_to_plot.push(summary.points);
                                 formula = $('<p>');
-                                formula.append($('<span>').addClass('formula').text(summary.string));
+                                // Parse the formula and correlation coefficient
+                                // Color the formula as its line in the plot.
+                                formula.append($('<span>').addClass('formula').addClass('ch' + (i % 8 + length + 1)).text(summary.string));
                                 formula.append($('<span>').addClass('correlation').text(summary.corrstring));
-                                formulas.append(formula);}
-                            }        
+                                formulas.append(formula);}}
                         $("#preview").html(formulas);
                         $("#results").show();
                         // Update MathJax to render new text
