@@ -383,7 +383,7 @@
                     <span class="key">Fit:</span><br>
                     <span id="fit"> 
                         Type:   
-                        <select id="fit_options">
+                        <select id="fit_options" title="Select the type of function to fit to the selected data.">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="gaussian">Gaussian</option>
@@ -393,7 +393,8 @@
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
                         </select>
-                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
+                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"
+                                       title="Set the degree (highest power) of the polynomial."><br>      
                     </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
