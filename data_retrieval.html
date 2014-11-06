@@ -19,14 +19,19 @@
         <script type="text/javascript" src="scripts/regression.js"></script>
         <script type="text/javascript" src="jquery.jsparc.js"></script>
         <!-- Add MathJax to enhance the look of the fit formulas -->
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                messageStyle: "none",
+                tex2jax: {preview: "none"}});
+        </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>
             var jsparc;
             $(document).ready(function () {
                 // Animate HiSPARC logo during ajax activity
-                $(document).bind('ajaxSend', function() {
+                $(document).bind('ajaxStart', function() {
                     $('#pageHeader').addClass('animated');})
-                           .bind('ajaxComplete', function() {
+                           .bind('ajaxStop', function() {
                     $('#pageHeader').removeClass('animated');});
 
                 // Load jSparc library
@@ -253,6 +258,8 @@
 
                 // Show trace button
                 $('#preview').on('click', 'td.trace', function() {
+                    $('#preview tr.selectedEvent').removeClass('selectedEvent');
+                    $(this).parent().addClass('selectedEvent');
                     var url = $(this).attr('data-url');
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
@@ -379,7 +386,7 @@
                     <span class="key">Fit:</span><br>
                     <span id="fit"> 
                         Type:   
-                        <select id="fit_options">
+                        <select id="fit_options" title="Select the type of function to fit to the selected data.">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="gaussian">Gaussian</option>
@@ -391,7 +398,8 @@
                             <option value="polynomial">Polynomial</option>
                         </select>
                         Period: <input name="period" type="number" style="width: 66px;" disabled value="86400000"><br>
-                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
+                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"
+                                       title="Set the degree (highest power) of the polynomial."><br>      
                     </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">

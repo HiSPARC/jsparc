@@ -107,6 +107,12 @@ td {
     text-decoration: none;
     font-weight: bold;}
 
+#preview table {
+    border-collapse: collapse;}
+
+#preview tr.selectedEvent {
+    background-color: #ddd;}
+
 .units:before {
     content: '[';}
 
@@ -156,7 +162,7 @@ td {
 
 #results td {
     font-size: 12px;
-    padding-right: 6px;
+    padding: 2px 5px;
     text-align: right;}
 
 input:disabled {

@@ -111,9 +111,9 @@
 	
             $(document).ready(function () {
                 // Animate HiSPARC logo during ajax activity
-                $(document).bind('ajaxSend', function() {
+                $(document).bind('ajaxStart', function() {
                     $('#pageHeader').addClass('animated');})
-                           .bind('ajaxComplete', function() {
+                           .bind('ajaxStop', function() {
                     $('#pageHeader').removeClass('animated');});
 
                 // Load jSparc library
@@ -152,6 +152,11 @@
                         .fail(function () {
                             $('#result_json').html('Failed to retrieve url, possibly missing arguments.');});
                     $('#url, #result').show();
+                });
+
+                $(window).keyup(function (e) {
+                    if (e.keyCode === 13) {
+                        $('#execute').click();}
                 });
             });
         </script>

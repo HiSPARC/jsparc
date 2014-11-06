@@ -31,13 +31,25 @@
     top: 35px;}
 
 #logo {
-    width: 189px;
+    width: 180px;
     height: 63px;
     padding: 0px;
     position: absolute;
     margin: 0px;
     left: 805px;
     top: 0px;}
+
+#pageHeader {
+    display: block;
+    width: 180px;
+    height: 63px;
+    background: url(images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 180px 63px;}
+
+#pageHeader.animated {
+    background: url(images/HiSPARC_animated.gif) top right no-repeat;
+    background-size: 180px 63px;}
+
 
 #doc_link {
     width: 190px;

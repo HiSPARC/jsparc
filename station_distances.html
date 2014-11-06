@@ -88,23 +88,32 @@
                     map.zoomTo(Math.floor(map.getZoom()));}
             }
 
+            function get_info_and_update() {
+                var station_info_urls = [jsparc.api_station_info($('#station_choice_1 select').val()),
+                                         jsparc.api_station_info($('#station_choice_2 select').val())];
+                var results = jsparc.get_multiple_json(station_info_urls);
+                results.fail(function(s1, s2) {
+                    $('#error').show();});
+                results.done(function(s1, s2) {
+                    $('#error').hide();
+                    update_map(s1[0], s2[0]);
+                    update_distances(s1[0], s2[0]);});
+            }
+
             $(document).ready(function() {
 
                 // Load jSparc library
                 jsparc = $.jsparc();
 
                 // Make the two station lists
-                jsparc.make_station_select($('#station_choice_1'));
-                jsparc.make_station_select($('#station_choice_2'));
+                jsparc.make_station_select($('#station_choice_1')).done(function(){
+                    jsparc.make_station_select($('#station_choice_2')).done(function(){
+                        get_info_and_update();});
+                });
 
                 // Update map when a new station is selected
                 $('#station_choice').on('change', 'select', function() {
-                    var station_info_urls = [jsparc.api_station_info($('#station_choice_1 select').val()),
-                                             jsparc.api_station_info($('#station_choice_2 select').val())];
-                    var results = jsparc.get_multiple_json(station_info_urls);
-                    results.done(function(s1, s2) {
-                        update_map(s1[0], s2[0]);
-                        update_distances(s1[0], s2[0]);});
+                    get_info_and_update();
                 });
 
                 // Create the map
@@ -130,6 +139,13 @@
                     <span id="station_choice_2"><select><option>Loading stations..</option></select></span>
                     is:<br>
                     <span id="distance">...</span> m as the crow flies or <span id="light_distance">...</span> ns as the light travels.
+                </p>
+            </div>
+            <div id="error">
+                <p>
+                   Error: failed to get coordinates for one of the selected stations.<br>
+                   Perhaps the station has not yet submitted its GPS location.
+                   Try selecting other stations.
                 </p>
             </div>
             <div id="map">
