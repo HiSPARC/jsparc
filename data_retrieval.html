@@ -220,7 +220,7 @@
                     if (fit_type === 'polynomial') {
                         order = parseInt($('#fit [name="degree"]').val());}
                     else if (fit_type === 'sine') {
-                        order = parseInt($('#fit [name="period"]').val());
+                        order = parseFloat($('#fit [name="period"]').val());
                         if (plot_type == 'timeseries') {
                             // Convert seconds to milliseconds.
                             order = order * 1000;}}
