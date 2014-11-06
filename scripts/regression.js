@@ -111,22 +111,18 @@
             // the deviations of y-data with respect to the mean of
             // y-data.
 
-            var n, i, yf;
-            var cleandata = [], sumdata = [];
-            for (n = 0; n < data.length; n++) {
-                if (!isNaN(data[n][1])){
-                    cleandata.push([data[n][0], data[n][1]]);
-                    sumdata.push([data[n][0], data[n][1]]);}}
+            var n, i, yf,
+                sumdata = [];
 
-            for (n = 0; n < cleandata.length - 1; n++) {
-                var oldsum = sumdata[n][1];
-                sumdata[n+1][1] = cleandata[n+1][1] + oldsum;}
+            sumdata[0] = [data[0][0], data[0][1]];
+            for (i = 1; i < data.length; i++) {
+                sumdata.push([data[i][0], data[i][1] + sumdata[i-1][1]]);}
 
-            var max = sumdata[cleandata.length - 1][1];
-            var width = sumdata[cleandata.length - 1][0] - sumdata[0][0];
+            var max = sumdata[data.length - 1][1];
+            var width = sumdata[data.length - 1][0] - sumdata[0][0];
             var reldata = [];
-            for (n = 0; n < cleandata.length ; n++) {
-                reldata.push([sumdata[n][0], sumdata[n][1] / max]);}
+            for (i = 0; i < data.length ; i++) {
+                reldata.push([sumdata[i][0], sumdata[i][1] / max]);}
 
             var sum = [0, 0, 0, 0, 0, 0], x = 0, y = 0, results = [];
             var p = 22.64172356, q = 0, psi = 0, root2 = 0, root3 = 0, z = 0;
@@ -155,9 +151,9 @@
             var sigma = 1 / B;
             var norm = max * width / reldata.length * 0.3989423 * B;
             var yg = max / reldata.length;
-            for (i = 0; i < cleandata.length; i++) {
-                x = cleandata[i][0];
-                y = cleandata[i][1];
+            for (i = 0; i < data.length; i++) {
+                x = data[i][0];
+                y = data[i][1];
                 yf = norm * Math.exp(-0.5 * (A + B * x) * (A + B * x));
                 SSE += (y - yf) * (y - yf);
                 SST += (y - yg) * (y - yg);}
