@@ -267,8 +267,6 @@
         },
 
 
-
-
         exponential: function(data) {
 
             // Exponential regression, see
@@ -321,7 +319,6 @@
                     string: prepare_for_MathJax(string),
                     corrstring: prepare_for_MathJax(corrstring)};
         },
-
 
 
         wexponential: function(data) {
@@ -383,6 +380,7 @@
                     string: prepare_for_MathJax(string),
                     corrstring: prepare_for_MathJax(corrstring)};
         },
+
 
         logarithmic: function(data) {
 
@@ -561,6 +559,7 @@
                     corrstring: prepare_for_MathJax(corrstring)};
         },
 
+
         lastvalue: function(data) {
             var results = [];
             var lastvalue = null;
@@ -571,7 +570,8 @@
                 else {
                     results.push([data[i][0], lastvalue]);}}
 
-            return {equation: [lastvalue], points: results, string: "" + lastvalue};
+            return {equation: [lastvalue], points: results,
+                    string: "" + lastvalue};
         }
     };
 
