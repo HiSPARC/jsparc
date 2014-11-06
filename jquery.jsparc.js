@@ -901,7 +901,7 @@ be stored as strings.
 
         jsparc.flot_base = function() {return flot_base;};
         var flot_base = {
-            colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#CC1'],
+            colors: ['#222', '#D22', '#1C1', '#1CC', '#C1C', '#15C', '#AA1', '#C51'],
             legend: {show: false},
             xaxis: {
                 show: true,
@@ -1284,21 +1284,21 @@ be stored as strings.
         function remove_error_values(data) {
             /* Remove error values from the data points
 
-            Removes a point if either the x or y value is -999 or -1.
+            Removes a point if either the x or y value is -999, -1 or NaN.
 
             */
-            return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 &&
-                                                   v[1] !== -999 && v[1] !== -1;})
+            return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 && !isNaN(v[0]) &&
+                                                   v[1] !== -999 && v[1] !== -1 && !isNaN(v[1]);})
         }
 
         jsparc.remove_error_values_1d = remove_error_values_1d;
         function remove_error_values_1d(data) {
             /* Remove error values from the data points from 1d array
 
-            Removes an element if the value is -999 or -1.
+            Removes an element if the value is -999, -1 or NaN.
 
             */
-            return data.filter(function(v) {return v !== -999 && v !== -1;})
+            return data.filter(function(v) {return v !== -999 && v !== -1 && !isNaN(v);})
         }
 
         jsparc.sort_stringvalues = sort_stringvalues;

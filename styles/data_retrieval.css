@@ -154,8 +154,7 @@ td {
     font-size: 14px;}
 
 #results {
-    text-align: center;
-    }
+    text-align: center;}
 
 #preview {
     overflow: visible;}
@@ -207,3 +206,15 @@ Only used for 'css' mode, we now use canvas mode
 
 #results .correlation {
     color: gray;}
+
+/* Detector colors
+*/
+.ch1 {color: #222;}
+.ch2 {color: #C11;}
+.ch3 {color: #1C1;}
+.ch4 {color: #1CC;}
+
+.ch5 {color: #C1C;}
+.ch6 {color: #15C;}
+.ch7 {color: #AA1;}
+.ch8 {color: #C51;}

@@ -119,7 +119,8 @@
 
                 // Show plot button
                 $('#make_plot').on('click', function() {
-                    var x = $('#select_variables input[name=x-axis]:checked'),
+                    var plot_type = $('#plot_type input:checked').val(),
+                        x = $('#select_variables input[name=x-axis]:checked'),
                         y = $('#select_variables input[name=y-axis]:checked'),
                         xset = x.parents('table').attr('name'),
                         yset = y.parents('table').attr('name'),
@@ -129,7 +130,7 @@
                     // Here the plot data is prepared, each section results in
                     // a multidimensional array `data_to_plot`
                     // [[[x, y], [x, y], ...], [set2], ...]
-                    if ($('#plot_type input:checked').val() == 'histogram') {
+                    if (plot_type == 'histogram') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('Counts'));
                         var x_data = jsparc.get_column(x.val(), xset);
@@ -167,7 +168,7 @@
                             if (data_to_plot[0][0] instanceof Array == false) {
                                 data_to_plot = [data_to_plot]}}
                     }
-                    else if ($('#plot_type input:checked').val() == 'scatter') {
+                    else if (plot_type == 'scatter') {
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels(x.data('label')));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
                         if (xset != yset) {
@@ -189,7 +190,7 @@
                             if (xlog) {
                                 data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 0)}}
                     }
-                    else if ($('#plot_type input:checked').val() == 'timeseries') {
+                    else if (plot_type == 'timeseries') {
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
 
                         // The data that needs to be plotted
@@ -205,16 +206,24 @@
                                 data_to_plot[i] = jsparc.remove_invalid_log_values(data_to_plot[i], 1)}}
                     }
 
+                    // Clean the data by removing all values of -1 and -999.
                     for (var i = 0; i < data_to_plot.length; i++) {
                         data_to_plot[i] = jsparc.remove_error_values(data_to_plot[i])}
 
                     if (jsparc.is_data_empty(data_to_plot)) {
-                        alert('No data to plot. The selected data may contain only error values or invalid values for logarithmic axes.');
+                        alert('No data to plot. The selected data may contain only error values or values invalid for logarithmic axes.');
                         return}
 
                     // Get selected fit options
                     var fit_type = $("#fit_options").val(),
-                        degree = parseInt($('#fit input').val());
+                        order = 0;
+                    if (fit_type === 'polynomial') {
+                        order = parseInt($('#fit [name="degree"]').val());}
+                    else if (fit_type === 'sine') {
+                        order = parseInt($('#fit [name="period"]').val());
+                        if (plot_type == 'timeseries') {
+                            // Convert seconds to milliseconds.
+                            order = order * 1000;}}
 
                     // If a fit type is selected use regression.js to get trend 
                     // points and add them to data to plot
@@ -224,20 +233,24 @@
                         // Loop over each single dataset
                         var length = data_to_plot.length;
                         for (var i = 0; i < length; i++) {
-                            // And for each dataset calculate the fit
-                            var summary = regression(fit_type, data_to_plot[i], degree);
+                            // Check if dataset is not empty
+                            if (!jsparc.is_data_empty(data_to_plot[i])) {
+                                // And for each dataset calculate the fit
+                                var summary = regression(fit_type, data_to_plot[i], order);
 
-                             // Only show fit if NaN not present
-                            if (summary.string.indexOf("NaN") != -1) {
-                                summary.string = "Fit not possible"
-                                summary.corrstring = "";}
+                                // Only show fit if NaN not present
+                                if (summary.string.indexOf("NaN") != -1) {
+                                    summary.string = "Fit not possible"
+                                    summary.corrstring = "";}
 
-                            // The calculated fit is returned as summary.points
-                            data_to_plot.push(summary.points);
-                            formula = $('<p>');
-                            formula.append($('<span>').addClass('formula').text(summary.string));
-                            formula.append($('<span>').addClass('correlation').text(summary.corrstring));
-                            formulas.append(formula);}
+                                // The calculated fit is returned as summary.points
+                                data_to_plot.push(summary.points);
+                                formula = $('<p>');
+                                // Parse the formula and correlation coefficient
+                                // Color the formula as its line in the plot.
+                                formula.append($('<span>').addClass('formula').addClass('ch' + (i % 8 + length + 1)).text(summary.string));
+                                formula.append($('<span>').addClass('correlation').text(summary.corrstring));
+                                formulas.append(formula);}}
                         $("#preview").html(formulas);
                         $("#results").show();
                         // Update MathJax to render new text
@@ -298,22 +311,22 @@
                 $('#plot_type').on('change', 'input', function() {
                     if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
                                                        jsparc.disable_radio_set('y-axis');
-                                                        $('#hist_bins input').prop('disabled', false);}
+                                                       $('#hist_bins input').prop('disabled', false);}
                     else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
                                                           jsparc.enable_radio_set('y-axis');
-                                                           $('#hist_bins input').prop('disabled', true);}
+                                                          $('#hist_bins input').prop('disabled', true);}
                     else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
                                                              jsparc.enable_radio_set('y-axis');
-                                                              $('#hist_bins input').prop('disabled', true);}
+                                                             $('#hist_bins input').prop('disabled', true);}
                 });
 
                 // Set Degree to disabled if polynomial not selected
                 $("#fit_options").on('change', function(){
-                    if ($(this).val() != "polynomial") {
-                        $('#fit input').prop('disabled', true);
-                    } else {
-                        $('#fit input').prop('disabled', false);
-                    }
+                    $('#fit input').prop('disabled', true);
+                    if ($(this).val() === "polynomial") {
+                        $('#fit input[name=degree]').prop('disabled', false);}
+                    else if ($(this).val() === "sine") {
+                        $('#fit input[name=period]').prop('disabled', false);}
                 });
 
                 // Update plot settings
@@ -383,17 +396,21 @@
                     <span class="key">Fit:</span><br>
                     <span id="fit"> 
                         Type:   
-                        <select id="fit_options">
+                        <select id="fit_options" title="Select the type of function to fit to the selected data.">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
                             <option value="gaussian">Gaussian</option>
+                            <option value="sine">Sine</option>
                             <option value="exponential">Exponential</option>
                             <option value="wexponential">Exponential*</option>
                             <option value="logarithmic">Logarithmic</option>
                             <option value="power">Power</option>
                             <option value="polynomial">Polynomial</option>
                         </select>
-                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"><br>      
+                        Period: <input name="period" type="number" style="width: 66px;" disabled value="86400"
+                                       title="Set the period of the sine function, in same units as the x-axis."><br>
+                        Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"
+                                       title="Set the degree (highest power) of the polynomial."><br>      
                     </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
