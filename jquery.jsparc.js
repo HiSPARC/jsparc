@@ -1283,21 +1283,21 @@ be stored as strings.
         function remove_error_values(data) {
             /* Remove error values from the data points
 
-            Removes a point if either the x or y value is -999 or -1.
+            Removes a point if either the x or y value is -999, -1 or NaN.
 
             */
-            return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 &&
-                                                   v[1] !== -999 && v[1] !== -1;})
+            return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 && !isNaN(v[0]) &&
+                                                   v[1] !== -999 && v[1] !== -1 && !isNaN(v[1]);})
         }
 
         jsparc.remove_error_values_1d = remove_error_values_1d;
         function remove_error_values_1d(data) {
             /* Remove error values from the data points from 1d array
 
-            Removes an element if the value is -999 or -1.
+            Removes an element if the value is -999, -1 or NaN.
 
             */
-            return data.filter(function(v) {return v !== -999 && v !== -1;})
+            return data.filter(function(v) {return v !== -999 && v !== -1 && !isNaN(v);})
         }
 
         jsparc.sort_stringvalues = sort_stringvalues;
