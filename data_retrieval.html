@@ -124,9 +124,17 @@
                         y = $('#select_variables input[name=y-axis]:checked'),
                         xset = x.parents('table').attr('name'),
                         yset = y.parents('table').attr('name'),
-                        ylog = $("#plot_y_axis :checked").val() !== 'none',
+                        x_min = parseFloat($("#plot_x_limits input[name=plot_x_min]").val()),
+                        x_max = parseFloat($("#plot_x_limits input[name=plot_x_max]").val()),
                         xlog = $("#plot_x_axis :checked").val() !== 'none',
+                        y_min = parseFloat($("#plot_y_limits input[name=plot_y_min]").val()),
+                        y_max = parseFloat($("#plot_y_limits input[name=plot_y_max]").val()),
+                        ylog = $("#plot_y_axis :checked").val() !== 'none',
                         data_to_plot;
+
+                    jsparc.add_flot_options(jsparc.flot_xlimits(x_min, x_max));
+                    jsparc.add_flot_options(jsparc.flot_ylimits(y_min, y_max));
+
                     // Here the plot data is prepared, each section results in
                     // a multidimensional array `data_to_plot`
                     // [[[x, y], [x, y], ...], [set2], ...]
@@ -380,11 +388,19 @@
                         <input name="plot_type" type="radio" value="timeseries"> Time series<br>
                     </span><br>
                     <span class="key">x-Axis:</span><br>
+                    <span id="plot_x_limits">
+                        Limits <input name="plot_x_min" style="width: 38px;" type="number" value="null">
+                               <input name="plot_x_max" style="width: 45px;" type="number" value="null"><br>
+                    </span>
                     <span id="plot_x_axis">
                         <input name="plot_x_axis" type="radio" value="none" checked> Linear<br>
                         <input name="plot_x_axis" type="radio" value="xlog"> Logarithmic<br>
                     </span><br>
                     <span class="key">y-Axis:</span><br>
+                    <span id="plot_y_limits">
+                        Limits <input name="plot_y_min" style="width: 38px;" type="number" value="null">
+                               <input name="plot_y_max" style="width: 45px;" type="number" value="null"><br>
+                    </span>
                     <span id="plot_y_axis">
                         <input name="plot_y_axis" type="radio" value="none" checked> Linear<br>
                         <input name="plot_y_axis" type="radio" value="ylog"> Logarithmic<br>
