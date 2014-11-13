@@ -350,7 +350,7 @@ be stored as strings.
         function generate_event_rate(url) {
             /* Generate event rate from timestamps
             */
-            var window = 120,
+            var window = 300,
                 data = get_column('timestamp', url),
                 bins = range(data[0], data[data.length-1], window),
                 hist = histogram(data, bins),
@@ -369,9 +369,6 @@ be stored as strings.
 
             Possible choices should be limited to dates between start of
             HiSPARC (9/1/2004) and yesterday.
-
-            Currently the dates are limited to availability of ESD data
-            HiSPARC (1/1/2013) and yesterday.
 
             Requires jquery-ui.js, jquery-ui-timepicker-addon.js
 
@@ -1034,6 +1031,28 @@ be stored as strings.
         var flot_none = {
         };
 
+        jsparc.flot_xlimits = flot_xlimits;
+        function flot_xlimits(min, max) {
+            /* Set plot limits for the x-axis, use null for no limit.
+            */
+            if (isNaN(min)) {min = null;}
+            if (isNaN(max)) {max = null;}
+            return {xaxis: {
+                        min: min,
+                        max: max}};
+        }
+
+        jsparc.flot_ylimits = flot_ylimits;
+        function flot_ylimits(min, max) {
+            /* Set plot limits for the y-axis, use null for no limit.
+            */
+            if (isNaN(min)) {min = null;}
+            if (isNaN(max)) {max = null;}
+            return {yaxis: {
+                        min: min,
+                        max: max}};
+        }
+
 
         // Flot helpers
 
@@ -1252,6 +1271,7 @@ be stored as strings.
             [[[x11, y11], [x12, y12], ...], [[x21, y21], [x22, y22], ...], ...]
             Empty:
             [[], [], []]
+
             */
             for (var i = 0; i < data.length; i++) {
                 if (data[i].length) {
@@ -1374,8 +1394,8 @@ be stored as strings.
             /* Check if an element is visible in the current viewport
             */
             var rect = target.getBoundingClientRect();
-            return (rect.top < $(window).height() && rect.bottom > 0 &&
-                    rect.left < $(window).width() && rect.right > 0);
+            return (rect.top < $(window).height() - 20 && rect.bottom > 20 &&
+                    rect.left < $(window).width() - 20 && rect.right > 20);
         }
     }
 
