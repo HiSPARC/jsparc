@@ -942,8 +942,10 @@ be stored as strings.
             series: {
                 points: {
                     show: false,
-                    radius: 1,
+                    symbol: 'pixel',
+                    radius: .9,
                     lineWidth: 0.00001,
+                    fill: true,
                     fillColor: false},
                 lines: {
                     lineWidth: 1.5,

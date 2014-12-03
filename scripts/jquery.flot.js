@@ -2500,18 +2500,27 @@ Licensed under the MIT license.
                     if (x == null || x < axisx.min || x > axisx.max || y < axisy.min || y > axisy.max)
                         continue;
 
-                    ctx.beginPath();
                     x = axisx.p2c(x);
                     y = axisy.p2c(y) + offset;
-                    if (symbol == "circle")
-                        ctx.arc(x, y, radius, 0, shadow ? Math.PI : Math.PI * 2, false);
-                    else
-                        symbol(ctx, x, y, radius, shadow);
-                    ctx.closePath();
 
-                    if (fillStyle) {
+                    if (symbol == "pixel") {
+                        var pixel_size = radius * 2;
                         ctx.fillStyle = fillStyle;
-                        ctx.fill();
+                        ctx.fillRect(x - radius, y - radius,
+                                     pixel_size, pixel_size);
+                    }
+                    else {
+                        ctx.beginPath();
+                        if (symbol == "circle")
+                            ctx.arc(x, y, radius, 0, shadow ? Math.PI : Math.PI * 2, false);
+                        else
+                            symbol(ctx, x, y, radius, shadow);
+                        ctx.closePath();
+
+                        if (fillStyle) {
+                            ctx.fillStyle = fillStyle;
+                            ctx.fill();
+                        }
                     }
                     ctx.stroke();
                 }
