@@ -2521,8 +2521,8 @@ Licensed under the MIT license.
                             ctx.fillStyle = fillStyle;
                             ctx.fill();
                         }
+                        ctx.stroke();
                     }
-                    ctx.stroke();
                 }
             }
 
