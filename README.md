@@ -1,14 +1,20 @@
 jSparc library
 ==============
 
+[![GPLv3](http://img.shields.io/badge/license-GPLv3-blue.png)]
+(https://github.com/HiSPARC/jsparc/blob/master/LICENSE)
+[![Travis Status](http://img.shields.io/travis/HiSPARC/jsparc/master.png)]
+(https://travis-ci.org/HiSPARC/jsparc)
+
 This contains the source code for the jSparc JavaScript library, which
 is used for a couple of web applications that can be found here:
-http://data.hisparc.nl/media/jsparc/index.html
+[jSparc](http://data.hisparc.nl/media/jsparc/index.html)
 
 This project is intended to provide tools for high school students to
 work with HiSPARC data.
 
-Documentation can be found here: http://docs.hisparc.nl/jsparc/
+Documentation can be found here:
+[jSparc docs](http://data.hisparc.nl/media/jsparc/index.html)
 
 Designed by Niek and Arne.
 
