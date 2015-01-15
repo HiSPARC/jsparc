@@ -108,7 +108,7 @@ be stored as strings.
         function unknown_format(url) {
             /* Create a generic column format for unknown dataset types
             */
-            var generic_format = {} ,
+            var generic_format = {},
                 n_columns = datasets[url].data[0].length;
             for (var i = 0; i < n_columns; i++) {
                 generic_format['column_' + i] = {'column': i, 'name': 'Column ' + i, 'units': '?'};}

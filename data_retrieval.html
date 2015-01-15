@@ -81,9 +81,9 @@
                     }                    
 
                     var download_return = jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
-                                            $('#startdate_choice').val(),
-                                            $('#enddate_choice').val(),
-                                            data_type)
+                                                                  $('#startdate_choice').val(),
+                                                                  $('#enddate_choice').val(),
+                                                                  data_type)
                           
                     // Check return type because if for example dataset is already available
                     // the object return is not a reader object
