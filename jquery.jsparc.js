@@ -88,6 +88,19 @@ be stored as strings.
         jsparc.API_URL = API_URL;
         jsparc.DATA_URL = DATA_URL;
         jsparc.JSPARC_URL = JSPARC_URL;
+        jsparc.events_format = events_format;
+        jsparc.weather_format = weather_format;
+        jsparc.lightning_format = lightning_format;
+        jsparc.eventtime_format = eventtime_format;
+        jsparc.pulseheight_format = pulseheight_format;
+        jsparc.pulseintegral_format = pulseintegral_format;
+        jsparc.temperature_format = temperature_format;
+        jsparc.barometer_format = barometer_format;
+        jsparc.voltage_format = voltage_format;
+        jsparc.current_format = current_format;
+        jsparc.coincidencenumber_format = coincidencenumber_format;
+        jsparc.coincidencetime_format = coincidencetime_format;
+        jsparc.gps_format = gps_format;
 
         // Create format for unknown type
 
@@ -328,9 +341,9 @@ be stored as strings.
             if (column_name == 'event_rate') {
                 return generate_event_rate(url);}
 
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             try {
@@ -510,9 +523,9 @@ be stored as strings.
                 list = $('<table>').attr('name', url),
                 firstrow = $('<tr>');
                 eventraterow = $('<tr>');
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             firstrow.append($('<th>').text('x-Axis'));
@@ -565,9 +578,9 @@ be stored as strings.
             var firstrow = $('<tr>'),
                 format;
 
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             firstrow.append($('<th>').text('#'));

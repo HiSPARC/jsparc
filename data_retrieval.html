@@ -281,7 +281,7 @@
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.show_id('plot');
-                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
+                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return jsparc['flot_' + $(this).val()]()}));
                     })
                 });
 
@@ -331,7 +331,7 @@
 
                 // Update plot settings
                 $('#plot_settings').on('change', 'input', function() {
-                    jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return eval('jsparc.flot_' + $(this).val())()}));
+                    jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return jsparc['flot_' + $(this).val()]()}));
                 });
             });
         </script>
