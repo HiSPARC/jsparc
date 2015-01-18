@@ -63,7 +63,7 @@
     }
 
     function timestampToDate(timestamp) {
-        var date = new Date(timestamp * 1000)
+        var date = new Date(timestamp * 1000);
         var year = date.getUTCFullYear();
         var month = date.getUTCMonth() + 1;
         var day = date.getUTCDate();
@@ -81,7 +81,7 @@
         var minutes = (GMST - hours) * 60;
         var seconds = (minutes - parseInt(minutes)) * 60;
         seconds = (parseInt(0.5 + seconds * 10)) / 10;
-        var minutes = parseInt(minutes);
+        minutes = parseInt(minutes);
         sidDays = parseInt(hours / 24, 10);
         hours = hours - 24 * sidDays;
         GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
@@ -108,11 +108,11 @@
         $("#tracelegend").css('visibility', 'visible');
         
         //  Get Year, Month, Day, Hour, Minute, Second.
-        var datum = timestampToDate(data.events[0].timestamp)
+        var datum = timestampToDate(data.events[0].timestamp);
         $("#datum").html(datum);
 
         // Greenwich Mean Sidereal Time in hours
-        var GMST = timestampToGMST(data.events[0].timestamp)
+        var GMST = timestampToGMST(data.events[0].timestamp);
         $("#gmst").html(GMST);
 
         // Write information to dashboard
@@ -139,14 +139,14 @@
                         txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></td>";}}
                 else {
                     txt += "<td></td>";}}
-            txt += "</tr>"}
+            txt += "</tr>";}
         txt += "<tr><td></td>";
         for (i = 0; i < data.events.length; i++) {
             txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
             for (j = detNum[i]; j > 0; j--) {
                 txt += "<option value=" + j + ">" + j + "</option>";}
             txt += "</select></td>";}
-        txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
+        txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>";
         for (i = 0; i < data.events.length; i++) {
             txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></td>";}
         txt += "</tr><tr><td>Calc.</td>";
@@ -162,7 +162,7 @@
     }
 
     function showError(data) {
-        if (data.status == 0) {
+        if (data.status === 0) {
             alert('An error occured, try again');}
         else {
             json = JSON.parse(data.responseText);
@@ -172,13 +172,13 @@
     function retrieveData(htmlInfo, URL) {
         $.getJSON(URL + "get_coincidence/", get_coincidence)
             .done(loadData)
-            .fail(showError)
+            .fail(showError);
     }
 
     function getExample() {
-        $("#sessionTitle").val('example')
-        $("#sessionPin").val('1337')
-        $("#studentName").val('test')
+        $("#sessionTitle").val('example');
+        $("#sessionPin").val('1337');
+        $("#studentName").val('test');
         get_coincidence.session_title = $("#sessionTitle").val();
         get_coincidence.session_pin = $("#sessionPin").val();
         get_coincidence.student_name = $("#studentName").val();
@@ -187,7 +187,7 @@
     }
 
     function getData() {
-        if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
+        if ($("#sessionTitle").val() === "" || $("#sessionPin").val() === "" || $("#studentName").val() === "") {
             alert("Fill in each field");}
         else {
             get_coincidence.session_title = $("#sessionTitle").val();

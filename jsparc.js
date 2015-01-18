@@ -503,7 +503,7 @@ function interactionTrace(data) {
         BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
 
         if ((ALFA * ALFA - BETA) < 0) {
-            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA)}
+            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA);}
         else {
             dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA);
             dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA);

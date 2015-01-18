@@ -1,5 +1,6 @@
 {
+    "curly": true,
     "loopfunc": true,
     "globals": {
-        "jQuery": true}
+        "jquery": true}
 }

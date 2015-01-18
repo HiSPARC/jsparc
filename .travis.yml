@@ -11,7 +11,7 @@ before_install:
   - wget https://raw.githubusercontent.com/mozilla/html5-lint/master/html5check.py
 
 script:
-  - python --version
   - CHECK=$(for file in *.html; do python ./html5check.py -geh $file; done;)
   - if [[ ! -z "$CHECK" ]]; then echo "$CHECK"; exit 1; fi;
+  - jshint --extract auto *.html
   - jshint jquery.jsparc.js jsparc.js scripts/regression.js 

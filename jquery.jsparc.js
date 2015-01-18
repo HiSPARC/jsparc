@@ -398,7 +398,7 @@ be stored as strings.
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
-            target.datepicker("setDate", offset);
+            target.datepicker('setDate', offset);
         }
 
         jsparc.make_station_select = make_station_select;
@@ -1414,8 +1414,8 @@ be stored as strings.
             /* Goto element with the given id if it is not visible
             */
             if (!jsparc.element_in_viewport($('#' + id)[0])) {
-                location.href = "#";
-                location.href = "#" + id;}
+                location.href = '#';
+                location.href = '#' + id;}
         }
 
         jsparc.element_in_viewport = element_in_viewport;
