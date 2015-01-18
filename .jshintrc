@@ -1,0 +1,5 @@
+{
+    "loopfunc": true,
+    "globals": {
+        "jQuery": true}
+}

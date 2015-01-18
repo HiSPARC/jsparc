@@ -473,6 +473,7 @@ be stored as strings.
             firstrow.append($('<th>').text('Remove'));
             list.append(firstrow);
             for (var i in datasets) {
+                if (!datasets.hasOwnProperty(i)) {continue;}
                 var row = $('<tr>').attr('name', datasets[i].url);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
                                     .attr('title', 'Choose which dataset you want to use.' +
@@ -502,6 +503,7 @@ be stored as strings.
             var select = $('<select>');
             var station_number, startdate, enddate, type, url, str;
             for (var i in datasets) {
+                if (!datasets.hasOwnProperty(i)) {continue;}
                 station_number = datasets[i].station_number;
                 startdate = datasets[i].startdate;
                 enddate = datasets[i].enddate;
@@ -546,6 +548,7 @@ be stored as strings.
                 eventraterow.append($('<td>').text('Hz').addClass('units'));
                 list.append(eventraterow);}
             for (var i in format) {
+                if (!format.hasOwnProperty(i)) {continue;}
                 if (i == 'date' || i == 'time') {continue;}
                 var row = $('<tr>').attr('name', i);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
@@ -585,6 +588,7 @@ be stored as strings.
 
             firstrow.append($('<th>').text('#'));
             for (var key in format) {
+                if (!format.hasOwnProperty(key)) {continue;}
                 var ncol = (format[key].column.length) ? format[key].column.length : 1;
                 firstrow.append($('<th>').text(format[key].name).attr('colspan', ncol));}
             if (type == 'events') {
