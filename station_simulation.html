@@ -1,14 +1,13 @@
-<html>
+<!doctype html>
   <head>
-  </head>
-  <body onload="makeCanvas()">
-    <p>
-      Particle density in [m<sup>-2</sup>]: 
-      <input type="text" id="density"/>
-      <button onclick="scatter_particles()">Start simulation</button>
-    </p>
-    <canvas id="station_layout" width="600" height="600"></canvas>
     <script>
+      var i = 0;
+      var scale = .5;
+      var canvas = document.getElementById('station_layout');
+      var context = canvas.getContext('2d');
+      context.translate(300,500);
+      context.save();
+
       function scatter_particles() {
         if(i!=0) {
           clearCanvas();
@@ -47,16 +46,6 @@
         ctx.restore();
         ctx.save()}
 
-      var i = 0;
-      var scale = .5;
-      var canvas = document.getElementById('station_layout');
-      var context = canvas.getContext('2d');
-
-      context.translate(300,500);
-      context.save();
-      context.fillStyle = 'blue';
-      context.fillRect(-2.5, -2.5, 5, 5);
-
       function clearCanvas() {
         // Store the current transformation matrix
         context.save();
@@ -67,10 +56,20 @@
         context.restore();}
 
       function makeCanvas(){
+        context.fillStyle = 'blue';
+        context.fillRect(-2.5, -2.5, 5, 5);
         drawStation(context, 8.66, 0, 0, 'gray')
         drawStation(context, 2.66, 0, 0, 'red')
         drawStation(context, 5, -90, 90, 'lightgreen')
         drawStation(context, 5, 90, 90, 'lightblue')}
     </script>
+  </head>
+  <body onload="makeCanvas()">
+    <p>
+      Particle density in [m<sup>-2</sup>]: 
+      <input type="text" id="density"/>
+      <button onclick="scatter_particles()">Start simulation</button>
+    </p>
+    <canvas id="station_layout" width="600" height="600"></canvas>
   </body>
 <html>
