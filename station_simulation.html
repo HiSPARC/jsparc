@@ -1,15 +1,21 @@
 <!doctype html>
-  <head>
+<html>
+    <head>
         <meta charset="utf-8">
         <title>HiSPARC - jSparc - Station simulation</title>
         <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="stylesheet" href="styles/station_simulation.css" />
         <script>
           var i = 0;
           var scale = 0.5;
-          var canvas = document.getElementById('station_layout');
-          var context = canvas.getContext('2d');
-          context.translate(300,500);
-          context.save();
+          var canvas, context;
+
+          function initCanvas() {          
+              canvas = document.getElementById('station_layout');
+              context = canvas.getContext('2d');
+              context.translate(300,500);
+              context.save();
+              makeCanvas();}
 
           function scatter_particles() {
             if(i !== 0) {
@@ -66,13 +72,16 @@
             drawStation(context, 5, -90, 90, 'lightgreen');
             drawStation(context, 5, 90, 90, 'lightblue');}
         </script>
-  </head>
-  <body onload="makeCanvas()">
-    <p>
-      Particle density in [m<sup>-2</sup>]: 
-      <input type="text" id="density"/>
-      <button onclick="scatter_particles()">Start simulation</button>
-    </p>
-    <canvas id="station_layout" width="600" height="600"></canvas>
-  </body>
+    </head>
+    <body onload="initCanvas()">
+        <div id="container">
+            <div id="header"><div id="pageHeader"></div></div>
+            <p>
+              Particle density in [m<sup>-2</sup>]: 
+              <input type="text" id="density" value="2">
+              <button onclick="scatter_particles()">Start simulation</button>
+            </p>
+            <canvas id="station_layout" width="600" height="600"></canvas>
+        </div>
+    </body>
 </html>
