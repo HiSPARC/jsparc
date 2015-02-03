@@ -5,14 +5,14 @@
         <link rel="shortcut icon" href="images/favicon.ico">
         <script>
           var i = 0;
-          var scale = .5;
+          var scale = 0.5;
           var canvas = document.getElementById('station_layout');
           var context = canvas.getContext('2d');
           context.translate(300,500);
           context.save();
 
           function scatter_particles() {
-            if(i!=0) {
+            if(i !== 0) {
               clearCanvas();
               makeCanvas();}
             var number = document.getElementById("density").value,
@@ -32,7 +32,7 @@
             var detector_width = 50 * scale;
             var detector_height = 100 * scale;
 
-            r = -r * 100 * scale 
+            r = -r * 100 * scale;
             ctx.rotate(radians(alpha));
             ctx.translate(0, r);
             ctx.rotate(-radians(alpha));
@@ -41,13 +41,13 @@
             ctx.fillRect(-detector_width / 2, -detector_height / 2,
                          detector_width, detector_height);
             ctx.restore();
-            ctx.save()}
+            ctx.save();}
 
           function drawParticle(ctx, x, y) {
             ctx.fillStyle = 'black';
             ctx.fillRect(x-301, y-501, 2, 2);
             ctx.restore();
-            ctx.save()}
+            ctx.save();}
 
           function clearCanvas() {
             // Store the current transformation matrix
@@ -61,10 +61,10 @@
           function makeCanvas(){
             context.fillStyle = 'blue';
             context.fillRect(-2.5, -2.5, 5, 5);
-            drawStation(context, 8.66, 0, 0, 'gray')
-            drawStation(context, 2.66, 0, 0, 'red')
-            drawStation(context, 5, -90, 90, 'lightgreen')
-            drawStation(context, 5, 90, 90, 'lightblue')}
+            drawStation(context, 8.66, 0, 0, 'gray');
+            drawStation(context, 2.66, 0, 0, 'red');
+            drawStation(context, 5, -90, 90, 'lightgreen');
+            drawStation(context, 5, 90, 90, 'lightblue');}
         </script>
   </head>
   <body onload="makeCanvas()">
