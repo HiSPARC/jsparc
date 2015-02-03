@@ -62,7 +62,7 @@
             function update_distances(station1, station2) {
                 /* Update the map to show the given stations.
                 */
-                var c = .3, // speed of light in m / ns
+                var c = 0.3, // speed of light in m / ns
                     distance = calculate_distance(station1, station2),
                     light_distance = distance / c;
                 $('#distance').text(distance.toFixed(0));

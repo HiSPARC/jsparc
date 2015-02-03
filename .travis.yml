@@ -1,0 +1,17 @@
+#language: python
+#python:
+#  - "2.7"
+
+language: node_js
+node_js:
+  - "0.10"
+
+before_install:
+  - npm install -g jshint
+  - wget https://raw.githubusercontent.com/mozilla/html5-lint/master/html5check.py
+
+script:
+  - CHECK=$(for file in *.html; do python ./html5check.py -geh $file; done;)
+  - if [[ ! -z "$CHECK" ]]; then echo "$CHECK"; exit 1; fi;
+  - jshint --extract auto *.html
+  - jshint jquery.jsparc.js jsparc.js scripts/regression.js 

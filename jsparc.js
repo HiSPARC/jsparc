@@ -169,7 +169,7 @@ function detectorNumber(data) {
     detectorNumbers = [];
     for(j=0; j < data.events.length; j++){
         detectorNumbers[j] = data.events[j].detectors;}
-    return detectorNumbers
+    return detectorNumbers;
 }
 
 function toScient(x, dx) {
@@ -393,9 +393,9 @@ function plotGraph(htmlInfo, data) {
         if (tmax < data.events[j].traces[0].length * 2.5 + offset) {
             tmax = data.events[j].traces[0].length * 2.5 + offset;}}
 
-    var tracedata = [];
-    var eventdata = [];
-    var trace_min = 0;
+    var tracedata = [],
+        eventdata = [],
+        trace_min = 0;
 
     for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
@@ -406,12 +406,12 @@ function plotGraph(htmlInfo, data) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
 
-    var eventColors = [];
-    var _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"]
+    var eventColors = [],
+        _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
 
     for (j=0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
-            eventColors.push(_eventColors[j])}}
+            eventColors.push(_eventColors[j]);}}
 
     var _eventPlotStyle = {
         seriesColors: eventColors,
@@ -434,7 +434,7 @@ function plotGraph(htmlInfo, data) {
 
         tracedata = [];
         eventdata = [];
-        var trace_min = 0;
+        trace_min = 0;
         for (k = 0; k < detNum[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
             for (i = 1; i < data.events[j].traces[k].length; i++) {
@@ -474,10 +474,7 @@ function toOrthogonal(i, latitude, longitude, altitude) {
 }
 
 function interactionTrace(data) {
-    var x = new Array();
-    var y = new Array();
-    var z = new Array();
-    var t = new Array();
+    var x = [], y = [], z = [], t = [];
     var A, B, C, D, E, F, G;
 
     for (i = 0; i < data.events.length; i++) {
@@ -486,7 +483,7 @@ function interactionTrace(data) {
         y[i] = coordinate.y;
         z[i] = coordinate.z;
         t[i] = data.events[i].nanoseconds / 1e9;}
-    if (i = 3) {
+    if (i == 3) {
         A = 2 * ((x[0] - x[1]) * (y[0] - y[2]) - (x[0] - x[2]) * (y[0] - y[1]));
         B = 2 * ((x[0] - x[2]) * (z[0] - z[1]) - (x[0] - x[1]) * (z[0] - z[2]));
         C = 2 * ((x[0] - x[1]) * (t[2] - t[0]) - (x[0] - x[2]) * (t[1] - t[0])) * c * c;
@@ -506,7 +503,7 @@ function interactionTrace(data) {
         BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
 
         if ((ALFA * ALFA - BETA) < 0) {
-            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA)}
+            alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA);}
         else {
             dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA);
             dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA);

@@ -55,6 +55,13 @@ be stored as strings.
                               'heat_index': {'column': 14, 'name': 'Heat index', 'units': '°C'},
                               'dew_point': {'column': 15, 'name': 'Dew point', 'units': '°C'},
                               'wind_chill': {'column': 16, 'name': 'Wind chill', 'units': '°C'}},
+            lightning_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
+                                'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
+                                'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
+                                'nanoseconds': {'column': 3, 'name': 'Nanoseconds', 'units': 'ns'},
+                                'latitude': {'column': 4, 'name': 'Latitude', 'units': '°'},
+                                'longitude': {'column': 5, 'name': 'Longitude', 'units': '°'},
+                                'current': {'column': 6, 'name': 'Current', 'units': 'A'}},
             eventtime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
                                 'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
             pulseheight_format = {'pulseheight_bins': {'column': 0, 'name': 'Pulseheight', 'units': 'mV'},
@@ -81,6 +88,19 @@ be stored as strings.
         jsparc.API_URL = API_URL;
         jsparc.DATA_URL = DATA_URL;
         jsparc.JSPARC_URL = JSPARC_URL;
+        jsparc.events_format = events_format;
+        jsparc.weather_format = weather_format;
+        jsparc.lightning_format = lightning_format;
+        jsparc.eventtime_format = eventtime_format;
+        jsparc.pulseheight_format = pulseheight_format;
+        jsparc.pulseintegral_format = pulseintegral_format;
+        jsparc.temperature_format = temperature_format;
+        jsparc.barometer_format = barometer_format;
+        jsparc.voltage_format = voltage_format;
+        jsparc.current_format = current_format;
+        jsparc.coincidencenumber_format = coincidencenumber_format;
+        jsparc.coincidencetime_format = coincidencetime_format;
+        jsparc.gps_format = gps_format;
 
         // Create format for unknown type
 
@@ -88,7 +108,7 @@ be stored as strings.
         function unknown_format(url) {
             /* Create a generic column format for unknown dataset types
             */
-            var generic_format = {} ,
+            var generic_format = {},
                 n_columns = datasets[url].data[0].length;
             for (var i = 0; i < n_columns; i++) {
                 generic_format['column_' + i] = {'column': i, 'name': 'Column ' + i, 'units': '?'};}
@@ -315,32 +335,32 @@ be stored as strings.
             */
             var data = datasets[url].data,
                 type = datasets[url].type,
-                column = [],
-                format;
+                column = [];
+            var format, col, i, j;
 
             if (column_name == 'event_rate') {
                 return generate_event_rate(url);}
 
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             try {
-                var col = format[column_name].column;}
+                col = format[column_name].column;}
             catch (e) {
                 var error = 'No column named: ' + column_name + ', in dataset: ' + url;
                 alert(error);
                 throw error;}
 
             if (col.length) {
-                for (var i = 0; i < col.length; i++) {
+                for (i = 0; i < col.length; i++) {
                     var values = [];
-                    for (var j = 0; j < data.length; j++) {
+                    for (j = 0; j < data.length; j++) {
                         values[j] = data[j][col[i]];}
                     column[i] = values;}}
             else {
-                for (var i = 0; i < data.length; i++) {
+                for (i = 0; i < data.length; i++) {
                     column[i] = data[i][col];}}
 
             return column;
@@ -373,12 +393,12 @@ be stored as strings.
             Requires jquery-ui.js, jquery-ui-timepicker-addon.js
 
             */
-            var offset = (offset) ? offset : -1;
+            offset = (offset) ? offset : -1;
             target.datetimepicker({minDate: new Date(2004, 1, 1),
                                    maxDate: -1,
                                    timezone:'UTC',
                                    dateFormat: 'yy-mm-dd'});
-            target.datepicker("setDate", offset);
+            target.datepicker('setDate', offset);
         }
 
         jsparc.make_station_select = make_station_select;
@@ -414,7 +434,7 @@ be stored as strings.
 
         jsparc.set_dataset_list_controls = set_dataset_list_controls;
         function set_dataset_list_controls(target) {
-            var target = target || $('#dataset_list');
+            target = target || $('#dataset_list');
             target.on('click', 'td.delete', function() {
                 // Use array to store the set names ('set1' or 'set2') of div's
                 // that should be deleted
@@ -427,7 +447,7 @@ be stored as strings.
 
                 // find and empty divs
                 if (set_array.length) {
-                    $.each(set_array, function( index, value ){
+                    $.each(set_array, function(index, value){
                         $('#' + value + '_variables').empty();});}
 
                 // remove the dataset
@@ -439,8 +459,8 @@ be stored as strings.
         function update_dataset_table(target) {
             /* Create a readable overview table of the available datasets
             */
-            var target = target || $('#dataset_list'),
-                list = $('<table>'),
+            target = target || $('#dataset_list');
+            var list = $('<table>'),
                 firstrow = $('<tr>');
             firstrow.append($('<th>').text('Select').attr('colspan', 2));
             firstrow.append($('<th>').text('Station'));
@@ -453,6 +473,7 @@ be stored as strings.
             firstrow.append($('<th>').text('Remove'));
             list.append(firstrow);
             for (var i in datasets) {
+                if (!datasets.hasOwnProperty(i)) {continue;}
                 var row = $('<tr>').attr('name', datasets[i].url);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
                                     .attr('title', 'Choose which dataset you want to use.' +
@@ -482,6 +503,7 @@ be stored as strings.
             var select = $('<select>');
             var station_number, startdate, enddate, type, url, str;
             for (var i in datasets) {
+                if (!datasets.hasOwnProperty(i)) {continue;}
                 station_number = datasets[i].station_number;
                 startdate = datasets[i].startdate;
                 enddate = datasets[i].enddate;
@@ -496,16 +518,16 @@ be stored as strings.
         function make_variable_plot_table(url, target) {
             /* Make an overview of available variables in the dataset for plot
             */
+            target = target || $('#set_variables');
             var type = datasets[url].type,
-                target = target || $('#set_variables'),
                 format,
                 header = $('<span>').addClass('key').text(datasets[url].station_number + ' (' + datasets[url].type + ')'),
                 list = $('<table>').attr('name', url),
-                firstrow = $('<tr>');
+                firstrow = $('<tr>'),
                 eventraterow = $('<tr>');
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             firstrow.append($('<th>').text('x-Axis'));
@@ -526,7 +548,8 @@ be stored as strings.
                 eventraterow.append($('<td>').text('Hz').addClass('units'));
                 list.append(eventraterow);}
             for (var i in format) {
-                if (i == 'date' || i == 'time') {continue}
+                if (!format.hasOwnProperty(i)) {continue;}
+                if (i == 'date' || i == 'time') {continue;}
                 var row = $('<tr>').attr('name', i);
                 row.append($('<td>').append($('<input>').attr('type', 'radio')
                    .attr('name', 'x-axis').attr('alt', 'y-axis')
@@ -545,10 +568,10 @@ be stored as strings.
         function create_dataset_table(url, target, limit) {
             /* Create a table representation of a dataset
             */
+            target = (target) ? target : $('#dataTable');
+            limit = (limit) ? limit : dataset.data.length;
             var dataset = datasets[url],
                 type = dataset.type,
-                target = (target) ? target : $('#dataTable'),
-                limit = (limit) ? limit : dataset.data.length,
                 table = $('<table>').addClass(dataset.type);
 
             if (limit > dataset.data.length) {
@@ -558,13 +581,14 @@ be stored as strings.
             var firstrow = $('<tr>'),
                 format;
 
-            try {
-                format = eval(type + '_format');}
-            catch (e) {
+            if (jsparc.hasOwnProperty(type + '_format')) {
+                format = jsparc[type + '_format'];}
+            else {
                 format = unknown_format(url);}
 
             firstrow.append($('<th>').text('#'));
             for (var key in format) {
+                if (!format.hasOwnProperty(key)) {continue;}
                 var ncol = (format[key].column.length) ? format[key].column.length : 1;
                 firstrow.append($('<th>').text(format[key].name).attr('colspan', ncol));}
             if (type == 'events') {
@@ -767,8 +791,8 @@ be stored as strings.
             either the x or y value is -999 or -1.
 
             */
-            var target = (target) ? target : $('#plot'),
-                datas = [{data: [1, 1], lines: {show: false}, xaxis: 2, yaxis: 2}];
+            target = (target) ? target : $('#plot');
+            var datas = [{data: [1, 1], lines: {show: false}, xaxis: 2, yaxis: 2}];
 
             if (data[0][0] instanceof Array) {
                 for (var i = data.length - 1; i >= 0; i--) {
@@ -783,7 +807,7 @@ be stored as strings.
         function download_plot(target) {
             /* Open a new window with a png version (base64 encoded) of the plot
             */
-            var target = (target) ? target : $('#plot');
+            target = (target) ? target : $('#plot');
             var dataurl = target.find('.flot-base')[0].toDataURL();
             window.open(dataurl, '_blank', 'height=450, width=820, toolbar=yes');
         }
@@ -830,17 +854,18 @@ be stored as strings.
             /* Make a linear interpolation to get y2 to be the same length as x1
             */
             var y1 = [];
+            var k, dydx;
             if (y2[0] instanceof Array) {
-                for (var k = 0; k < y2.length; k++) {
+                for (k = 0; k < y2.length; k++) {
                     y1[k] = [];}}
             for (var i = 0; i < x1.length; i++) {
                 var j = bisect_search(x1[i], x2);
                 if (y2[0] instanceof Array) {
-                    for (var k = 0; k < y2.length; k++) {
-                        var dydx = (y2[k][j + 1] - y2[k][j]) / (x2[j + 1] - x2[j]);
+                    for (k = 0; k < y2.length; k++) {
+                        dydx = (y2[k][j + 1] - y2[k][j]) / (x2[j + 1] - x2[j]);
                         y1[k][i] = y2[k][j] + dydx * (x1[i] - x2[j]);}}
                 else {
-                    var dydx = (y2[j + 1] - y2[j]) / (x2[j + 1] - x2[j]);
+                    dydx = (y2[j + 1] - y2[j]) / (x2[j + 1] - x2[j]);
                     y1.push(y2[j] + dydx * (x1[i] - x2[j]));}}
             return y1;
         }
@@ -943,7 +968,7 @@ be stored as strings.
                 points: {
                     show: false,
                     symbol: 'pixel',
-                    radius: .9,
+                    radius: 0.9,
                     lineWidth: 0.00001,
                     fill: true,
                     fillColor: false},
@@ -1106,9 +1131,9 @@ be stored as strings.
             try {
                 var parts = filename.replace(extension, empty).split(delimiter);
                 if (parts[1][0] == 's') {
-                    station_number = parts[1].substring(1)}
+                    station_number = parts[1].substring(1);}
                 else {
-                    station_number = parts[1]}
+                    station_number = parts[1];}
                 if (parts.length > 2) {
                     var date = parts[2].split(date_delimiter);
 
@@ -1160,9 +1185,10 @@ be stored as strings.
                 comments = '#';
             var data = [];
             var lines = csv.split(eol);
-            while (lines.length != 0 && lines[0][0] == comments) {
+            var values;
+            while (lines.length !== 0 && lines[0][0] == comments) {
                 lines.splice(0, 1);}
-            while (lines.length != 0 && lines[lines.length - 1] == empty) {
+            while (lines.length !== 0 && lines[lines.length - 1] == empty) {
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 values = lines[i].split(delimiter);
@@ -1182,10 +1208,10 @@ be stored as strings.
 
             */
             if (typeof stop == 'undefined') {
-                var stop = start,
-                    start = 0;}
+                stop = start;
+                start = 0;}
             if (typeof step == 'undefined') {
-                var step = 1;}
+                step = 1;}
             if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
                 return [];}
 
@@ -1209,6 +1235,7 @@ be stored as strings.
 
             */
             var nbins, mn, mx;
+            var j, i;
 
             if (bins instanceof Array) {
                 // Use given bins
@@ -1221,35 +1248,35 @@ be stored as strings.
                 if (a[0] instanceof Array) {
                     mn = a[0][0];
                     mx = a[0][0];
-                    for (var i = 0; i < a.length; i++) {
-                        for (var j = 0; j < a[i].length; j++) {
+                    for (i = 0; i < a.length; i++) {
+                        for (j = 0; j < a[i].length; j++) {
                             mn = (a[i][j] > mn) ? mn : a[i][j];
                             mx = (a[i][j] < mx) ? mx : a[i][j];}}}
                 else {
                     mn = a[0];
                     mx = a[0];
-                    for (var i = 0; i < a.length; i++) {
+                    for (i = 0; i < a.length; i++) {
                         mn = (a[i] > mn) ? mn : a[i];
                         mx = (a[i] < mx) ? mx : a[i];}}
                 var bin_width = (mx - mn) / nbins;
                 bins = range(mn, mx - (0.001 * bin_width), bin_width);}
 
             if (bins[0] === undefined) {
-                return [[], []]}
+                return [[], []];}
 
             var n = [];
 
             if (a[0] instanceof Array) {
                 // histogram for each set of values
-                for (var i = 0; i < a.length; i++) {
+                for (i = 0; i < a.length; i++) {
                     n[i] = histogram(a[i], bins)[0];}
                 return [n, bins];}
 
-            for (var i = 0; i < nbins; i++) {
+            for (i = 0; i < nbins; i++) {
                 // prepare count array
                 n[i] = 0;}
 
-            for (var j = 0; j < a.length; j++) {
+            for (j = 0; j < a.length; j++) {
                 // bin the values
                 if (a[j] == mx) {
                     n[nbins - 1]++;}
@@ -1259,13 +1286,13 @@ be stored as strings.
                     // This value is currently ignored..
                     }
                 else {
-                    var i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
+                    i = Math.floor((a[j] - mn) / (mx - mn) * nbins);
                     n[i]++;}}
 
             return [n, bins];
         }
 
-        jsparc.is_data_empty = is_data_empty
+        jsparc.is_data_empty = is_data_empty;
         function is_data_empty(data) {
             /* returns true if there is no data in the array
 
@@ -1289,7 +1316,7 @@ be stored as strings.
             Choose axis 0 for x values and axis 1 for y values.
 
             */
-            return data.filter(function(v) {return v[0] > 0 && v[1] > 0;})
+            return data.filter(function(v) {return v[0] > 0 && v[1] > 0;});
         }
 
         jsparc.remove_invalid_log_values_1d = remove_invalid_log_values_1d;
@@ -1299,7 +1326,7 @@ be stored as strings.
             These values are not valid for logarithmic axes.
 
             */
-            return data.filter(function(v) {return v > 0;})
+            return data.filter(function(v) {return v > 0;});
         }
 
         jsparc.remove_error_values = remove_error_values;
@@ -1310,7 +1337,7 @@ be stored as strings.
 
             */
             return data.filter(function(v) {return v[0] !== -999 && v[0] !== -1 && !isNaN(v[0]) &&
-                                                   v[1] !== -999 && v[1] !== -1 && !isNaN(v[1]);})
+                                                   v[1] !== -999 && v[1] !== -1 && !isNaN(v[1]);});
         }
 
         jsparc.remove_error_values_1d = remove_error_values_1d;
@@ -1320,7 +1347,7 @@ be stored as strings.
             Removes an element if the value is -999, -1 or NaN.
 
             */
-            return data.filter(function(v) {return v !== -999 && v !== -1 && !isNaN(v);})
+            return data.filter(function(v) {return v !== -999 && v !== -1 && !isNaN(v);});
         }
 
         jsparc.sort_stringvalues = sort_stringvalues;
@@ -1387,8 +1414,8 @@ be stored as strings.
             /* Goto element with the given id if it is not visible
             */
             if (!jsparc.element_in_viewport($('#' + id)[0])) {
-                location.href = "#";
-                location.href = "#" + id;}
+                location.href = '#';
+                location.href = '#' + id;}
         }
 
         jsparc.element_in_viewport = element_in_viewport;
