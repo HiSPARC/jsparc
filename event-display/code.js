@@ -23,11 +23,18 @@ function update_event() {
     var stations = event_display.selectAll("circle")
       .data(coincidences[c_idx].events, function(d) { return d.station });
 
-    stations.transition(500)
-        .attr("r", function(d) { return marker_size(d) });
+    stations
+        .transition()
+            .style("opacity", 1)
+            .attr("r", function(d) { return marker_size(d) })
+        .transition()
+            .duration(2000)
+            .style("opacity", 0)
+            .remove();
 
     stations.enter()
         .append("circle")
+            .style("opacity", 1)
             .attr("cx", function(d) {
                 return x(station_info[d.station][0])
             })
@@ -35,11 +42,13 @@ function update_event() {
                 return y(station_info[d.station][1])
             })
             .attr("r", 0)
-        .transition(500)
+        .transition()
             .attr("r", function(d) {
-                return marker_size(d) });
-
-    stations.exit().transition(500).attr("r", 0).remove();
+                return marker_size(d) })
+        .transition()
+            .duration(2000)
+            .style("opacity", 0)
+            .remove();
 
     c_idx ++;
     delta_t = coincidences[c_idx].ext_timestamp -
