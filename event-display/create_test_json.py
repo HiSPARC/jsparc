@@ -32,7 +32,8 @@ def build_json(data):
             station_event = station.events[e_idx]
             station_number = re_station_number.match(node_str).group(1)
 
-            event = {u: float(station_event[u]) for u in
+            event = {u: float(station_event[u])
+                     if station_event[u] >= 0. else 0. for u in
                      ['n1', 'n2', 'n3', 'n4']}
             event['station'] = station_number
             events.append(event)
