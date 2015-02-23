@@ -11,14 +11,20 @@ var x = d3.scale.linear()
 var y = d3.scale.linear()
     .range([height - margin, margin]);
 
+function marker_size(event) {
+    num_particles = event.n1 + event.n2 + event.n3 + event.n4;
+    log_particles = Math.log10(1 + num_particles);
+    size = 5 * Math.sqrt(log_particles);
+    return size;
+}
+
 var c_idx = 0;
 function update_event() {
     var stations = event_display.selectAll("circle")
       .data(coincidences[c_idx].events, function(d) { return d.station });
 
     stations.transition(500)
-        .attr("r", function(d) {
-            return Math.sqrt(d.n1 + d.n2 + d.n3 + d.n4) });
+        .attr("r", function(d) { return marker_size(d) });
 
     stations.enter()
         .append("circle")
@@ -31,7 +37,7 @@ function update_event() {
             .attr("r", 0)
         .transition(500)
             .attr("r", function(d) {
-                return Math.sqrt(d.n1 + d.n2 + d.n3 + d.n4) });
+                return marker_size(d) });
 
     stations.exit().transition(500).attr("r", 0).remove();
 
