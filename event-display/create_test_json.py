@@ -24,7 +24,8 @@ def build_json(data):
 
     for coincidence in coincidences:
         vis_coincidence = {'timestamp': coincidence['timestamp'],
-                           'nanoseconds': coincidence['nanoseconds']}
+                           'nanoseconds': coincidence['nanoseconds'],
+                           'ext_timestamp': coincidence['ext_timestamp']}
         events = []
         for s_idx, e_idx in c_index[coincidence['id']]:
             node_str = s_index[s_idx]
