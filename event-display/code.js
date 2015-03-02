@@ -2,6 +2,10 @@ var width = 400,
     height = 300;
 var margin = 20;
 
+var map = L.map('map');
+var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
 var event_display = d3.select("#event_display")
     .attr("width", width)
     .attr("height", height);
@@ -36,10 +40,10 @@ function update_event() {
         .append("circle")
             .style("opacity", 1)
             .attr("cx", function(d) {
-                return x(station_info[d.station][0])
+                return x(station_info[d.station][1])
             })
             .attr("cy", function(d) {
-                return y(station_info[d.station][1])
+                return y(station_info[d.station][0])
             })
             .attr("r", 0)
         .transition()
@@ -68,11 +72,23 @@ d3.json('./stations.json', function(error, data) {
         return Array(value).concat(data[value])
     })
 
-    x.domain([d3.min(data, function (d) { return d[1] }),
-              d3.max(data, function (d) { return d[1] })]);
-    y.domain([d3.min(data, function (d) { return d[2] }),
-              d3.max(data, function (d) { return d[2] })]);
+    lat = function (d) { return d[1] };
+    lon = function (d) { return d[2] };
+    lat_min = d3.min(data, lat);
+    lat_max = d3.max(data, lat);
+    lon_min = d3.min(data, lon);
+    lon_max = d3.max(data, lon);
 
+    x.domain([lon_min, lon_max]);
+    y.domain([lat_min, lat_max]);
+
+    // map.setView([51.505, -0.09], 13);
+    console.log(lat_min, lat_max, lon_min, lon_max);
+    map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    maxZoom: 18
+}).addTo(map);
 
     d3.json('./coincidences.json', function(error, data) {
         coincidences = data;

@@ -5,6 +5,7 @@ import re
 import tables
 
 import sapphire.esd
+import sapphire.api
 
 
 STATIONS = [501, 502, 503, 504, 505, 506, 508]
@@ -46,11 +47,17 @@ def build_json(data):
 
 def build_station_json(data):
     stations = {}
-    cluster = data.root.coincidences.coincidences._v_attrs['cluster']
+    cluster = data.root.coincidences._v_attrs['cluster']
     for station_number, station in zip(STATIONS, cluster.stations):
-        stations[station_number] = station.get_coordinates()[:2]
+        stations[station_number] = get_latlon_coordinates(station_number)
 
     return stations
+
+
+def get_latlon_coordinates(station_number):
+    station = sapphire.api.Station(station_number)
+    gps_location = station.location()
+    return gps_location['latitude'], gps_location['longitude']
 
 
 if __name__ == '__main__':
