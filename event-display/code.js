@@ -10,10 +10,12 @@ var event_display = d3.select("#event_display")
     .attr("width", width)
     .attr("height", height);
 
-var x = d3.scale.linear()
-    .range([margin, width - margin]);
-var y = d3.scale.linear()
-    .range([height - margin, margin]);
+// var x = d3.scale.linear()
+//     .range([margin, width - margin]);
+// var y = d3.scale.linear()
+//     .range([height - margin, margin]);
+var x = function (coord) { return map.latLngToLayerPoint(coord).x };
+var y = function (coord) { return map.latLngToLayerPoint(coord).y };
 
 function marker_size(event) {
     num_particles = event.n1 + event.n2 + event.n3 + event.n4;
@@ -24,7 +26,7 @@ function marker_size(event) {
 
 var c_idx = 0;
 function update_event() {
-    var stations = event_display.selectAll("circle")
+    var stations = g.selectAll("circle")
       .data(coincidences[c_idx].events, function(d) { return d.station });
 
     stations
@@ -40,10 +42,10 @@ function update_event() {
         .append("circle")
             .style("opacity", 1)
             .attr("cx", function(d) {
-                return x(station_info[d.station][1])
+                return x(station_info[d.station])
             })
             .attr("cy", function(d) {
-                return y(station_info[d.station][0])
+                return y(station_info[d.station])
             })
             .attr("r", 0)
         .transition()
@@ -79,8 +81,8 @@ d3.json('./stations.json', function(error, data) {
     lon_min = d3.min(data, lon);
     lon_max = d3.max(data, lon);
 
-    x.domain([lon_min, lon_max]);
-    y.domain([lat_min, lat_max]);
+    // x.domain([lon_min, lon_max]);
+    // y.domain([lat_min, lat_max]);
 
     // map.setView([51.505, -0.09], 13);
     console.log(lat_min, lat_max, lon_min, lon_max);
