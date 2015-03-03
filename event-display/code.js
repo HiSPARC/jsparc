@@ -6,16 +6,8 @@ var map = L.map('map');
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-var event_display = d3.select("#event_display")
-    .attr("width", width)
-    .attr("height", height);
-
-// var x = d3.scale.linear()
-//     .range([margin, width - margin]);
-// var y = d3.scale.linear()
-//     .range([height - margin, margin]);
-var x = function (coord) { return map.latLngToLayerPoint(coord).x };
-var y = function (coord) { return map.latLngToLayerPoint(coord).y };
+function x(coord) { return map.latLngToLayerPoint(coord).x };
+function y(coord) { return map.latLngToLayerPoint(coord).y };
 
 function marker_size(event) {
     num_particles = event.n1 + event.n2 + event.n3 + event.n4;
@@ -74,18 +66,14 @@ d3.json('./stations.json', function(error, data) {
         return Array(value).concat(data[value])
     })
 
-    lat = function (d) { return d[1] };
-    lon = function (d) { return d[2] };
+    function lat(d) { return d[1] };
+    function lon(d) { return d[2] };
+
     lat_min = d3.min(data, lat);
     lat_max = d3.max(data, lat);
     lon_min = d3.min(data, lon);
     lon_max = d3.max(data, lon);
 
-    // x.domain([lon_min, lon_max]);
-    // y.domain([lat_min, lat_max]);
-
-    // map.setView([51.505, -0.09], 13);
-    console.log(lat_min, lat_max, lon_min, lon_max);
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
     L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
