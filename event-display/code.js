@@ -18,13 +18,17 @@ function marker_size(event) {
 
 var c_idx = 0;
 function update_event() {
+    var events = coincidences[c_idx].events;
+    events.forEach(function (value) { value.key = 'c-' + c_idx + '-' + value.station; });
+
     var stations = g.selectAll("circle")
-      .data(coincidences[c_idx].events, function(d) { return d.station });
+      .data(events, function(d) { return d.key; });
 
     stations
         .transition()
             .style("opacity", 1)
-            .attr("r", function(d) { return marker_size(d) })
+            .attr("r", function(d) { return 10 * marker_size(d) })
+            .style("fill", "blue")
         .transition()
             .duration(2000)
             .style("opacity", 0)
@@ -32,6 +36,7 @@ function update_event() {
 
     stations.enter()
         .append("circle")
+            .attr("class", "coincidence")
             .style("opacity", 1)
             .attr("cx", function(d) {
                 return x(station_info[d.station])
