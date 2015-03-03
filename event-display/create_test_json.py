@@ -47,8 +47,7 @@ def build_json(data):
 
 def build_station_json(data):
     stations = {}
-    cluster = data.root.coincidences._v_attrs['cluster']
-    for station_number, station in zip(STATIONS, cluster.stations):
+    for station_number in STATIONS:
         stations[station_number] = get_latlon_coordinates(station_number)
 
     return stations
