@@ -69,8 +69,8 @@ if __name__ == '__main__':
 
     coincidences = build_json(data)
     with open('coincidences.json', 'w') as f:
-        json.dump(coincidences, f)
+        json.dump(coincidences, f, indent=4)
 
     stations = build_station_json(data)
     with open('stations.json', 'w') as f:
-        json.dump(stations, f)
+        json.dump(stations, f, indent=4)
