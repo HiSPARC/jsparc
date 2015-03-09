@@ -42,14 +42,8 @@ function update_coincidence(coincidences) {
             .data(events, function(d) { return d.key; });
 
         stations
-          .transition()
-            .style("opacity", 1)
-            .attr("r", function(d) { return 10 * marker_size(d) })
-            .style("fill", "blue")
-          .transition()
-            .duration(2000)
-            .style("opacity", 0)
-            .remove();
+            .each(function() {
+                console.warn("Updated an element."); })
 
         stations.enter().append("circle")
             .attr("class", "coincidence")
