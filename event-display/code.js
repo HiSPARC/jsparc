@@ -1,4 +1,4 @@
-var SPEEDUP_FACTOR = 10;
+var SPEEDUP_FACTOR = 2;
 
 var station_info;
 
@@ -56,7 +56,7 @@ function update_coincidence(coincidences) {
           .transition()
             .attr("r", function(d) { return marker_size(d) })
           .transition()
-            .duration(2000)
+            .duration(4000)
             .style("opacity", 0)
             .remove();
 
