@@ -63,9 +63,12 @@ def build_events_json(data, station):
     events = data.getNode('/s%d/events' % station)
 
     for event in events:
-        output.append({u: event[u] for u in ['timestamp', 'nanoseconds',
-                                             'ext_timestamp',
-                                             'n1', 'n2', 'n3', 'n4']})
+        output_event = {u: event[u] for u in ['timestamp', 'nanoseconds',
+                                              'ext_timestamp']}
+        output_event.update({u: event[u] if event[u] >= 0. else 0. for u
+                             in ['n1', 'n2', 'n3', 'n4']})
+        output.append(output_event)
+
     return output
 
 
