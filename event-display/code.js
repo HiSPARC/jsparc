@@ -1,3 +1,5 @@
+var SPEEDUP_FACTOR = 10;
+
 var station_info;
 
 var map = L.map('map');
@@ -63,7 +65,7 @@ function update_coincidence(coincidences) {
             coincidences[c_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
-        delta_t /= 10;
+        delta_t /= SPEEDUP_FACTOR;
         console.log("delta_t: ", delta_t);
         setTimeout(update, delta_t);
     }
@@ -97,7 +99,7 @@ function update_event(events, station) {
             events[e_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
-        delta_t /= 10;
+        delta_t /= SPEEDUP_FACTOR;
         // console.log("event delta_t: ", delta_t);
         setTimeout(update, delta_t);
     }
