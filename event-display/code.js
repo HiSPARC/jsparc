@@ -38,7 +38,7 @@ function update_coincidence(coincidences) {
         events.forEach(function (value) {
             value.key = 'c-' + c_idx + '-' + value.station; });
 
-        var stations = g.selectAll("circle")
+        var stations = g.selectAll(".coincidence")
             .data(events, function(d) { return d.key; });
 
         stations
