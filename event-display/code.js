@@ -131,7 +131,17 @@ d3.json('./stations.json', function(error, data) {
         update_coincidence(data);
     });
 
-    d3.json('./events-s501.json', function(error, data) {
-        update_event(data, 501);
-    });
+    stations = Object.keys(station_info);
+    for (var i = 0; i < stations.length; i ++) {
+        station = stations[i];
+
+        function load_json(station) {
+            console.log("Loading data for station", station);
+            d3.json('./events-s' + station + '.json',
+                    function(error, data) {
+                        update_event(data, station);
+                    })
+        }
+        load_json(station);
+    }
 });
