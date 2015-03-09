@@ -71,6 +71,40 @@ function update_coincidence(coincidences) {
     update();
 }
 
+function update_event(events, station) {
+    var e_idx = 0;
+
+    function update() {
+        event = events[e_idx];
+        event.key = 'e-' + station + '-' + e_idx;
+        event.station = station;
+
+        g.insert("circle", ":first-child").datum(event)
+            .attr("class", "event")
+            .style("opacity", 1)
+            .attr("cx", function(d) { return x(station_info[d.station]) })
+            .attr("cy", function(d) { return y(station_info[d.station]) })
+            .attr("r", 0)
+          .transition()
+            .attr("r", function(d) { return marker_size(d) })
+          .transition()
+            .duration(500)
+            .style("opacity", 0)
+            .remove();
+
+        e_idx ++;
+        delta_t = events[e_idx].ext_timestamp -
+            events[e_idx - 1].ext_timestamp;
+        delta_t /= 1e6;
+        // debug
+        delta_t /= 10;
+        // console.log("event delta_t: ", delta_t);
+        setTimeout(update, delta_t);
+    }
+
+    update();
+}
+
 d3.json('./stations.json', function(error, data) {
     station_info = data;
     data = Object.keys(data).map(function (value, index, array) {
@@ -95,5 +129,9 @@ d3.json('./stations.json', function(error, data) {
 
     d3.json('./coincidences.json', function(error, data) {
         update_coincidence(data);
+    });
+
+    d3.json('./events-s501.json', function(error, data) {
+        update_event(data, 501);
     });
 });

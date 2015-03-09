@@ -16,7 +16,19 @@ END = datetime.datetime(2015, 2, 1, 11)
 re_station_number = re.compile(".*/station_([0-9]+)$")
 
 
-def build_json(data):
+def download_data(data):
+    if '/coincidences' not in data:
+        sapphire.esd.download_coincidences(data, stations=STATIONS,
+                                           start=START, end=END)
+
+    for station in STATIONS:
+        group = '/s%d' % station
+        if group not in data:
+            sapphire.esd.download_data(data, group, station, start=START,
+                                       end=END)
+
+
+def build_coincidence_json(data):
     vis_coincidences = []
 
     coincidences = data.root.coincidences.coincidences
@@ -45,12 +57,39 @@ def build_json(data):
     return vis_coincidences
 
 
+def build_events_json(data, station):
+    output = []
+
+    events = data.getNode('/s%d/events' % station)
+
+    for event in events:
+        output.append({u: event[u] for u in ['timestamp', 'nanoseconds',
+                                             'ext_timestamp',
+                                             'n1', 'n2', 'n3', 'n4']})
+    return output
+
+
 def build_station_json(data):
     stations = {}
     for station_number in STATIONS:
         stations[station_number] = get_latlon_coordinates(station_number)
 
     return stations
+
+
+def write_jsons(data):
+    stations = build_station_json(data)
+    with open('stations.json', 'w') as f:
+        json.dump(stations, f, indent=4)
+
+    coincidences = build_coincidence_json(data)
+    with open('coincidences.json', 'w') as f:
+        json.dump(coincidences, f, indent=4)
+
+    for station in STATIONS:
+        events = build_events_json(data, station)
+        with open('events-s%d.json' % station, 'w') as f:
+            json.dump(events, f, indent=4)
 
 
 def get_latlon_coordinates(station_number):
@@ -63,14 +102,5 @@ if __name__ == '__main__':
     if 'data' not in globals():
         data = tables.open_file('data.h5', 'w')
 
-    if '/coincidences' not in data:
-        sapphire.esd.download_coincidences(data, stations=STATIONS,
-                                           start=START, end=END)
-
-    coincidences = build_json(data)
-    with open('coincidences.json', 'w') as f:
-        json.dump(coincidences, f, indent=4)
-
-    stations = build_station_json(data)
-    with open('stations.json', 'w') as f:
-        json.dump(stations, f, indent=4)
+    download_data(data)
+    write_jsons(data)
