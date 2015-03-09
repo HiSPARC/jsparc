@@ -121,9 +121,7 @@ d3.json('./stations.json', function(error, data) {
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
     L.tileLayer('http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: ('Map tiles by CartoDB, under CC BY 3.0. Data by '
-                      '<a href="http://openstreetmap.org">OpenStreetMap</a>, '
-                      'under ODbL'),
+        attribution: 'Map tiles by CartoDB, under CC BY 3.0. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ODbL',
         maxZoom: 18
     }).addTo(map);
 
