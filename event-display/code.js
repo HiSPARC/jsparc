@@ -104,7 +104,9 @@ function update_event(events, station) {
         setTimeout(update, delta_t);
     }
 
-    update();
+    if (events.length > 0) {
+        update();
+    }
 }
 
 d3.json('./stations.json', function(error, data) {
