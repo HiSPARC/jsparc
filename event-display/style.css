@@ -1,3 +1,11 @@
+#map {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin-left: -480px;
+  margin-top: -250px;
+}
+
 #map, svg {
   width: 960px;
   height: 500px;
