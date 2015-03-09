@@ -138,7 +138,6 @@ d3.json('./stations.json', function(error, data) {
         station = stations[i];
 
         function load_json(station) {
-            console.log("Loading data for station", station);
             d3.json('./events-s' + station + '.json',
                     function(error, data) {
                         update_event(data, station);
