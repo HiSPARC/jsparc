@@ -124,8 +124,10 @@ d3.json('./stations.json', function(error, data) {
     lon_max = d3.max(data, lon);
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
-    L.tileLayer('http://tile.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: 'Map tiles by CartoDB, under CC BY 3.0. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ODbL',
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">' +
+                     'OpenStreetMap</a> contributors, ' +
+                     '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         maxZoom: 18
     }).addTo(map);
 
