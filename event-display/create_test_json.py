@@ -42,7 +42,7 @@ def build_coincidence_json(data):
         events = []
         for s_idx, e_idx in c_index[coincidence['id']]:
             node_str = s_index[s_idx]
-            station = data.getNode(node_str)
+            station = data.get_node(node_str)
             station_event = station.events[e_idx]
             station_number = re_station_number.match(node_str).group(1)
 
@@ -60,7 +60,7 @@ def build_coincidence_json(data):
 def build_events_json(data, station):
     output = []
 
-    events = data.getNode('/s%d/events' % station)
+    events = data.get_node('/s%d/events' % station)
 
     for event in events:
         output_event = {u: event[u] for u in ['timestamp', 'nanoseconds',
