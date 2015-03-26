@@ -75,8 +75,12 @@ def build_events_json(data, station):
 def build_station_json(data):
     stations = {}
     for station_number in STATIONS:
-        stations[station_number] = get_latlon_coordinates(station_number)
-
+        try:
+            loc = get_latlon_coordinates(station_number)
+            if 0. not in loc:
+                stations[station_number] = loc
+        except:
+            continue
     return stations
 
 
@@ -98,6 +102,8 @@ def write_jsons(data):
 def get_latlon_coordinates(station_number):
     station = sapphire.api.Station(station_number)
     gps_location = station.location()
+    if gps_location['latitude'] == 0.:
+        raise Exception
     return gps_location['latitude'], gps_location['longitude']
 
 
