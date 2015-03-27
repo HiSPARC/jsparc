@@ -61,8 +61,10 @@ function update_coincidence(coincidences) {
             .remove();
 
         c_idx ++;
+        if (c_idx == coincidences.length) {
+            c_idx = 1;}
         delta_t = coincidences[c_idx].ext_timestamp -
-            coincidences[c_idx - 1].ext_timestamp;
+                  coincidences[c_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
@@ -95,8 +97,10 @@ function update_event(events, station) {
             .remove();
 
         e_idx ++;
+        if (e_idx == events.length) {
+            e_idx = 1;}
         delta_t = events[e_idx].ext_timestamp -
-            events[e_idx - 1].ext_timestamp;
+                  events[e_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
