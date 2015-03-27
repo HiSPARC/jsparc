@@ -1,4 +1,4 @@
-var SPEEDUP_FACTOR = 2;
+var SPEEDUP_FACTOR = 1;
 
 var station_info;
 
