@@ -66,7 +66,7 @@ function update_coincidence(coincidences) {
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
-        console.log("delta_t: ", delta_t);
+        // console.log("delta_t: ", delta_t);
         setTimeout(update, delta_t);
     }
 
