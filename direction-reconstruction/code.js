@@ -1,27 +1,12 @@
 var station_info;
 
-var map = L.map('map');
+var map = L.map('map', { zoomControl: false });
+
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
 function x(coord) { return map.latLngToLayerPoint(coord).x };
 function y(coord) { return map.latLngToLayerPoint(coord).y };
-
-function update_layer_position() {
-    // update layer's position to top-left of map container
-    var pos = map.containerPointToLayerPoint([0, 0]);
-    L.DomUtil.setPosition(svg.node(), pos);
-
-    // if you reposition the overlay, translate it with the negative offset to be able to use the conversion functions.
-    g.attr("transform", "translate(" + -pos.x + "," + -pos.y + ")");
-
-    // reposition all circles
-    g.selectAll("circle")
-        .attr("cx", function(d) { return x(station_info[d.station]) })
-        .attr("cy", function(d) { return y(station_info[d.station]) });
-}
-
-map.on('moveend', update_layer_position);
 
 function marker_size(event) {
     num_particles = event.n1 + event.n2 + event.n3 + event.n4;
@@ -57,6 +42,11 @@ function update_coincidence(coincidences) {
 
     update();
 }
+
+map.dragging.disable();
+map.touchZoom.disable();
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
 
 d3.json('./stations.json', function(error, data) {
     station_info = data;
