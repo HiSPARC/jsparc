@@ -31,7 +31,7 @@ function marker_size(event) {
 }
 
 function update_coincidence(coincidences) {
-    var c_idx = 0;
+    var c_idx = 2;
 
     function update() {
         var events = coincidences[c_idx].events;
