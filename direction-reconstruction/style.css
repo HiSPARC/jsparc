@@ -13,16 +13,16 @@
 
 .coincidence {
   fill: red;
-  -webkit-transform: scale(1.5);
+  /*-webkit-transform: scale(1.5);
   transform: scale(1.5);
   -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
+  transform-origin: 50% 50%;*/
 }
 
 .event {
   fill: SlateGray;
-  -webkit-transform: scale(.8);
+  /*-webkit-transform: scale(.8);
   transform: scale(.8);
   -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
+  transform-origin: 50% 50%;*/
 }
