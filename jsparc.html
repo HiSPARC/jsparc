@@ -159,6 +159,7 @@
 
         showEvent(0);
         $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
+        writeDist(htmlInfo, showerMerc, data);
     }
 
     function showError(data) {
