@@ -70,7 +70,8 @@
         var hour = date.getUTCHours();
         var minute = date.getUTCMinutes();
         var second = date.getUTCSeconds();
-        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " + padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
+        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " +
+                       padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
         return datumOut;
     }
     
@@ -256,7 +257,10 @@
     </div>
     <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
     <div id="map-id"></div>
-    <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></div>
+    <div id="result-id">
+        Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8>
+        <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8>
+    </div>
     <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
     <div id="doc_link">
         <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
