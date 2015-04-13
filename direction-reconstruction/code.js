@@ -1,5 +1,8 @@
 var station_info;
 
+var front_x, front_y, front_alpha = .4;
+var FRONT_LENGTH = 200;
+
 var map = L.map('map');
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -61,12 +64,14 @@ function update_coincidence(coincidences) {
 }
 
 function update_shower_front() {
+  function front_line_x(dist) { return front_x + dist * Math.cos(front_alpha) }
+  function front_line_y(dist) { return front_y + dist * Math.sin(front_alpha) }
 
   g.select("#front")
-      .attr("x1", 100)
-      .attr("y1", 100)
-      .attr("x2", 600)
-      .attr("y2", 400);
+      .attr("x1", front_line_x(-FRONT_LENGTH))
+      .attr("y1", front_line_y(-FRONT_LENGTH))
+      .attr("x2", front_line_x(FRONT_LENGTH))
+      .attr("y2", front_line_y(FRONT_LENGTH));
 }
 
 d3.json('./stations.json', function(error, data) {
@@ -79,8 +84,10 @@ d3.json('./stations.json', function(error, data) {
     function lon(d) { return d[2] };
 
     lat_min = d3.min(data, lat);
+    lat_mean = d3.mean(data, lat);
     lat_max = d3.max(data, lat);
     lon_min = d3.min(data, lon);
+    lon_mean = d3.mean(data, lon);
     lon_max = d3.max(data, lon);
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
@@ -94,5 +101,8 @@ d3.json('./stations.json', function(error, data) {
     d3.json('./coincidences.json', function(error, data) {
         update_coincidence(data);
     });
+
+    front_x = x([lat_mean, lon_mean]);
+    front_y = y([lat_mean, lon_mean]);
     update_shower_front();
 });
