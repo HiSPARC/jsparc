@@ -4,6 +4,8 @@ var map = L.map('map');
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
+g.append("line").attr("id", "front");
+
 function x(coord) { return map.latLngToLayerPoint(coord).x };
 function y(coord) { return map.latLngToLayerPoint(coord).y };
 
@@ -58,6 +60,15 @@ function update_coincidence(coincidences) {
     update();
 }
 
+function update_shower_front() {
+
+  g.select("#front")
+      .attr("x1", 100)
+      .attr("y1", 100)
+      .attr("x2", 600)
+      .attr("y2", 400);
+}
+
 d3.json('./stations.json', function(error, data) {
     station_info = data;
     data = Object.keys(data).map(function (value, index, array) {
@@ -83,4 +94,5 @@ d3.json('./stations.json', function(error, data) {
     d3.json('./coincidences.json', function(error, data) {
         update_coincidence(data);
     });
+    update_shower_front();
 });
