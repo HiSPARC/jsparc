@@ -30,3 +30,11 @@
 #front {
   stroke: red;
 }
+
+.distance {
+  stroke: blue;
+}
+
+.distance_label {
+  fill: blue;
+}

@@ -25,9 +25,9 @@ var drag_alpha = d3.behavior.drag()
     .on("dragend", function() { map.dragging.enable(); });
 
 var stations = g.selectAll('.station');
-// var distances = g.selectAll('.distance');
-// var distance_labels = g.selectAll('.distance_label');
-//
+var distances = g.selectAll('.distance');
+var distance_labels = g.selectAll('.distance_label');
+
 var front = g.append("line")
     .datum({ 'lat': 0, 'lng': 0, 'alpha': Math.PI / 8 })
     .attr("id", "front");
@@ -45,12 +45,12 @@ function x(coord) { return map.latLngToLayerPoint(coord).x; }
 function y(coord) { return map.latLngToLayerPoint(coord).y; }
 
 function update_layer_position() {
-    console.log("UPDATE LAYER POSITION CALLED");
     // update layer's position to top-left of map container
     var pos = map.containerPointToLayerPoint([0, 0]);
     L.DomUtil.setPosition(svg.node(), pos);
 
-    // if you reposition the overlay, translate it with the negative offset to be able to use the conversion functions.
+    // if you reposition the overlay, translate it with the negative offset to
+    // be able to use the conversion functions.
     g.attr("transform", "translate(" + -pos.x + "," + -pos.y + ")");
 
     // reposition all circles
@@ -63,7 +63,6 @@ function update_layer_position() {
         .attr("cy", function(d) { return d.y; });
 
     // update shower_front_position
-    console.log(front.datum());
     update_shower_front();
 }
 
@@ -84,7 +83,7 @@ function update_coincidence(coincidences) {
         events.forEach(function (value) {
             value.key = 'c-' + c_idx + '-' + value.station; });
 
-        var stations = g.selectAll(".coincidence")
+        stations = g.selectAll('.station')
             .data(events, function(d) { return d.key; });
 
         stations
@@ -98,6 +97,16 @@ function update_coincidence(coincidences) {
           .transition()
             .attr("r", function(d) { return marker_size(d); });
 
+        distances = g.selectAll('.distance')
+            .data(events, function(d) { return d.key; })
+          .enter().append("line")
+            .attr("class", "distance");
+
+        distance_labels = g.selectAll('.distance_label')
+            .data(events, function(d) { return d.key; })
+          .enter().append("text")
+            .attr("class", "distance_label");
+
         update_layer_position();
     }
 
@@ -105,7 +114,6 @@ function update_coincidence(coincidences) {
 }
 
 d3.json('./stations.json', function(error, data) {
-    console.log("STATIONS JSON LOADED");
     station_info = data;
     data = Object.keys(data).map(function (value, index, array) {
         return Array(value).concat(data[value]);
@@ -135,34 +143,26 @@ d3.json('./stations.json', function(error, data) {
 
     update_shower_front();
 
-    console.log(lat_min, lon_min, lat_max, lon_max);
-
     d3.json('./coincidences.json', function(error, data) {
         update_coincidence(data);
     });
-
-    // distances.data(station_info)
-    //   .enter().append("line")
-    //     .attr("class", "distance");
-    // distance_labels.data(station_info)
-    //   .enter().append("text")
-    //     .attr("class", "distance_label");
 });
 
-function front_line_x(fd, dist) { return x([fd.lat, fd.lng]) + dist * Math.cos(fd.alpha); }
-function front_line_y(fd, dist) { return y([fd.lat, fd.lng]) + dist * Math.sin(fd.alpha); }
+function front_line_x(fd, dist) { return fd.x + dist * Math.cos(fd.alpha); }
+function front_line_y(fd, dist) { return fd.y + dist * Math.sin(fd.alpha); }
 
 function update_shower_front() {
   var fd = front.datum();
+
+  layer_pos = map.latLngToLayerPoint([fd.lat, fd.lng]);
+  fd.x = layer_pos.x;
+  fd.y = layer_pos.y;
 
   front
       .attr("x1", front_line_x(fd, -FRONT_LENGTH))
       .attr("y1", front_line_y(fd, -FRONT_LENGTH))
       .attr("x2", front_line_x(fd, FRONT_LENGTH))
       .attr("y2", front_line_y(fd, FRONT_LENGTH));
-
-  console.log("UPDATE SHOWER FRONT");
-  console.log(fd.lat, fd.lng);
 
   core.attr("cx", x([fd.lat, fd.lng]))
       .attr("cy", y([fd.lat, fd.lng]));
@@ -171,20 +171,18 @@ function update_shower_front() {
       .attr("cx", front_line_x(fd, ROTATE_LENGTH))
       .attr("cy", front_line_y(fd, ROTATE_LENGTH));
 
-//   // stations
-//   //   .attr("cx", function(d) { return d.x; })
-//   //   .attr("cy", function(d) { return d.y; });
-//   //
-//   // distances
-//   //   .attr("x1", function(d) { return d.x; })
-//   //   .attr("y1", function(d) { return d.y; })
-//   //   .attr("x2", function(d) { return d.xp; })
-//   //   .attr("y2", function(d) { return d.yp; });
-//   //
-//   // distance_labels
-//   //   .attr("x", function(d) { return d.label_x + 5; })
-//   //   .attr("y", function(d) { return d.label_y + 5; })
-//   //   .text(function(d) { return d.dist.toFixed(); });
+  distances.each(calculate_distances);
+
+  distances
+    .attr("x1", function(d) { return d.x; })
+    .attr("y1", function(d) { return d.y; })
+    .attr("x2", function(d) { return d.xp; })
+    .attr("y2", function(d) { return d.yp; });
+
+  distance_labels
+    .attr("x", function(d) { return d.label_x + 5; })
+    .attr("y", function(d) { return d.label_y + 5; })
+    .text(function(d) { return d.dist.toFixed(); });
 }
 
 function move_core() {
@@ -194,28 +192,28 @@ function move_core() {
   latlng = map.containerPointToLatLng(container_pos);
   fd.lat = latlng.lat;
   fd.lng = latlng.lng;
-  // distances.each(calculate_distances);
+  distances.each(calculate_distances);
   update_shower_front();
 }
 
-// function calculate_distances(d) {
-//   var fd = front.datum();
-//   d.r = (d.x - fd.x) * Math.cos(fd.alpha) + (d.y - fd.y) * Math.sin(fd.alpha);
-//   d.xp = front_line_x(fd, d.r);
-//   d.yp = front_line_y(fd, d.r);
-//   d.dist = Math.sqrt(Math.pow(d.x - d.xp, 2) + Math.pow(d.y - d.yp, 2));
-//   d.label_x = (d.x + d.xp) / 2;
-//   d.label_y = (d.y + d.yp) / 2;
-// }
-//
+function calculate_distances(d) {
+  var fd = front.datum();
+  d.r = (d.x - fd.x) * Math.cos(fd.alpha) + (d.y - fd.y) * Math.sin(fd.alpha);
+  d.xp = front_line_x(fd, d.r);
+  d.yp = front_line_y(fd, d.r);
+  d.dist = Math.sqrt(Math.pow(d.x - d.xp, 2) + Math.pow(d.y - d.yp, 2));
+  d.label_x = (d.x + d.xp) / 2;
+  d.label_y = (d.y + d.yp) / 2;
+}
+
 function rotate_front() {
   var fd = front.datum();
   var container_pos = map.latLngToContainerPoint([fd.lat, fd.lng]);
   var x0 = container_pos.x;
   var y0 = container_pos.y;
   fd.alpha = Math.atan2(d3.event.y - y0, d3.event.x - x0);
-  // distances.each(calculate_distances);
+  distances.each(calculate_distances);
   update_shower_front();
 }
-//
-// distances.each(calculate_distances);
+
+distances.each(calculate_distances);
