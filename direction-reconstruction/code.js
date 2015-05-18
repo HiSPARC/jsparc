@@ -1,6 +1,6 @@
 var station_info;
-//
-// var FRONT_LENGTH = 1000;
+
+var FRONT_LENGTH = 1000;
 // var ROTATE_LENGTH = 100;
 
 var map = L.map('map');
@@ -27,7 +27,8 @@ var stations = g.selectAll('.station');
 // var distance_labels = g.selectAll('.distance_label');
 //
 var front = g.append("line")
-    .datum({ 'lat': 0, 'lng': 0, 'alpha': Math.PI / 8 });
+    .datum({ 'lat': 0, 'lng': 0, 'alpha': Math.PI / 8 })
+    .attr("id", "front");
 var core = g.append("circle")
     .attr("r", 5)
     .call(drag_core);
@@ -146,18 +147,18 @@ d3.json('./stations.json', function(error, data) {
     //     .attr("class", "distance_label");
 });
 
-// function front_line_x(fd, dist) { return fd.x + dist * Math.cos(fd.alpha); }
-// function front_line_y(fd, dist) { return fd.y + dist * Math.sin(fd.alpha); }
+function front_line_x(fd, dist) { return x([fd.lat, fd.lng]) + dist * Math.cos(fd.alpha); }
+function front_line_y(fd, dist) { return y([fd.lat, fd.lng]) + dist * Math.sin(fd.alpha); }
 
 function update_shower_front() {
   var fd = front.datum();
-//
-//   // front
-//   //     .attr("x1", front_line_x(fd, -FRONT_LENGTH))
-//   //     .attr("y1", front_line_y(fd, -FRONT_LENGTH))
-//   //     .attr("x2", front_line_x(fd, FRONT_LENGTH))
-//   //     .attr("y2", front_line_y(fd, FRONT_LENGTH));
-//
+
+  front
+      .attr("x1", front_line_x(fd, -FRONT_LENGTH))
+      .attr("y1", front_line_y(fd, -FRONT_LENGTH))
+      .attr("x2", front_line_x(fd, FRONT_LENGTH))
+      .attr("y2", front_line_y(fd, FRONT_LENGTH));
+
   console.log("UPDATE SHOWER FRONT");
   console.log(fd.lat, fd.lng);
 
