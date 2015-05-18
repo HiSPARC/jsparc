@@ -1,7 +1,7 @@
 var station_info;
 
 var FRONT_LENGTH = 1000;
-// var ROTATE_LENGTH = 100;
+var ROTATE_LENGTH = 100;
 
 var map = L.map('map');
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
@@ -15,13 +15,15 @@ var drag_core = d3.behavior.drag()
     .on("dragstart", function() { map.dragging.disable(); })
     .on("dragend", function() { map.dragging.enable(); });
 
-// var drag_alpha = d3.behavior.drag()
-//     .origin(function() { return { 'x': front_rotate_handle.attr("cx"),
-//                                   'y': front_rotate_handle.attr("cy") }; })
-//     .on("drag", rotate_front)
-//     .on("dragstart", function() { map.dragging.disable(); })
-//     .on("dragend", function() { map.dragging.enable(); });
-//
+var drag_alpha = d3.behavior.drag()
+    .origin(function() {
+        var x = front_rotate_handle.attr("cx");
+        var y = front_rotate_handle.attr("cy");
+        return map.layerPointToContainerPoint([x, y]); })
+    .on("drag", rotate_front)
+    .on("dragstart", function() { map.dragging.disable(); })
+    .on("dragend", function() { map.dragging.enable(); });
+
 var stations = g.selectAll('.station');
 // var distances = g.selectAll('.distance');
 // var distance_labels = g.selectAll('.distance_label');
@@ -32,11 +34,11 @@ var front = g.append("line")
 var core = g.append("circle")
     .attr("r", 5)
     .call(drag_core);
-// var front_rotate_handle = g.append("circle")
-//     .attr("r", 7)
-//     .attr("fill", 'white')
-//     .attr("stroke", 'black')
-//     .call(drag_alpha);
+var front_rotate_handle = g.append("circle")
+    .attr("r", 7)
+    .attr("fill", 'white')
+    .attr("stroke", 'black')
+    .call(drag_alpha);
 
 
 function x(coord) { return map.latLngToLayerPoint(coord).x; }
@@ -164,11 +166,11 @@ function update_shower_front() {
 
   core.attr("cx", x([fd.lat, fd.lng]))
       .attr("cy", y([fd.lat, fd.lng]));
-//
-//   // front_rotate_handle
-//   //     .attr("cx", front_line_x(fd, ROTATE_LENGTH))
-//   //     .attr("cy", front_line_y(fd, ROTATE_LENGTH));
-//   //
+
+  front_rotate_handle
+      .attr("cx", front_line_x(fd, ROTATE_LENGTH))
+      .attr("cy", front_line_y(fd, ROTATE_LENGTH));
+
 //   // stations
 //   //   .attr("cx", function(d) { return d.x; })
 //   //   .attr("cy", function(d) { return d.y; });
@@ -206,11 +208,14 @@ function move_core() {
 //   d.label_y = (d.y + d.yp) / 2;
 // }
 //
-// function rotate_front() {
-//   var d = front.datum();
-//   d.alpha = Math.atan2(d3.event.y - d.y, d3.event.x - d.x);
-//   distances.each(calculate_distances);
-//   update_shower_front();
-// }
+function rotate_front() {
+  var fd = front.datum();
+  var container_pos = map.latLngToContainerPoint([fd.lat, fd.lng]);
+  var x0 = container_pos.x;
+  var y0 = container_pos.y;
+  fd.alpha = Math.atan2(d3.event.y - y0, d3.event.x - x0);
+  // distances.each(calculate_distances);
+  update_shower_front();
+}
 //
 // distances.each(calculate_distances);
