@@ -1,4 +1,4 @@
-// var station_info;
+var station_info;
 //
 // var FRONT_LENGTH = 1000;
 // var ROTATE_LENGTH = 100;
@@ -22,7 +22,7 @@ var drag_core = d3.behavior.drag()
 //     .on("dragstart", function() { map.dragging.disable(); })
 //     .on("dragend", function() { map.dragging.enable(); });
 //
-// var stations = g.selectAll('.station');
+var stations = g.selectAll('.station');
 // var distances = g.selectAll('.distance');
 // var distance_labels = g.selectAll('.distance_label');
 //
@@ -50,14 +50,14 @@ function update_layer_position() {
     // if you reposition the overlay, translate it with the negative offset to be able to use the conversion functions.
     g.attr("transform", "translate(" + -pos.x + "," + -pos.y + ")");
 
-    // // reposition all circles
-    // g.selectAll(".station")
-    //     .each(function(d) {
-    //       d.x = x(station_info[d.station]);
-    //       d.y = y(station_info[d.station]);
-    //     })
-    //     .attr("cx", function(d) { return d.x; })
-    //     .attr("cy", function(d) { return d.y; });
+    // reposition all circles
+    g.selectAll(".station")
+        .each(function(d) {
+          d.x = x(station_info[d.station]);
+          d.y = y(station_info[d.station]);
+        })
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
 
     // update shower_front_position
     console.log(front.datum());
@@ -66,40 +66,40 @@ function update_layer_position() {
 
 map.on('moveend', update_layer_position);
 
-// function marker_size(event) {
-//     num_particles = event.n1 + event.n2 + event.n3 + event.n4;
-//     log_particles = Math.log10(1 + num_particles);
-//     size = 10 * Math.sqrt(log_particles);
-//     return size;
-// }
+function marker_size(event) {
+    num_particles = event.n1 + event.n2 + event.n3 + event.n4;
+    log_particles = Math.log10(1 + num_particles);
+    size = 10 * Math.sqrt(log_particles);
+    return size;
+}
 
-// function update_coincidence(coincidences) {
-//     var c_idx = 2;
-//
-//     function update() {
-//         var events = coincidences[c_idx].events;
-//         events.forEach(function (value) {
-//             value.key = 'c-' + c_idx + '-' + value.station; });
-//
-//         var stations = g.selectAll(".coincidence")
-//             .data(events, function(d) { return d.key; });
-//
-//         stations
-//             .each(function() {
-//                 console.warn("Updated an element."); });
-//
-//         stations.enter().append("circle")
-//             .attr("class", "station")
-//             .style("opacity", 1)
-//             .attr("r", 0)
-//           .transition()
-//             .attr("r", function(d) { return marker_size(d); });
-//
-//         update_layer_position();
-//     }
-//
-//     update();
-// }
+function update_coincidence(coincidences) {
+    var c_idx = 2;
+
+    function update() {
+        var events = coincidences[c_idx].events;
+        events.forEach(function (value) {
+            value.key = 'c-' + c_idx + '-' + value.station; });
+
+        var stations = g.selectAll(".coincidence")
+            .data(events, function(d) { return d.key; });
+
+        stations
+            .each(function() {
+                console.warn("Updated an element."); });
+
+        stations.enter().append("circle")
+            .attr("class", "station")
+            .style("opacity", 1)
+            .attr("r", 0)
+          .transition()
+            .attr("r", function(d) { return marker_size(d); });
+
+        update_layer_position();
+    }
+
+    update();
+}
 
 d3.json('./stations.json', function(error, data) {
     console.log("STATIONS JSON LOADED");
@@ -132,12 +132,12 @@ d3.json('./stations.json', function(error, data) {
 
     update_shower_front();
 
-    // console.log(lat_min, lon_min, lat_max, lon_max);
+    console.log(lat_min, lon_min, lat_max, lon_max);
 
-    // d3.json('./coincidences.json', function(error, data) {
-    //     update_coincidence(data);
-    // });
-    //
+    d3.json('./coincidences.json', function(error, data) {
+        update_coincidence(data);
+    });
+
     // distances.data(station_info)
     //   .enter().append("line")
     //     .attr("class", "distance");
