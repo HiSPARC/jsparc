@@ -76,6 +76,8 @@ be stored as strings.
                               'pmt_voltage': {'column': [1, 2, 3, 4], 'name': 'PMT voltage', 'units': 'V'}},
             current_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
                               'pmt_current': {'column': [1, 2, 3, 4], 'name': 'PMT current', 'units': 'mA'}},
+            detector_timing_offsets_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                              'detector_timing_offset': {'column': [1, 2, 3, 4], 'name': 'Detector timing offset', 'units': 'ns'}},
             coincidencenumber_format = {'n_stations': {'column': 0, 'name': 'Number of stations', 'units': 'count'},
                                         'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
             coincidencetime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
@@ -98,6 +100,7 @@ be stored as strings.
         jsparc.barometer_format = barometer_format;
         jsparc.voltage_format = voltage_format;
         jsparc.current_format = current_format;
+        jsparc.detector_timing_offsets_format = detector_timing_offsets_format;
         jsparc.coincidencenumber_format = coincidencenumber_format;
         jsparc.coincidencetime_format = coincidencetime_format;
         jsparc.gps_format = gps_format;
