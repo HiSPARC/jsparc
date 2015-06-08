@@ -42,6 +42,55 @@ var front_rotate_handle = g.append("circle")
     .call(drag_alpha);
 
 
+// LDF plots
+var fullwidth = 400,
+    fullheight = 300;
+var margin = {top: 20, right: 20, bottom: 30, left: 50};
+var width = fullwidth - margin.left - margin.right,
+    height = fullheight - margin.top - margin.bottom;
+
+var key_idx = 0;
+
+var x_scale = d3.scale.linear()
+    .range([0, width])
+    .domain([0, 500]);
+var y_scale = d3.scale.linear()
+    .range([0, height])
+    .domain([0, 20]);
+
+
+var ldf_svg = d3.select("#ldf").append("svg")
+    .attr("width", fullwidth)
+    .attr("height", fullheight)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+ldf_svg.append("rect")
+    .attr("class", "data_rectangle")
+    .attr("width", width)
+    .attr("height", height);
+
+var xAxis = d3.svg.axis()
+    .scale(x_scale)
+    .ticks(5)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y_scale)
+    .ticks(5)
+    .orient("left");
+
+ldf_svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")");
+
+ldf_svg.append("g")
+    .attr("class", "y axis");
+
+
+var arrival_times = ldf_svg.selectAll("circle");
+
+
 function x(coord) { return map.latLngToLayerPoint(coord).x; }
 function y(coord) { return map.latLngToLayerPoint(coord).y; }
 
@@ -107,6 +156,11 @@ function update_coincidence(coincidences) {
             .data(events, function(d) { return d.key; })
           .enter().append("text")
             .attr("class", "distance_label");
+
+        arrival_times = ldf_svg.selectAll("circle")
+            .data(events, function(d) { return d.key; })
+          .enter().append("circle")
+            .attr("r", 5);
 
         update_layer_position();
     }
@@ -183,6 +237,10 @@ function update_shower_front() {
     .attr("x", function(d) { return d.label_x + 5; })
     .attr("y", function(d) { return d.label_y + 5; })
     .text(function(d) { return d.dist.toFixed(); });
+
+  arrival_times
+    .attr("cx", function(d) { return x_scale(d.dist); })
+    .attr("cy", function(d) { return y_scale(5); });
 }
 
 function move_core() {

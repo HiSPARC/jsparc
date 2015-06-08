@@ -3,16 +3,13 @@
   margin-top: 50px;
 }
 
-#map, svg {
+#map, #map svg {
   width: 960px;
   height: 500px;
   display: inline-block;
 }
 
 #ldf {
-  background-color: green;
-  width: 200px;
-  height: 200px;
   display: inline-block;
 }
 
@@ -42,4 +39,12 @@
 
 .distance_label {
   fill: blue;
+}
+
+.axis line,
+.data_rectangle
+{
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5px;
 }
