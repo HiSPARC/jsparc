@@ -3,7 +3,7 @@ var station_info;
 var FRONT_LENGTH = 1000;
 var ROTATE_LENGTH = 100;
 
-var map = L.map('map');
+var map = L.map('map', { scrollWheelZoom: false, zoomControl: false });
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
@@ -133,7 +133,6 @@ d3.json('./stations.json', function(error, data) {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">' +
                      'OpenStreetMap</a> contributors, ' +
                      '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        maxZoom: 18
     }).addTo(map);
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]]);
