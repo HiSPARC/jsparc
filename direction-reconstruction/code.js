@@ -3,7 +3,8 @@ var station_info;
 var FRONT_LENGTH = 1000;
 var ROTATE_LENGTH = 100;
 
-var map = L.map('map', { scrollWheelZoom: false, zoomControl: false });
+var map = L.map('map', { scrollWheelZoom: false, zoomControl: false,
+                         dragging: false });
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
@@ -11,18 +12,18 @@ var drag_core = d3.behavior.drag()
     .origin(function() {
         var fd = front.datum();
         return map.latLngToContainerPoint([fd.lat, fd.lng]); })
-    .on("drag", move_core)
-    .on("dragstart", function() { map.dragging.disable(); })
-    .on("dragend", function() { map.dragging.enable(); });
+    .on("drag", move_core);
+    // .on("dragstart", function() { map.dragging.disable(); })
+    // .on("dragend", function() { map.dragging.enable(); });
 
 var drag_alpha = d3.behavior.drag()
     .origin(function() {
         var x = front_rotate_handle.attr("cx");
         var y = front_rotate_handle.attr("cy");
         return map.layerPointToContainerPoint([x, y]); })
-    .on("drag", rotate_front)
-    .on("dragstart", function() { map.dragging.disable(); })
-    .on("dragend", function() { map.dragging.enable(); });
+    .on("drag", rotate_front);
+    // .on("dragstart", function() { map.dragging.disable(); })
+    // .on("dragend", function() { map.dragging.enable(); });
 
 var stations = g.selectAll('.station');
 var distances = g.selectAll('.distance');
