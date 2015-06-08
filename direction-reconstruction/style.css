@@ -1,14 +1,19 @@
-#map {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  margin-left: -480px;
-  margin-top: -250px;
+#plots {
+  text-align: center;
+  margin-top: 50px;
 }
 
 #map, svg {
   width: 960px;
   height: 500px;
+  display: inline-block;
+}
+
+#ldf {
+  background-color: green;
+  width: 200px;
+  height: 200px;
+  display: inline-block;
 }
 
 .station {
