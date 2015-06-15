@@ -55,9 +55,7 @@ var x_scale = d3.scale.linear()
     .range([0, width])
     .domain([0, 500]);
 var y_scale = d3.scale.linear()
-    .range([0, height])
-    .domain([500, 0]);
-
+    .range([height, 0]);
 
 var ldf_svg = d3.select("#ldf").append("svg")
     .attr("width", fullwidth)
@@ -82,7 +80,8 @@ var yAxis = d3.svg.axis()
 
 ldf_svg.append("g")
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")");
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
 
 ldf_svg.append("g")
     .attr("class", "y axis");
@@ -162,6 +161,9 @@ function update_coincidence(coincidences) {
           .enter().append("circle")
             .attr("r", 5);
 
+        y_scale.domain([0, d3.max(events, function(d) { return d.t; })]);
+        d3.select(".y.axis").call(yAxis);
+
         update_layer_position();
     }
 
@@ -194,8 +196,6 @@ d3.json('./stations.json', function(error, data) {
 
     front.datum().lat = lat_mean;
     front.datum().lng = lon_mean;
-
-    update_shower_front();
 
     d3.json('./coincidences.json', function(error, data) {
         update_coincidence(data);
@@ -241,6 +241,9 @@ function update_shower_front() {
   arrival_times
     .attr("cx", function(d) { return x_scale(d.dist); })
     .attr("cy", function(d) { return y_scale(d.t); });
+
+  // x_scale.domain([0, d3.max(distances.data(), function(d) { return d.dist; })]);
+  // d3.select(".x.axis").call(xAxis);
 }
 
 function move_core() {

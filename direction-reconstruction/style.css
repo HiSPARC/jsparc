@@ -41,7 +41,8 @@
   fill: blue;
 }
 
-.axis line,
+.axis .domain,
+.axis .tick line,
 .data_rectangle
 {
   fill: none;
