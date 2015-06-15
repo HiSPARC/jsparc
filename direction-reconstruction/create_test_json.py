@@ -34,16 +34,21 @@ def build_coincidence_json(data):
                            'nanoseconds': coincidence['nanoseconds'],
                            'ext_timestamp': coincidence['ext_timestamp']}
         events = []
+        t0 = None
         for s_idx, e_idx in c_index[coincidence['id']]:
             node_str = s_index[s_idx]
             station = data.get_node(node_str)
             station_event = station.events[e_idx]
             station_number = re_station_number.match(node_str).group(1)
 
+            if t0 is None:
+                t0 = station_event['ext_timestamp']
+
             event = {u: float(station_event[u])
                      if station_event[u] >= 0. else 0. for u in
                      ['n1', 'n2', 'n3', 'n4']}
             event['station'] = station_number
+            event['t'] = float(station_event['ext_timestamp'] - t0)
             events.append(event)
         vis_coincidence['events'] = events
         vis_coincidences.append(vis_coincidence)

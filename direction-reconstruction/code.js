@@ -56,7 +56,7 @@ var x_scale = d3.scale.linear()
     .domain([0, 500]);
 var y_scale = d3.scale.linear()
     .range([0, height])
-    .domain([0, 20]);
+    .domain([500, 0]);
 
 
 var ldf_svg = d3.select("#ldf").append("svg")
@@ -240,7 +240,7 @@ function update_shower_front() {
 
   arrival_times
     .attr("cx", function(d) { return x_scale(d.dist); })
-    .attr("cy", function(d) { return y_scale(5); });
+    .attr("cy", function(d) { return y_scale(d.t); });
 }
 
 function move_core() {
