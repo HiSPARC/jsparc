@@ -32,6 +32,8 @@ var distance_labels = g.selectAll('.distance_label');
 var front = g.append("line")
     .datum({ 'lat': 0, 'lng': 0, 'alpha': Math.PI / 8 })
     .attr("id", "front");
+var direction = g.append("line")
+    .attr("id", "direction");
 var core = g.append("circle")
     .attr("r", 7)
     .call(drag_core);
@@ -217,6 +219,12 @@ function update_shower_front() {
       .attr("y1", front_line_y(fd, -FRONT_LENGTH))
       .attr("x2", front_line_x(fd, FRONT_LENGTH))
       .attr("y2", front_line_y(fd, FRONT_LENGTH));
+
+  direction
+      .attr("x1", fd.x)
+      .attr("y1", fd.y)
+      .attr("x2", fd.x + 100 * Math.cos(fd.alpha - Math.PI / 2))
+      .attr("y2", fd.y + 100 * Math.sin(fd.alpha - Math.PI / 2));
 
   core.attr("cx", x([fd.lat, fd.lng]))
       .attr("cy", y([fd.lat, fd.lng]));

@@ -37,6 +37,10 @@
   stroke: blue;
 }
 
+#direction {
+  stroke: red;
+}
+
 .distance_label {
   fill: blue;
 }
