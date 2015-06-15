@@ -33,10 +33,10 @@ var front = g.append("line")
     .datum({ 'lat': 0, 'lng': 0, 'alpha': Math.PI / 8 })
     .attr("id", "front");
 var core = g.append("circle")
-    .attr("r", 5)
+    .attr("r", 7)
     .call(drag_core);
 var front_rotate_handle = g.append("circle")
-    .attr("r", 7)
+    .attr("r", 5)
     .attr("fill", 'white')
     .attr("stroke", 'black')
     .call(drag_alpha);
@@ -140,7 +140,7 @@ function update_coincidence(coincidences) {
             .each(function() {
                 console.warn("Updated an element."); });
 
-        stations.enter().append("circle")
+        stations.enter().insert("circle", ":first-child")
             .attr("class", "station")
             .style("opacity", 1)
             .attr("r", 0)
@@ -149,7 +149,7 @@ function update_coincidence(coincidences) {
 
         distances = g.selectAll('.distance')
             .data(events, function(d) { return d.key; })
-          .enter().append("line")
+          .enter().insert("line", ":first-child")
             .attr("class", "distance");
 
         distance_labels = g.selectAll('.distance_label')
