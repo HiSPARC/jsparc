@@ -112,7 +112,7 @@ function update_layer_position() {
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
 
-    // update shower_front_position
+    // update shower front position
     update_shower_front();
 }
 
