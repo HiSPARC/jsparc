@@ -167,7 +167,7 @@ td {
 input:disabled {
     color: #ddd;}
 
-/* Color pulseheight columns in table
+/* Color columns in table that belong to specific detectors
 */
 #results .weather td:nth-child(5),
 #results .weather td:nth-child(7) {color: #222; padding-left: 15px;}
@@ -178,6 +178,32 @@ input:disabled {
 #results .events td:nth-child(4n+7) {color: #D22;}
 #results .events td:nth-child(4n+8) {color: #1C2;}
 #results .events td:nth-child(4n+9) {color: #1AA;}
+
+#results .station_layout td:nth-child(4n+3) {color: #222; padding-left: 15px;}
+#results .station_layout td:nth-child(4n+4) {color: #D22;}
+#results .station_layout td:nth-child(4n+5) {color: #1C2;}
+#results .station_layout td:nth-child(4n+6) {color: #1AA;}
+
+#results .pulseheight td:nth-child(3),
+#results .pulseintegral td:nth-child(3),
+#results .voltage td:nth-child(3),
+#results .current td:nth-child(3),
+#results .detector_timing_offsets td:nth-child(3) {color: #222; padding-left: 15px;}
+#results .pulseheight td:nth-child(4),
+#results .pulseintegral td:nth-child(4),
+#results .voltage td:nth-child(4),
+#results .current td:nth-child(4),
+#results .detector_timing_offsets td:nth-child(4) {color: #D22;}
+#results .pulseheight td:nth-child(5),
+#results .pulseintegral td:nth-child(5),
+#results .voltage td:nth-child(5),
+#results .current td:nth-child(5),
+#results .detector_timing_offsets td:nth-child(5) {color: #1C2;}
+#results .pulseheight td:nth-child(6),
+#results .pulseintegral td:nth-child(6),
+#results .voltage td:nth-child(6),
+#results .current td:nth-child(6),
+#results .detector_timing_offsets td:nth-child(6) {color: #1AA;}
 
 /* Line number column
 */
