@@ -82,6 +82,11 @@ be stored as strings.
                                         'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
             coincidencetime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
                                       'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
+            station_layout_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                     'radius': {'column': [1, 5, 9, 13], 'name': 'Radius', 'units': 'm'},
+                                     'alpha': {'column': [2, 6, 10, 14], 'name': 'Alpha', 'units': '°'},
+                                     'beta': {'column': [3, 7, 11, 15], 'name': 'Beta', 'units': '°'},
+                                     'height': {'column': [4, 8, 12, 16], 'name': 'Height', 'units': 'm'}},
             gps_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
                           'latitude': {'column': 1, 'name': 'Latitude', 'units': '°'},
                           'longitude': {'column': 2, 'name': 'Longitude', 'units': '°'},
@@ -103,6 +108,7 @@ be stored as strings.
         jsparc.detector_timing_offsets_format = detector_timing_offsets_format;
         jsparc.coincidencenumber_format = coincidencenumber_format;
         jsparc.coincidencetime_format = coincidencetime_format;
+        jsparc.station_layout_format = station_layout_format;
         jsparc.gps_format = gps_format;
 
         // Create format for unknown type
