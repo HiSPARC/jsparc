@@ -47,7 +47,7 @@ var front_rotate_handle = g.append("circle")
 // LDF plots
 var fullwidth = 400,
     fullheight = 300;
-var margin = {top: 20, right: 20, bottom: 30, left: 50};
+var margin = {top: 20, right: 20, bottom: 50, left: 50};
 var width = fullwidth - margin.left - margin.right,
     height = fullheight - margin.top - margin.bottom;
 
@@ -83,10 +83,21 @@ var yAxis = d3.svg.axis()
 ldf_svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+    .call(xAxis)
+  .append("text")
+    .style("text-anchor", "middle")
+    .attr("x", width / 2)
+    .attr("y", 40)
+    .text("distance [m]");
 
 ldf_svg.append("g")
-    .attr("class", "y axis");
+    .attr("class", "y axis")
+  .append("text")
+    .attr("transform", "rotate(-90)")
+    .style("text-anchor", "middle")
+    .attr("x", -height / 2)
+    .attr("y", -35)
+    .text("Δt [ns]");
 
 
 var arrival_times = ldf_svg.selectAll("circle");

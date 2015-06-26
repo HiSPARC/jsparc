@@ -4,13 +4,17 @@
 }
 
 #map, #map svg {
-  width: 960px;
-  height: 500px;
+  width: 500px;
+  height: 350px;
   display: inline-block;
 }
 
 #ldf {
   display: inline-block;
+}
+
+#map, #ldf {
+  margin: 0 20px;
 }
 
 .station {
