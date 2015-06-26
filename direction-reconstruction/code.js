@@ -55,7 +55,7 @@ var key_idx = 0;
 
 var x_scale = d3.scale.linear()
     .range([0, width])
-    .domain([-500, 500]);
+    .domain([-300, 300]);
 var y_scale = d3.scale.linear()
     .range([height, 0]);
 
@@ -281,7 +281,9 @@ function calculate_distances(d) {
   d.r = (d.x - fd.x) * Math.cos(fd.alpha) + (d.y - fd.y) * Math.sin(fd.alpha);
   d.xp = front_line_x(fd, d.r);
   d.yp = front_line_y(fd, d.r);
-  d.dist = Math.sqrt(Math.pow(d.x - d.xp, 2) + Math.pow(d.y - d.yp, 2));
+  // d.dist = Math.sqrt(Math.pow(d.x - d.xp, 2) + Math.pow(d.y - d.yp, 2));
+  d.dist = map.layerPointToLatLng([d.x, d.y])
+      .distanceTo(map.layerPointToLatLng([d.xp, d.yp]));
 
   beta = Math.atan2(d.y - fd.y, d.x - fd.x);
   delta = beta - fd.alpha;
