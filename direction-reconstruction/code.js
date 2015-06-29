@@ -1,4 +1,5 @@
 var station_info;
+var next_event;
 
 var FRONT_LENGTH = 1000;
 var ROTATE_LENGTH = 100;
@@ -99,8 +100,8 @@ ldf_svg.append("g")
     .attr("y", -35)
     .text("Δt [ns]");
 
-
 var arrival_times = ldf_svg.selectAll("circle");
+var timeline = ldf_svg.select("#timeline");
 
 
 function x(coord) { return map.latLngToLayerPoint(coord).x; }
@@ -138,9 +139,10 @@ function marker_size(event) {
 }
 
 function update_coincidence(coincidences) {
-    var c_idx = 2;
+    var c_idx = 1;
 
     function update() {
+        c_idx ++;
         var events = coincidences[c_idx].events;
         events.forEach(function (value) {
             value.key = 'c-' + c_idx + '-' + value.station; });
@@ -158,21 +160,25 @@ function update_coincidence(coincidences) {
             .attr("r", 0)
           .transition()
             .attr("r", function(d) { return marker_size(d); });
+        stations.exit().remove();
 
         distances = g.selectAll('.distance')
-            .data(events, function(d) { return d.key; })
-          .enter().insert("line", ":first-child")
+            .data(events, function(d) { return d.key; });
+        distances.enter().insert("line", ":first-child")
             .attr("class", "distance");
+        distances.exit().remove();
 
         distance_labels = g.selectAll('.distance_label')
-            .data(events, function(d) { return d.key; })
-          .enter().append("text")
+            .data(events, function(d) { return d.key; });
+        distance_labels.enter().append("text")
             .attr("class", "distance_label");
+        distance_labels.exit().remove();
 
         arrival_times = ldf_svg.selectAll("circle")
-            .data(events, function(d) { return d.key; })
-          .enter().append("circle")
+            .data(events, function(d) { return d.key; });
+        arrival_times.enter().append("circle")
             .attr("r", 5);
+        arrival_times.exit().remove();
 
         y_scale.domain([0, d3.max(events, function(d) { return d.t; })]);
         d3.select(".y.axis").call(yAxis);
@@ -181,6 +187,7 @@ function update_coincidence(coincidences) {
     }
 
     update();
+    return update;
 }
 
 d3.json('./stations.json', function(error, data) {
@@ -211,7 +218,7 @@ d3.json('./stations.json', function(error, data) {
     front.datum().lng = lon_mean;
 
     d3.json('./coincidences.json', function(error, data) {
-        update_coincidence(data);
+        next_event = update_coincidence(data);
     });
 });
 
