@@ -96,7 +96,7 @@ function update_event(events, station) {
     var e_idx = 0;
 
     function update() {
-        event = events[e_idx];
+        var event = events[e_idx];
         event.key = 'e-' + station + '-' + e_idx;
         event.station = station;
 
@@ -133,7 +133,7 @@ function update_event(events, station) {
 d3.json('./stations.json', function(error, data) {
     station_info = data;
     data = Object.keys(data).map(function (value, index, array) {
-        return Array(value).concat(data[value]);
+        return new Array(value).concat(data[value]);
     });
 
     function lat(d) { return d[1]; }

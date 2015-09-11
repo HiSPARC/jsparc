@@ -6,10 +6,12 @@
     <title>HiSPARC trigger simulation</title>
     <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript">
+        "use strict";
         // Trigger rate in Hz
         // Update interval in s
         var trigger_rate = 0.3,
-            interval = 0.1;
+            interval = 0.1,
+            hisparc;
 
         function check_trigger() {
             var on = Math.random();

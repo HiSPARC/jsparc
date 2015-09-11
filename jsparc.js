@@ -71,6 +71,9 @@
  * @param   {Number} latitude2, longitude2: second point in decimal degrees
  * @returns (Number} distance in metres between points
  */
+/* global get_coincidence: true, detNum: true, showEvent: true */
+"use strict";
+
 var c = 299792458;
 
 function toRad(x) {
@@ -145,7 +148,6 @@ function distVincenty(latitude1, longitude1, latitude2, longitude2) {
 
 var showerMerc, shower4326;
 var PI = 4 * Math.atan(1);
-var OpenLayers;
 var alfa = 1.2;
 var eta = 3.97; //3,97 – 1,79⋅((1/cos θ) – 1)
 var r0 = 92;
@@ -166,8 +168,8 @@ Array.min = function(array) {
 
 function detectorNumber(data) {
     // Determine number of detectors for each station
-    detectorNumbers = [];
-    for(j=0; j < data.events.length; j++){
+    var detectorNumbers = [];
+    for(var j = 0; j < data.events.length; j++){
         detectorNumbers[j] = data.events[j].detectors;}
     return detectorNumbers;
 }
@@ -201,7 +203,7 @@ function NKG(pMerc, k, stationIndex, data) {
 
 function agase(pMerc, k, stationIndex, data) {
     var p4326 = (pMerc);
-    var r = distVincenty(p4326.y, p4326.x, data.events[i].latitude, data.events[i].longitude);
+    var r = distVincenty(p4326.y, p4326.x, data.events[stationIndex].latitude, data.events[stationIndex].longitude);
     return k * Math.pow((r / r0), (1.2)) * Math.pow((1 + (r / r0)), (2.64)) * Math.pow((1 + r * r / 1000000), (0.6));
 }
 
@@ -211,13 +213,13 @@ function energy(k) {
 
 function calcError(htmlInfo, data) {
     var chiKwad = 0;
-    var delta;
+    var delta, i;
     for (i = 0; i < data.events.length; i++) {
         delta = $("#" + htmlInfo.mipId + i).val() - $("#" + htmlInfo.mipCalcId + i).val();
         chiKwad += delta * delta / $("#" + htmlInfo.mipCalcId + i).val();}
     $("#" + htmlInfo.stationEr).val(chiKwad.toFixed(4));
     result.error = chiKwad;
-    for (j = 0; j < 4; j++) {
+    for (var j = 0; j < 4; j++) {
         for (i = 0; i < data.events.length; i++) {
             if ($("#" + htmlInfo.mipId + i + j).val() === "no data") {
                 delta = 0;}
@@ -230,7 +232,7 @@ function calcError(htmlInfo, data) {
 
 function calcEnergy(htmlInfo, showerMerc, data) {
     var k = invNKG(showerMerc, 0, data);
-    for (i = 0; i < data.events.length; i++) {
+    for (var i = 0; i < data.events.length; i++) {
         $("#" + htmlInfo.mipCalcId + i).val(NKG(showerMerc, k, i, data).toFixed(3));}
     $("#" + htmlInfo.energyId).val(toScient(energy(k), (energy(k) / 100)));
     result.logEnergy = Math.log(energy(k)) / Math.log(10);
@@ -260,7 +262,7 @@ function writeDist(htmlInfo, pMerc, data) {
     result.longitude = p4326.x;
     result.latitude = p4326.y;
     calcEnergy(htmlInfo, p4326, data);
-    for (i = 0; i < data.events.length; i++) {
+    for (var i = 0; i < data.events.length; i++) {
         $("#" + htmlInfo.distId + i).val(distVincenty(p4326.y, p4326.x, data.events[i].latitude, data.events[i].longitude));}
 }
 
@@ -273,7 +275,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
         xmax: -90,
         ymax: -180};
     result.pk = data.pk;
-    for (i = 0; i < data.events.length; i++) {
+    for (var i = 0; i < data.events.length; i++) {
         mapData.longitude += data.events[i].longitude;
         mapData.latitude += data.events[i].latitude;
         if (mapData.xmax < data.events[i].longitude) {mapData.xmax = data.events[i].longitude;}
@@ -319,6 +321,7 @@ function makeShowerMap(htmlInfo, data) { //htmlInfo and data are JSON's!
     map.addLayer(showerLayer); // puts the layer on the map
 
     var stationLayer = new OpenLayers.Layer.Vector("Stations"); //makes a vectorlayer for the stations
+    var station;
     for (i = 0; i < data.events.length; i++) {
         station = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(data.events[i].longitude, data.events[i].latitude).transform(proj4326, projmerc),
                 {some: 'data'},
@@ -399,6 +402,7 @@ function plotGraph(htmlInfo, data) {
     $.jqplot.config.enablePlugins = true; // on the page before plot creation.
 
     // Plot the overal coincidence trace diagram
+    var i, j, k;
 
     for (j = 0; j < data.events.length; j++) { // find the smallest and biggest value of nanoseconds
         offset = data.events[j].nanoseconds;
@@ -423,7 +427,7 @@ function plotGraph(htmlInfo, data) {
     var eventColors = [],
         _eventColors = ["#600", "#f00", "#f90", "#ff0", "#6f0", "#6ff", "#f0f", "#ccc"];
 
-    for (j=0; j < data.events.length; j++) {
+    for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detNum[j]; k++) {
             eventColors.push(_eventColors[j]);}}
 
@@ -490,8 +494,9 @@ function toOrthogonal(i, latitude, longitude, altitude) {
 function interactionTrace(data) {
     var x = [], y = [], z = [], t = [];
     var A, B, C, D, E, F, G;
+    var coordinate;
 
-    for (i = 0; i < data.events.length; i++) {
+    for (var i = 0; i < data.events.length; i++) {
         coordinate = toOrthogonal(i, data.events[i].longitude, data.events[i].latitude, data.events[i].altitude);
         x[i] = coordinate.x;
         y[i] = coordinate.y;
@@ -507,23 +512,23 @@ function interactionTrace(data) {
         F = 2 * ((y[0] - y[2]) * (t[1] - t[0]) - (y[0] - y[1]) * (t[2] - t[0])) * c * c;
         G = (y[0] - x[1]) * ((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]) + (t[0] - t[2]) * (t[0] - t[2]) * c * c);
         G = G - (y[0] - y[2]) * ((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]) + (t[0] - t[1]) * (t[0] - t[1]) * c * c);
-        travelTime = Math.sqrt((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]));
-        travelTime = travelTime + Math.sqrt((x[1] - x[2]) * (x[1] - x[2]) + (y[1] - y[2]) * (y[1] - y[2]) + (z[1] - z[2]) * (z[1] - z[1]));
-        travelTime = travelTime + Math.sqrt((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]));
-        travelTime = travelTime / (4 * c);
-        travelTime = travelTime - t[0];
+        var travelTime = Math.sqrt((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]));
+        travelTime += Math.sqrt((x[1] - x[2]) * (x[1] - x[2]) + (y[1] - y[2]) * (y[1] - y[2]) + (z[1] - z[2]) * (z[1] - z[1]));
+        travelTime += Math.sqrt((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]));
+        travelTime /= (4 * c);
+        travelTime -= t[0];
         alert(c * (travelTime + t[0]) + ", " + c * (travelTime + t[1]) + ", " + c * (travelTime + t[2]));
-        ALFA = ((travelTime + t[0]) * (B * C + E * F) + B * D + E * G) / (A * A + B * B + E * E);
-        BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
+        var ALFA = ((travelTime + t[0]) * (B * C + E * F) + B * D + E * G) / (A * A + B * B + E * E);
+        var BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
 
         if ((ALFA * ALFA - BETA) < 0) {
             alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA);}
         else {
-            dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA);
-            dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA);
-            dy1 = dz1 * B / A + (travelTime + t[0]) * C / A + D / A;
-            dy2 = dz2 * B / A + (travelTime + t[0]) * C / A + D / A;
-            dx1 = dz1 * E / A + (travelTime + t[0]) * F / A + G / A;
-            dx2 = dz2 * E / A + (travelTime + t[0]) * F / A + G / A;
+            var dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA),
+                dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA),
+                dy1 = dz1 * B / A + (travelTime + t[0]) * C / A + D / A,
+                dy2 = dz2 * B / A + (travelTime + t[0]) * C / A + D / A,
+                dx1 = dz1 * E / A + (travelTime + t[0]) * F / A + G / A,
+                dx2 = dz2 * E / A + (travelTime + t[0]) * F / A + G / A;
             alert("(" + dx1 + ", " + dy1 + ", " + dz1 + ") and (" + dx2 + ", " + dy2 + ", " + dz2 + ")");}}
 }

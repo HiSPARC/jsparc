@@ -1,6 +1,21 @@
 {
-    "curly": true,
+    "browser": true,  // assume brower for 'setTimeout'
+    "curly": true,  // require brackets around blocks in loops/conditionals
+    "devel": true,  // allow 'console'
+    "globalstrict": true,  // allow global 'use strict'
     "loopfunc": true,
+    "newcap": false,
+    "jquery": true,  // assume jQuery is used
     "globals": {
-        "jquery": true}
+        "d3": false,
+        "L": false,  // Leaflet
+        "OpenLayers": false,
+        "MathJax": false,
+        "regression": false,
+
+        // OpenLayersHisparcMap.js
+        "toProjection": false,
+        "fromProjection": false,
+        "createMap": false,
+        "createStyle": false}
 }

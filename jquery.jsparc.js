@@ -16,6 +16,7 @@ timestamp like "1380412812090648357" would result in
 be stored as strings.
 
 */
+"use strict";
 
 (function($) {
     function jSparc() {
@@ -27,6 +28,7 @@ be stored as strings.
 
         // Constants
 
+        /* jshint validthis: true */
         var jsparc = this,
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',

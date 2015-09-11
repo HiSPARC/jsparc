@@ -26,6 +26,7 @@
         </script>
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>
+            "use strict";
             var jsparc;
             $(document).ready(function () {
                 // Animate HiSPARC logo during ajax activity
@@ -37,8 +38,8 @@
                 // Load jSparc library
                 jsparc = $.jsparc();
 
-                station_events_select = jsparc.make_station_select($('#station_events_choice'), 'events');
-                station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather');
+                var station_events_select = jsparc.make_station_select($('#station_events_choice'), 'events'),
+                    station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather');
                 jsparc.make_datepicker($('#startdate_choice'), -2);
                 jsparc.make_datepicker($('#enddate_choice'), -1);
                 jsparc.set_dataset_list_controls($('#dataset_list'));
@@ -248,7 +249,7 @@
 
                                 // The calculated fit is returned as summary.points
                                 data_to_plot.push(summary.points);
-                                formula = $('<p>');
+                                var formula = $('<p>');
                                 // Parse the formula and correlation coefficient
                                 // Color the formula as its line in the plot.
                                 formula.append($('<span>').addClass('formula').addClass('ch' + (i % 8 + length + 1)).text(summary.string));
@@ -262,7 +263,7 @@
                         $("#results").hide();}
 
                     // Create the plot
-                    plot = jsparc.make_plot($('#plot'), data_to_plot);
+                    var plot = jsparc.make_plot($('#plot'), data_to_plot);
 
                     $('#plot').show();
                     $('#graph').show();
@@ -280,7 +281,7 @@
                         jsparc.add_flot_options(jsparc.flot_x_axis_labels('Time [ns]'));
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels('ADCcounts'));
                         var x_data = jsparc.range(0, 2.5 * data[0].length, 2.5);
-                        plot = jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
+                        var plot = jsparc.make_plot($('#plot'), jsparc.zip_data(x_data, data));
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.show_id('plot');
