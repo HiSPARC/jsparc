@@ -4,8 +4,7 @@ import re
 
 import tables
 
-import sapphire.esd
-import sapphire.api
+from sapphire import Network, Station, download_data, download_coincidences
 
 
 STATIONS = [501, 502, 503, 504, 505, 506, 508]
@@ -16,16 +15,14 @@ END = datetime.datetime(2015, 3, 6, 11)
 re_station_number = re.compile(".*/station_([0-9]+)$")
 
 
-def download_data(data):
+def download_data_coincidences(data):
     if '/coincidences' not in data:
-        sapphire.esd.download_coincidences(data, stations=STATIONS,
-                                           start=START, end=END)
+        download_coincidences(data, start=START, end=END)
 
     for station in STATIONS:
         group = '/s%d' % station
         if group not in data:
-            sapphire.esd.download_data(data, group, station, start=START,
-                                       end=END)
+            download_data(data, group, station, start=START, end=END)
 
 
 def build_coincidence_json(data):
@@ -100,7 +97,7 @@ def write_jsons(data):
 
 
 def get_latlon_coordinates(station_number):
-    station = sapphire.api.Station(station_number)
+    station = Station(station_number)
     gps_location = station.location()
     if gps_location['latitude'] == 0.:
         raise Exception
@@ -111,5 +108,5 @@ if __name__ == '__main__':
     if 'data' not in globals():
         data = tables.open_file('data.h5', 'w')
 
-    download_data(data)
+    download_data_coincidences(data)
     write_jsons(data)
