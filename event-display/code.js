@@ -5,6 +5,8 @@ var SPEEDUP_FACTOR = 1;
 var station_info;
 
 var map = L.map('map');
+L.control.scale().addTo(map);
+
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
