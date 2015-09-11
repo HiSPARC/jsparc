@@ -1,14 +1,20 @@
 #map {
   position: absolute;
-  top: 40%;
-  left: 50%;
-  margin-left: -480px;
-  margin-top: -250px;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  width: 5200px;
+  height: 3000px;
 }
 
 #map, svg {
-  width: 960px;
-  height: 700px;
+  width: 100vw;
+  height: 100vh;
 }
 
 .coincidence {
