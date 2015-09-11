@@ -25,7 +25,20 @@ function update_layer_position() {
 
 map.on('moveend', update_layer_position);
 
+// add a legend
+var legend = L.control({position: 'topright'});
+
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'legend leaflet-bar');
+    div.innerHTML = '<i class="legend-coincidence"></i>coincidence<br><i class="legend-event"></i>event';
+    return div;
+};
+
+legend.addTo(map);
+
 function marker_size(event) {
+    /* Calculate marker size for an event based on particle counts
+    */
     num_particles = event.n1 + event.n2 + event.n3 + event.n4;
     log_particles = Math.log10(1 + num_particles);
     size = 10 * Math.sqrt(log_particles);
