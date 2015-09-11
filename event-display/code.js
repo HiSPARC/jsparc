@@ -1,3 +1,5 @@
+"use strict";
+
 var SPEEDUP_FACTOR = 1;
 
 var station_info;
@@ -6,8 +8,8 @@ var map = L.map('map');
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-function x(coord) { return map.latLngToLayerPoint(coord).x };
-function y(coord) { return map.latLngToLayerPoint(coord).y };
+function x(coord) { return map.latLngToLayerPoint(coord).x; }
+function y(coord) { return map.latLngToLayerPoint(coord).y; }
 
 function update_layer_position() {
     // update layer's position to top-left of map container
@@ -19,8 +21,8 @@ function update_layer_position() {
 
     // reposition all circles
     g.selectAll("circle")
-        .attr("cx", function(d) { return x(station_info[d.station]) })
-        .attr("cy", function(d) { return y(station_info[d.station]) });
+        .attr("cx", function(d) { return x(station_info[d.station]); })
+        .attr("cy", function(d) { return y(station_info[d.station]); });
 }
 
 map.on('moveend', update_layer_position);
@@ -39,9 +41,9 @@ legend.addTo(map);
 function marker_size(event) {
     /* Calculate marker size for an event based on particle counts
     */
-    num_particles = event.n1 + event.n2 + event.n3 + event.n4;
-    log_particles = Math.log10(1 + num_particles);
-    size = 10 * Math.sqrt(log_particles);
+    var num_particles = event.n1 + event.n2 + event.n3 + event.n4,
+        log_particles = Math.log10(1 + num_particles),
+        size = 10 * Math.sqrt(log_particles);
     return size;
 }
 
@@ -58,16 +60,16 @@ function update_coincidence(coincidences) {
 
         stations
             .each(function() {
-                console.warn("Updated an element."); })
+                console.warn("Updated an element."); });
 
         stations.enter().append("circle")
             .attr("class", "coincidence")
-            .style("opacity", .7)
-            .attr("cx", function(d) { return x(station_info[d.station]) })
-            .attr("cy", function(d) { return y(station_info[d.station]) })
+            .style("opacity", 0.7)
+            .attr("cx", function(d) { return x(station_info[d.station]); })
+            .attr("cy", function(d) { return y(station_info[d.station]); })
             .attr("r", 0)
           .transition()
-            .attr("r", function(d) { return marker_size(d) })
+            .attr("r", function(d) { return marker_size(d); })
           .transition()
             .duration(3000)
             .style("opacity", 0)
@@ -76,8 +78,8 @@ function update_coincidence(coincidences) {
         c_idx ++;
         if (c_idx == coincidences.length) {
             c_idx = 1;}
-        delta_t = coincidences[c_idx].ext_timestamp -
-                  coincidences[c_idx - 1].ext_timestamp;
+        var delta_t = coincidences[c_idx].ext_timestamp -
+                      coincidences[c_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
@@ -100,12 +102,12 @@ function update_event(events, station) {
 
         g.insert("circle", ":first-child").datum(event)
             .attr("class", "event")
-            .style("opacity", .8)
-            .attr("cx", function(d) { return x(station_info[d.station]) })
-            .attr("cy", function(d) { return y(station_info[d.station]) })
+            .style("opacity", 0.8)
+            .attr("cx", function(d) { return x(station_info[d.station]); })
+            .attr("cy", function(d) { return y(station_info[d.station]); })
             .attr("r", 0)
           .transition()
-            .attr("r", function(d) { return marker_size(d) })
+            .attr("r", function(d) { return marker_size(d); })
           .transition()
             .duration(500)
             .style("opacity", 0)
@@ -114,8 +116,8 @@ function update_event(events, station) {
         e_idx ++;
         if (e_idx == events.length) {
             e_idx = 1;}
-        delta_t = events[e_idx].ext_timestamp -
-                  events[e_idx - 1].ext_timestamp;
+        var delta_t = events[e_idx].ext_timestamp -
+                      events[e_idx - 1].ext_timestamp;
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
@@ -131,18 +133,18 @@ function update_event(events, station) {
 d3.json('./stations.json', function(error, data) {
     station_info = data;
     data = Object.keys(data).map(function (value, index, array) {
-        return Array(value).concat(data[value])
+        return Array(value).concat(data[value]);
     });
 
-    function lat(d) { return d[1] };
-    function lon(d) { return d[2] };
+    function lat(d) { return d[1]; }
+    function lon(d) { return d[2]; }
 
-    lat_min = d3.min(data, lat);
-    lat_max = d3.max(data, lat);
-    lon_min = d3.min(data, lon);
-    lon_max = d3.max(data, lon);
+    var lat_min = d3.min(data, lat),
+        lat_max = d3.max(data, lat),
+        lon_min = d3.min(data, lon),
+        lon_max = d3.max(data, lon);
 
-    map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]])
+    map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]]);
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">' +
                      'OpenStreetMap</a> contributors, ' +
@@ -154,16 +156,17 @@ d3.json('./stations.json', function(error, data) {
         update_coincidence(data);
     });
 
-    stations = Object.keys(station_info);
+    function load_json(station) {
+        d3.json('./events-s' + station + '.json',
+                function(error, data) {
+                    update_event(data, station);
+                });
+    }
+
+    var stations = Object.keys(station_info),
+        station;
     for (var i = 0; i < stations.length; i ++) {
         station = stations[i];
-
-        function load_json(station) {
-            d3.json('./events-s' + station + '.json',
-                    function(error, data) {
-                        update_event(data, station);
-                    })
-        }
         load_json(station);
     }
 });
