@@ -14,4 +14,4 @@ script:
   - CHECK=$(for file in *.html; do python ./html5check.py -geh $file; done;)
   - if [[ ! -z "$CHECK" ]]; then echo "$CHECK"; exit 1; fi;
   - jshint --extract auto *.html
-  - jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js 
+  - jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js
