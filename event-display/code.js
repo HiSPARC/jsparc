@@ -134,17 +134,17 @@ function update_event(events, station) {
 
 d3.json('./stations.json', function(error, data) {
     station_info = data;
-    data = Object.keys(data).map(function (value, index, array) {
-        return new Array(value).concat(data[value]);
+    var values = Object.keys(station_info).map(function (key) {
+        return station_info[key];
     });
 
-    function lat(d) { return d[1]; }
-    function lon(d) { return d[2]; }
+    function lat(d) { return d[0]; }
+    function lon(d) { return d[1]; }
 
-    var lat_min = d3.min(data, lat),
-        lat_max = d3.max(data, lat),
-        lon_min = d3.min(data, lon),
-        lon_max = d3.max(data, lon);
+    var lat_min = d3.min(values, lat),
+        lat_max = d3.max(values, lat),
+        lon_min = d3.min(values, lon),
+        lon_max = d3.max(values, lon);
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]]);
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
