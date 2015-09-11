@@ -72,7 +72,9 @@ function update_coincidence(coincidences) {
         setTimeout(update, delta_t);
     }
 
-    update();
+    if (coincidences.length > 1) {
+        update();
+    }
 }
 
 function update_event(events, station) {
@@ -108,7 +110,7 @@ function update_event(events, station) {
         setTimeout(update, delta_t);
     }
 
-    if (events.length > 0) {
+    if (events.length > 1) {
         update();
     }
 }
