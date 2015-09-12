@@ -153,9 +153,9 @@ function update_event(events, station) {
 }
 
 d3.json('./stations.json', function(error, data) {
-    timestamp_start = data['limits'][0];
-    timestamp_end = data['limits'][1];
-    station_info = data['stations'];
+    timestamp_start = data.limits[0];
+    timestamp_end = data.limits[1];
+    station_info = data.stations;
     var values = Object.keys(station_info).map(function (key) {
         return station_info[key];
     });
