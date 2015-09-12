@@ -2,7 +2,7 @@
 
 var SPEEDUP_FACTOR = 1;
 
-var station_info;
+var station_info, timestamp_start, timestamp_end;
 
 var map = L.map('map');
 L.control.scale().addTo(map);
@@ -18,7 +18,8 @@ function update_layer_position() {
     var pos = map.containerPointToLayerPoint([0, 0]);
     L.DomUtil.setPosition(svg.node(), pos);
 
-    // if you reposition the overlay, translate it with the negative offset to be able to use the conversion functions.
+    // if you reposition the overlay, translate it with the negative offset
+    // to be able to use the conversion functions.
     g.attr("transform", "translate(" + -pos.x + "," + -pos.y + ")");
 
     // reposition all circles
@@ -34,7 +35,8 @@ var legend = L.control({position: 'topright'});
 
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'legend leaflet-bar');
-    div.innerHTML = '<i class="legend-coincidence"></i>coincidence<br><i class="legend-event"></i>event';
+    div.innerHTML = '<i class="legend-coincidence"></i>coincidence<br>' +
+                    '<i class="legend-event"></i>event';
     return div;
 };
 
@@ -78,10 +80,15 @@ function update_coincidence(coincidences) {
             .remove();
 
         c_idx ++;
+        var delta_t;
         if (c_idx == coincidences.length) {
-            c_idx = 1;}
-        var delta_t = coincidences[c_idx].ext_timestamp -
+            delta_t = (coincidences[0].ext_timestamp - timestamp_start) +
+                      (timestamp_end - coincidences[coincidences.length - 1].ext_timestamp);
+            c_idx = 0;
+        } else {
+            delta_t = coincidences[c_idx].ext_timestamp -
                       coincidences[c_idx - 1].ext_timestamp;
+        }
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
@@ -89,8 +96,12 @@ function update_coincidence(coincidences) {
         setTimeout(update, delta_t);
     }
 
-    if (coincidences.length > 1) {
-        update();
+    if (coincidences.length > 0) {
+        var delay = (coincidences[0].ext_timestamp - timestamp_start);
+        delay /= 1e6;
+        // debug
+        delay /= SPEEDUP_FACTOR;
+        setTimeout(update, delay);
     }
 }
 
@@ -116,10 +127,15 @@ function update_event(events, station) {
             .remove();
 
         e_idx ++;
+        var delta_t;
         if (e_idx == events.length) {
-            e_idx = 1;}
-        var delta_t = events[e_idx].ext_timestamp -
+            delta_t = (events[0].ext_timestamp - timestamp_start) +
+                      (timestamp_end - events[events.length - 1].ext_timestamp);
+            e_idx = 0;
+        } else {
+            delta_t = events[e_idx].ext_timestamp -
                       events[e_idx - 1].ext_timestamp;
+        }
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
@@ -127,13 +143,19 @@ function update_event(events, station) {
         setTimeout(update, delta_t);
     }
 
-    if (events.length > 1) {
-        update();
+    if (events.length > 0) {
+        var delay = (events[0].ext_timestamp - timestamp_start);
+        delay /= 1e6;
+        // debug
+        delay /= SPEEDUP_FACTOR;
+        setTimeout(update, delay);
     }
 }
 
 d3.json('./stations.json', function(error, data) {
-    station_info = data;
+    timestamp_start = data['limits'][0];
+    timestamp_end = data['limits'][1];
+    station_info = data['stations'];
     var values = Object.keys(station_info).map(function (key) {
         return station_info[key];
     });

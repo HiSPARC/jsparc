@@ -5,12 +5,15 @@ import re
 import tables
 
 from sapphire import Network, Station, download_data, download_coincidences
+from sapphire.transformations.clock import datetime_to_gps
 
 
 # Excluded 510 because it overlaps with 501
 STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 511]
 START = datetime.datetime(2015, 9, 5, 10)
 END = datetime.datetime(2015, 9, 5, 11)
+LIMITS = [datetime_to_gps(START) * int(1e9),
+          datetime_to_gps(END) * int(1e9)]
 
 
 re_station_number = re.compile(".*/station_([0-9]+)$")
@@ -18,7 +21,7 @@ re_station_number = re.compile(".*/station_([0-9]+)$")
 
 def download_data_coincidences(data):
     if '/coincidences' not in data:
-        download_coincidences(data, start=START, end=END)
+        download_coincidences(data, stations=STATIONS, start=START, end=END)
 
     for station in STATIONS:
         group = '/s%d' % station
@@ -79,7 +82,8 @@ def build_station_json(data):
                 stations[station_number] = loc
         except:
             continue
-    return stations
+    station_json = {'limits': LIMITS, 'stations': stations}
+    return station_json
 
 
 def write_jsons(data):
