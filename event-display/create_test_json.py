@@ -7,9 +7,10 @@ import tables
 from sapphire import Network, Station, download_data, download_coincidences
 
 
-STATIONS = [501, 502, 503, 504, 505, 506, 508]
-START = datetime.datetime(2015, 3, 6, 10)
-END = datetime.datetime(2015, 3, 6, 11)
+# Excluded 510 because it overlaps with 501
+STATIONS = [501, 502, 503, 504, 505, 506, 508, 509, 511]
+START = datetime.datetime(2015, 9, 5, 10)
+END = datetime.datetime(2015, 9, 5, 11)
 
 
 re_station_number = re.compile(".*/station_([0-9]+)$")
