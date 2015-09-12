@@ -152,7 +152,7 @@ function update_event(events, station) {
     }
 }
 
-d3.json('./stations.json', function(error, data) {
+d3.json('./stations.json?nocache=' + Math.random(), function(error, data) {
     timestamp_start = data.limits[0];
     timestamp_end = data.limits[1];
     station_info = data.stations;
@@ -176,15 +176,18 @@ d3.json('./stations.json', function(error, data) {
         maxZoom: 18
     }).addTo(map);
 
-    d3.json('./coincidences.json', function(error, data) {
-        update_coincidence(data);
-    });
+    d3.json('./coincidences.json?cache=' + timestamp_start + timestamp_end,
+            function(error, data) {
+                update_coincidence(data);
+            }
+    );
 
     function load_json(station) {
-        d3.json('./events-s' + station + '.json',
+        d3.json('./events-s' + station + '.json?cache=' + timestamp_start + timestamp_end,
                 function(error, data) {
                     update_event(data, station);
-                });
+                }
+        );
     }
 
     var stations = Object.keys(station_info),
