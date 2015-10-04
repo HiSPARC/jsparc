@@ -17,6 +17,15 @@ svg {
   height: 100vh;
 }
 
+#pageHeader {
+    display: inline-block;
+    width: 90px;
+    height: 31px;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 90px 31px;}
+
 .coincidence {
   fill: red;
   -webkit-transform: scale(1.5);

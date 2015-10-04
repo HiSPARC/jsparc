@@ -35,7 +35,8 @@ var legend = L.control({position: 'topright'});
 
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'legend leaflet-bar');
-    div.innerHTML = '<i class="legend-coincidence"></i>coincidence<br>' +
+    div.innerHTML = '<div id="pageHeader"></div><br>' +
+                    '<i class="legend-coincidence"></i>coincidence<br>' +
                     '<i class="legend-event"></i>event';
     return div;
 };
