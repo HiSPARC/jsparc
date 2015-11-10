@@ -1,0 +1,64 @@
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  width: 5200px;
+  height: 3000px;
+}
+
+#map, svg {
+  width: 100vw;
+  height: 100vh;
+}
+
+#pageHeader {
+    display: inline-block;
+    width: 90px;
+    height: 31px;}
+
+#pageHeader {
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
+    background-size: 90px 31px;}
+
+.coincidence {
+  fill: red;
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+
+.event {
+  fill: SlateGray;
+  -webkit-transform: scale(.8);
+  transform: scale(.8);
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+
+.legend {
+    padding: 6px 8px;
+    font: 14px sans-serif;
+    color: #333;
+    line-height: 18px;
+    background: white;
+    opacity: 0.8;
+}
+
+.legend i {
+    width: 14px;
+    height: 14px;
+    float: left;
+    margin-top: 2px;
+    margin-right: 6px;
+    border-radius: 50%;
+}
+
+.legend-coincidence {background: red;}
+.legend-event {background: SlateGray;}

@@ -6,13 +6,15 @@
     <title>HiSPARC trigger simulation</title>
     <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript">
+        "use strict";
         // Trigger rate in Hz
         // Update interval in s
         var trigger_rate = 0.3,
-            interval = 0.1;
+            interval = 0.1,
+            hisparc;
 
         function check_trigger() {
-            var on = Math.random()
+            var on = Math.random();
             if (on < (trigger_rate * interval)) {
                 hisparc.removeClass('none').addClass('trigger');}
             else {
@@ -21,7 +23,8 @@
 
         $(function() {
             hisparc = $('#hisparciii');
-            setInterval(function() {check_trigger()}, interval * 1000);
+            setInterval(function() {check_trigger();},
+                        interval * 1000);
         });
     </script>
     <style>
@@ -29,7 +32,7 @@
             margin: 0 auto;
             width: 728px;
             height: 455px;
-            transition: background 0.05s linear;}
+            /* transition: background 0.05s linear; */}
 
         .trigger {
             background-image: url('images/hisparciii_front_power_hit_trigger.png');}

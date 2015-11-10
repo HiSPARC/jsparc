@@ -17,7 +17,9 @@
   <script type="text/javascript" src="scripts/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
   <script type="text/javascript" src="jsparc.js"></script>
   <script type="text/javascript">
-    var URL = "http://data.hisparc.nl/jsparc/";
+    /* global detectorNumber: true, makeShowerMap: true, plotGraph: true, writeDist: true, showerMerc: true */
+    "use strict";
+    var BASE_URL = "http://data.hisparc.nl/jsparc/";
     var MIPdens = [];
     var detNum = [];
     var infoURL = [];
@@ -47,14 +49,14 @@
     }
     
     function showEvent(i) {
-        for (u = 0; u < 8; u++) {
+        for (var u = 0; u < 8; u++) {
             if (u != i) {
                 $("#chartdiv" + u).hide();}}
         $("#chartdiv" + i).show();
     }
     
     function calcMIP() {
-        for (i = 0; i < MIPdens.length; i++) {
+        for (var i = 0; i < MIPdens.length; i++) {
             $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
     }
     
@@ -63,14 +65,15 @@
     }
 
     function timestampToDate(timestamp) {
-        var date = new Date(timestamp * 1000)
+        var date = new Date(timestamp * 1000);
         var year = date.getUTCFullYear();
         var month = date.getUTCMonth() + 1;
         var day = date.getUTCDate();
         var hour = date.getUTCHours();
         var minute = date.getUTCMinutes();
         var second = date.getUTCSeconds();
-        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " + padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
+        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " +
+                       padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
         return datumOut;
     }
     
@@ -81,7 +84,7 @@
         var minutes = (GMST - hours) * 60;
         var seconds = (minutes - parseInt(minutes)) * 60;
         seconds = (parseInt(0.5 + seconds * 10)) / 10;
-        var minutes = parseInt(minutes);
+        minutes = parseInt(minutes);
         sidDays = parseInt(hours / 24, 10);
         hours = hours - 24 * sidDays;
         GMST = sidDays + " " + padZero(hours, 2) + ":" + padZero(minutes, 2) + ":" + padZero(seconds, 2);
@@ -93,7 +96,7 @@
         $("#exampleButton").hide();
         Dataflag = false;
         detNum = detectorNumber(data);
-        stationNumber = data.events.length;
+        var stationNumber = data.events.length;
         makeShowerMap(htmlInfo, data);
         plotGraph(htmlInfo, data);
         // interactionTrace(data);
@@ -108,14 +111,15 @@
         $("#tracelegend").css('visibility', 'visible');
         
         //  Get Year, Month, Day, Hour, Minute, Second.
-        var datum = timestampToDate(data.events[0].timestamp)
+        var datum = timestampToDate(data.events[0].timestamp);
         $("#datum").html(datum);
 
         // Greenwich Mean Sidereal Time in hours
-        var GMST = timestampToGMST(data.events[0].timestamp)
+        var GMST = timestampToGMST(data.events[0].timestamp);
         $("#gmst").html(GMST);
 
         // Write information to dashboard
+        var i, j;
         var tabWidth = 1 + data.events.length;
         var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
         for (i = 0; i < data.events.length; i++) {
@@ -139,14 +143,14 @@
                         txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></td>";}}
                 else {
                     txt += "<td></td>";}}
-            txt += "</tr>"}
+            txt += "</tr>";}
         txt += "<tr><td></td>";
         for (i = 0; i < data.events.length; i++) {
             txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
             for (j = detNum[i]; j > 0; j--) {
                 txt += "<option value=" + j + ">" + j + "</option>";}
             txt += "</select></td>";}
-        txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>"
+        txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>";
         for (i = 0; i < data.events.length; i++) {
             txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></td>";}
         txt += "</tr><tr><td>Calc.</td>";
@@ -159,51 +163,51 @@
 
         showEvent(0);
         $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
+        writeDist(htmlInfo, showerMerc, data);
     }
 
     function showError(data) {
-        if (data.status == 0) {
+        if (data.status === 0) {
             alert('An error occured, try again');}
         else {
-            json = JSON.parse(data.responseText);
+            var json = JSON.parse(data.responseText);
             alert(json.message);}
     }
 
-    function retrieveData(htmlInfo, URL) {
-        $.getJSON(URL + "get_coincidence/", get_coincidence)
+    function retrieveData(htmlInfo, BASE_URL) {
+        $.getJSON(BASE_URL + "get_coincidence/", get_coincidence)
             .done(loadData)
-            .fail(showError)
+            .fail(showError);
     }
 
     function getExample() {
-        $("#sessionTitle").val('example')
-        $("#sessionPin").val('1337')
-        $("#studentName").val('test')
+        $("#sessionTitle").val('example');
+        $("#sessionPin").val('1337');
+        $("#studentName").val('test');
         get_coincidence.session_title = $("#sessionTitle").val();
         get_coincidence.session_pin = $("#sessionPin").val();
         get_coincidence.student_name = $("#studentName").val();
         if (Dataflag) {
-            retrieveData(htmlInfo, URL);}
+            retrieveData(htmlInfo, BASE_URL);}
     }
 
     function getData() {
-        if ($("#sessionTitle").val() == "" || $("#sessionPin").val() == "" || $("#studentName").val() == "") {
+        if ($("#sessionTitle").val() === "" || $("#sessionPin").val() === "" || $("#studentName").val() === "") {
             alert("Fill in each field");}
         else {
             get_coincidence.session_title = $("#sessionTitle").val();
             get_coincidence.session_pin = $("#sessionPin").val();
             get_coincidence.student_name = $("#studentName").val();
             if (Dataflag) {
-                retrieveData(htmlInfo, URL);}}
+                retrieveData(htmlInfo, BASE_URL);}}
     }
 
     $(function() {
         // Animate HiSPARC logo during ajax activity
         $(document).bind('ajaxStart', function() {
-            $('#pageHeader').addClass('animated');})
+                            $('#pageHeader').addClass('animated');})
                    .bind('ajaxStop', function() {
-            $('#pageHeader').removeClass('animated');});
-
+                            $('#pageHeader').removeClass('animated');});
 
         $("#sessionHash").val(get_coincidence.session_hash);
 
@@ -256,13 +260,16 @@
     </div>
     <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
     <div id="map-id"></div>
-    <div id="result-id">Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8> <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8></div>
+    <div id="result-id">
+        Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8>
+        <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8>
+    </div>
     <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
     <div id="doc_link">
         <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
     </div>
     <div id="dashboard">
-        <form action="">
+        <form>
             <table>
                 <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
                 <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
@@ -271,7 +278,7 @@
         </form>
         <input type="button" id="dataButton" value="Get data">
         <input type="button" id="exampleButton" value="Get example">
-        <form id="info" action="">
+        <form id="info">
             <table id="coinInfo">
             </table>
         </form>

@@ -1,4 +1,4 @@
-.PHONY: gh-pages
+.PHONY: gh-pages test
 
 gh-pages:
 ifeq ($(strip $(shell git status --porcelain | wc -l)), 0)
@@ -16,3 +16,7 @@ ifeq ($(strip $(shell git status --porcelain | wc -l)), 0)
 else
 	$(error Working tree is not clean, please commit all changes.)
 endif
+
+test:
+	jshint --extract auto *.html
+	jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js

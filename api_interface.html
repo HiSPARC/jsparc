@@ -8,6 +8,7 @@
         <script src="scripts/jquery-1.10.2.min.js"></script>
         <script src="jquery.jsparc.js"></script>
         <script>
+            "use strict";
             var jsparc,
                 man = {"api_man": "",
                        "api_clusters": "clusters/",
@@ -26,7 +27,7 @@
                        "api_stations_with_data": "stations/data/{year}/{month}/{day}/",
                        "api_stations_with_weather": "stations/weather/{year}/{month}/{day}/",
                        "api_subclusters": "subclusters/",
-                       "api_subclusters_in_cluster": "clusters/{cluster_number}/"}
+                       "api_subclusters_in_cluster": "clusters/{cluster_number}/"};
 
             function syntaxHighlight(json) {
                 /* Syntax highlighting for JSON
@@ -54,7 +55,7 @@
 
             function year_options() {
                 var select = $('<select>'),
-                    years = jsparc.range(2004, 2015);
+                    years = jsparc.range(2004, new Date().getFullYear() + 1);
                 select.append($('<option>').attr('value', '').text('year'));
                 for (var i = 0; i < years.length; i++) {
                     select.append($('<option>').attr('value', years[i]).text(years[i]));}
@@ -106,7 +107,7 @@
                     result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
                 if (result === null)
                     {result = [];}
-                return result
+                return result;
             }
 	
             $(document).ready(function () {
@@ -121,9 +122,9 @@
 
                 var api_list = [];
                 // Get all api functions 
-                for (i in jsparc) {
-                    if (i.slice(0, 4) == 'api_') {
-                        api_list.push(i)}}
+                for (var fun in jsparc) {
+                    if (fun.slice(0, 4) == 'api_') {
+                        api_list.push(fun);}}
                 var select = $('<select>');
                 for (var i = 0; i < api_list.length; i++) {
                     select.append($('<option>').text(api_list[i].slice(4))
@@ -164,6 +165,9 @@
     <body>
     <div id="container">
         <div id="header"><div id="pageHeader"></div></div>
+        <div id="doc_link">
+            <a href="http://docs.hisparc.nl/publicdb/api_tutorial.html" target="jsparc_doc">➔ Documentation</a>
+        </div>
         <div id="api">
             <div id="api_url">
                 <h3>Choose API option</h3>

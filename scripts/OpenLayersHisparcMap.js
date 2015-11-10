@@ -12,7 +12,10 @@ function createMap(name) {
 
     var map = new OpenLayers.Map(name, options);
 
-    var mapLayer = new OpenLayers.Layer.OSM(null, null,
+    var mapLayer = new OpenLayers.Layer.OSM("Positron",
+        ["http://a.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png",
+         "http://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png",
+         "http://c.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png"],
         {serverResolutions: [156543.03390625, 78271.516953125,
                              39135.7584765625, 19567.87923828125,
                              9783.939619140625, 4891.9698095703125,
@@ -47,17 +50,17 @@ function createStyle(map) {
             else {
                 return ''}},
         getSize: function(feature) {
-            return .5 * map.getZoom();}};
+            return .55 * map.getZoom();}};
     var pointStyle = {
         fillColor: "${getColor}", // using context.getColor(feature)
-        fillOpacity: 0.8,
-        strokeColor: 'black',
-        strokeOpacity: 0.75,
-        strokeWidth: 1,
+        fillOpacity: 0.6,
+        strokeColor: "${getColor}",
+        strokeOpacity: 1,
+        strokeWidth: 1.5,
         pointRadius: "${getSize}", // using context.getSize(feature)
         cursor: 'pointer',
         label: '${getLabel}', // using context.getLabel(feature)
-        labelYOffset: 16,
+        labelYOffset: 17,
         fontSize: 12,
         fontFamily: 'sans-serif',
         fontWeight: 'bold'};

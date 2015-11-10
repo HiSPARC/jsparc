@@ -66,3 +66,7 @@ body {
     color: white;
     margin: 0px;
 }
+
+#station_choice_1 select, #station_choice_2 select {
+    width: 250px;
+}

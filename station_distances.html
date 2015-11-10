@@ -12,6 +12,7 @@
         <script src="scripts/OpenLayersHisparcMap.js"></script>
         <script src="jquery.jsparc.js"></script>
         <script>
+            "use strict";
             var jsparc, map;
 
             function radians(degrees) {
@@ -62,7 +63,7 @@
             function update_distances(station1, station2) {
                 /* Update the map to show the given stations.
                 */
-                var c = .3, // speed of light in m / ns
+                var c = 0.3, // speed of light in m / ns
                     distance = calculate_distance(station1, station2),
                     light_distance = distance / c;
                 $('#distance').text(distance.toFixed(0));
@@ -77,8 +78,8 @@
 
                 var pnt1 = new OpenLayers.Geometry.Point(station1.longitude, station1.latitude).transform(fromProjection, toProjection),
                     pnt2 = new OpenLayers.Geometry.Point(station2.longitude, station2.latitude).transform(fromProjection, toProjection),
-                    feature1 = new OpenLayers.Feature.Vector(pnt1, {id: station1.number, name: station1.number + " - " + station1.name, status: "up"}),
-                    feature2 = new OpenLayers.Feature.Vector(pnt2, {id: station2.number, name: station2.number + " - " + station2.name, status: "up"});
+                    feature1 = new OpenLayers.Feature.Vector(pnt1, {id: station1.number, name: station1.number + " - " + station1.name, status: "down"}),
+                    feature2 = new OpenLayers.Feature.Vector(pnt2, {id: station2.number, name: station2.number + " - " + station2.name, status: "down"});
                 station_layer.addFeatures([feature1, feature2]);
 
                 // Zoom to fit cluster
