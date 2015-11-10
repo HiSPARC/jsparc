@@ -125,15 +125,26 @@
                         y = $('#select_variables input[name=y-axis]:checked'),
                         xset = x.parents('table').attr('name'),
                         yset = y.parents('table').attr('name'),
-                        x_min = parseFloat($("#plot_x_limits input[name=plot_x_min]").val()),
-                        x_max = parseFloat($("#plot_x_limits input[name=plot_x_max]").val()),
                         xlog = $("#plot_x_axis :checked").val() !== 'none',
-                        y_min = parseFloat($("#plot_y_limits input[name=plot_y_min]").val()),
-                        y_max = parseFloat($("#plot_y_limits input[name=plot_y_max]").val()),
                         ylog = $("#plot_y_axis :checked").val() !== 'none',
+                        x_min, x_max,
+                        y_min, y_max,
                         data_to_plot,
                         i;
                     var x_data, y_data;
+
+                    if ($('#use_x_limits').prop('checked')) {
+                        x_min = parseFloat($("#plot_x_limits input[name=plot_x_min]").val());
+                        x_max = parseFloat($("#plot_x_limits input[name=plot_x_max]").val());}
+                    else {
+                        x_min = null;
+                        x_max = null;}
+                    if ($('#use_y_limits').prop('checked')) {
+                        y_min = parseFloat($("#plot_y_limits input[name=plot_y_min]").val());
+                        y_max = parseFloat($("#plot_y_limits input[name=plot_y_max]").val());}
+                    else {
+                        y_min = null;
+                        y_max = null;}
 
                     jsparc.add_flot_options(jsparc.flot_xlimits(x_min, x_max));
                     jsparc.add_flot_options(jsparc.flot_ylimits(y_min, y_max));
@@ -184,8 +195,8 @@
                         jsparc.add_flot_options(jsparc.flot_y_axis_labels(y.data('label')));
                         if (xset != yset) {
                             y_data = jsparc.linear_interpolation(jsparc.get_ext_timestamp(xset),
-                                                                     jsparc.get_ext_timestamp(yset),
-                                                                     jsparc.get_column(y.val(), yset));}
+                                                                 jsparc.get_ext_timestamp(yset),
+                                                                 jsparc.get_column(y.val(), yset));}
                         else {
                             y_data = jsparc.get_column(y.val(), yset);}
 
@@ -222,7 +233,8 @@
                         data_to_plot[i] = jsparc.remove_error_values(data_to_plot[i]);}
 
                     if (jsparc.is_data_empty(data_to_plot)) {
-                        alert('No data to plot. The selected data may contain only error values or values invalid for logarithmic axes.');
+                        alert('No data to plot. The selected data may contain only ' +
+                              'error values or values invalid for logarithmic axes.');
                         return;}
 
                     // Get selected fit options
@@ -319,16 +331,33 @@
                     $('#controls').show();
                 });
 
+                $('#use_y_limits').on('change', function() {
+                    if ($(this).prop('checked')) {
+                        $('#plot_y_limits input[type=number]').prop('disabled', false);}
+                    else {
+                        $('#plot_y_limits input[type=number]').prop('disabled', true);}
+                });
+
+                $('#use_x_limits').on('change', function() {
+                    if ($(this).prop('checked')) {
+                        $('#plot_x_limits input[type=number]').prop('disabled', false);}
+                    else {
+                        $('#plot_x_limits input[type=number]').prop('disabled', true);}
+                });
+
                 $('#plot_type').on('change', 'input', function() {
-                    if ($(this).val() == 'histogram') {jsparc.enable_radio_set('x-axis');
-                                                       jsparc.disable_radio_set('y-axis');
-                                                       $('#hist_bins input').prop('disabled', false);}
-                    else if ($(this).val() == 'scatter') {jsparc.enable_radio_set('x-axis');
-                                                          jsparc.enable_radio_set('y-axis');
-                                                          $('#hist_bins input').prop('disabled', true);}
-                    else if ($(this).val() == 'timeseries') {jsparc.disable_radio_set('x-axis');
-                                                             jsparc.enable_radio_set('y-axis');
-                                                             $('#hist_bins input').prop('disabled', true);}
+                    if ($(this).val() == 'histogram') {
+                        jsparc.enable_radio_set('x-axis');
+                        jsparc.disable_radio_set('y-axis');
+                        $('#hist_bins input').prop('disabled', false);}
+                    else if ($(this).val() == 'scatter') {
+                        jsparc.enable_radio_set('x-axis');
+                        jsparc.enable_radio_set('y-axis');
+                        $('#hist_bins input').prop('disabled', true);}
+                    else if ($(this).val() == 'timeseries') {
+                        jsparc.disable_radio_set('x-axis');
+                        jsparc.enable_radio_set('y-axis');
+                        $('#hist_bins input').prop('disabled', true);}
                 });
 
                 // Set Degree to disabled if polynomial not selected
@@ -341,8 +370,9 @@
                 });
 
                 // Update plot settings
-                $('#plot_settings').on('change', 'input', function() {
-                    jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return jsparc['flot_' + $(this).val()]();}));
+                $('#plot_settings').on('change', 'input[type=radio]', function() {
+                    jsparc.set_flot_options($('#plot_settings input[type=radio]:checked').map(function () {
+                        return jsparc['flot_' + $(this).val()]();}));
                 });
             });
         </script>
@@ -392,8 +422,9 @@
                     </span><br>
                     <span class="key">x-Axis:</span><br>
                     <span id="plot_x_limits">
-                        Limits <input name="plot_x_min" style="width: 38px;" type="number" value="null">
-                               <input name="plot_x_max" style="width: 45px;" type="number" value="null"><br>
+                        <input id="use_x_limits" type="checkbox">
+                        Limits <input name="plot_x_min" style="width: 38px;" type="number" value="null" disabled>
+                               <input name="plot_x_max" style="width: 45px;" type="number" value="null" disabled><br>
                     </span>
                     <span id="plot_x_axis">
                         <input name="plot_x_axis" type="radio" value="none" checked> Linear<br>
@@ -401,8 +432,9 @@
                     </span><br>
                     <span class="key">y-Axis:</span><br>
                     <span id="plot_y_limits">
-                        Limits <input name="plot_y_min" style="width: 38px;" type="number" value="null">
-                               <input name="plot_y_max" style="width: 45px;" type="number" value="null"><br>
+                        <input id="use_y_limits" type="checkbox">
+                        Limits <input name="plot_y_min" style="width: 38px;" type="number" value="null" disabled>
+                               <input name="plot_y_max" style="width: 45px;" type="number" value="null" disabled><br>
                     </span>
                     <span id="plot_y_axis">
                         <input name="plot_y_axis" type="radio" value="none" checked> Linear<br>
