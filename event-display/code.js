@@ -171,8 +171,8 @@ d3.json('./stations.json?nocache=' + Math.random(), function(error, data) {
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]]);
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">' +
-                     'OpenStreetMap</a> contributors, ' +
+        attribution: '<a href="../index.html">jSparc</a>, ' +
+                     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
                      '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         maxZoom: 18
     }).addTo(map);

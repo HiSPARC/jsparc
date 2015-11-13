@@ -29,3 +29,17 @@ body {
         background: url(../images/HiSPARC_animated_traces@2x.png) top right no-repeat;
         background-size: 180px 63px;}
 }
+
+#doc_link {
+    width: 100%;
+    height: 16px;}
+
+#doc_link a {
+    font-size: 80%;
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    margin-right: 15px;
+    float: right;}

@@ -38,13 +38,26 @@ body {
         background-size: 180px 63px;}
 }
 
+#doc_link {
+    width: 100%;
+    height: 16px;}
+
+#doc_link a {
+    font-size: 80%;
+    cursor: pointer;
+    color: #25B !important;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    margin-right: 15px;
+    float: right;}
+
 #station_choice {
     text-align: center;}
 
 
 #menu, #header, #map {
-    display: table-row;
-}
+    display: table-row;}
 
 #map, #olmap {
     height: 100%;}
@@ -52,21 +65,17 @@ body {
 #wrapper {
     display: table;
     height: 100%;
-    width: 100%;
-}
+    width: 100%;}
 
 #error {
     display: none;
     background: #c55;
-    padding: 10px;
-}
+    padding: 10px;}
 
 #error p {
     text-align: center;
     color: white;
-    margin: 0px;
-}
+    margin: 0px;}
 
 #station_choice_1 select, #station_choice_2 select {
-    width: 250px;
-}
+    width: 250px;}

@@ -43,11 +43,11 @@
     display: block;
     width: 180px;
     height: 63px;
-    background: url(images/HiSPARC_animated_traces.png) top right no-repeat;
+    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
     background-size: 180px 63px;}
 
 #pageHeader.animated {
-    background: url(images/HiSPARC_animated.gif) top right no-repeat;
+    background: url(../images/HiSPARC_animated.gif) top right no-repeat;
     background-size: 180px 63px;}
 
 
@@ -61,7 +61,7 @@
     top: 65px;}
 
 #doc_link a {
-    font-size: 80%;
+    font-size: 75%;
     cursor: pointer;
     color: #25B !important;
     text-decoration: none;
