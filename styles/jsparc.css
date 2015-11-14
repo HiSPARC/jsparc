@@ -2,13 +2,11 @@
     width: 440px;
     height: 25px;
     background-color: #ddd;
-    border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 5px 0 0;
     text-align: center;
     font-size: .95em;
-    padding: 5px 5px 0px 5px;
+    padding: 5px 5px 0 5px;
     visibility: hidden;
-    position: absolute;
-    margin: 0px;
     left: 350px;
     top: 5px;}
 
@@ -17,64 +15,34 @@
     height: 25px;
     padding: 5px;
     visibility: hidden;
-    position: absolute;
-    margin: 0px;
     left: 350px;
     top: 490px;}
 
 #map-id {
     width: 450px;
     height: 455px;
-    position: absolute;
-    margin: 0px;
     left: 350px;
     top: 35px;}
 
 #logo {
     width: 180px;
     height: 63px;
-    padding: 0px;
-    position: absolute;
-    margin: 0px;
+    padding: 0;
     left: 805px;
-    top: 0px;}
-
-#pageHeader {
-    display: block;
-    width: 180px;
-    height: 63px;
-    background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
-    background-size: 180px 63px;}
-
-#pageHeader.animated {
-    background: url(../images/HiSPARC_animated.gif) top right no-repeat;
-    background-size: 180px 63px;}
-
+    top: 0;}
 
 #doc_link {
     width: 190px;
-    height: 18px;
-    padding: 0px;
-    position: absolute;
-    margin: 0px;
+    padding: 0;
     left: 805px;
     top: 65px;}
 
 #doc_link a {
-    font-size: 75%;
-    cursor: pointer;
-    color: #25B !important;
-    text-decoration: none;
-    font-weight: bold;
-    position: relative;
-    margin-right: 15px;
-    float: right;}
+    font-size: 75%;}
 
 #dashboard {
     height: 470px;
     padding: 5px;
-    position: absolute;
-    margin: 0px;
     left: 805px;
     top: 80px;}
 
@@ -82,10 +50,18 @@
     width: 335px;
     height: 500px;
     padding: 5px;
+    left: 0;
+    top: 0;}
+
+#datum-id,
+#result-id,
+#map-id,
+#logo,
+#doc_link,
+#dashboard,
+#graph-id {
     position: absolute;
-    margin: 0px;
-    left: 0px;
-    top: 0px;}
+    margin: 0;}
 
 #choice {
     width: 335px;
@@ -112,7 +88,7 @@ body {
     background: #fff;}
 
 img {
-    border: 0px;}
+    border: 0;}
 
 input {
     font-family: Arial, Sans-Serif;
@@ -141,13 +117,16 @@ input[type="button"] {
 #datum {
     margin-right: 30px;}
 
-#datum, #gmst {
+#datum,
+#gmst {
     font-family: Arial, Sans-Serif;}
 
 table {
-    border: 0px;}
+    border: 0;}
 
-.tracegraph, .coincidencegraph, .jqplot-yaxis-label {
+.tracegraph,
+.coincidencegraph,
+.jqplot-yaxis-label {
     color: #000;}
 
 .olControlAttribution {
@@ -162,7 +141,7 @@ table {
 
 .olControlScaleLine {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     left: 0;
     background: rgba(255, 255, 255, 0.7);
     font-family: Arial;
@@ -190,29 +169,20 @@ table {
 
 #choice1 {
     background: #f00;
-    display: none;
     color: #fff;}
 
-#choice2 {
-    background: #f90;
-    display: none;}
+#choice2 {background: #f90;}
+#choice3 {background: #ff0;}
+#choice4 {background: #6f0;}
+#choice5 {background: #6ff;}
+#choice6 {background: #f0f;}
+#choice7 {background: #ccc;}
 
-#choice3 {
-    background: #ff0;
-    display: none;}
-
-#choice4 {
-    background: #6f0;
-    display: none;}
-
-#choice5 {
-    background: #6ff;
-    display: none;}
-
-#choice6 {
-    background: #f0f;
-    display: none;}
-
+#choice1,
+#choice2,
+#choice3,
+#choice4,
+#choice5,
+#choice6,
 #choice7 {
-    background: #ccc;
     display: none;}
