@@ -1,52 +1,52 @@
 <!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <link rel="icon" type="image/vnd.microsoft.icon" href="images/favicon.ico">
-    <title>HiSPARC - jSparc - Trigger simulation</title>
-    <script type="text/javascript" src="scripts/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript">
-        "use strict";
-        // Trigger rate in Hz
-        // Update interval in s
-        var trigger_rate = 0.3,
-            interval = 0.1,
-            hisparc;
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <title>HiSPARC - jSparc - Trigger simulation</title>
+        <script src="scripts/jquery-1.10.2.min.js"></script>
+        <script>
+            "use strict";
+            // Trigger rate in Hz
+            // Update interval in s
+            var trigger_rate = 0.3,
+                interval = 0.1,
+                hisparc;
 
-        function check_trigger() {
-            var on = Math.random();
-            if (on < (trigger_rate * interval)) {
-                hisparc.removeClass('none').addClass('trigger');}
-            else {
-                hisparc.removeClass('trigger').addClass('none');}
-        }
+            function check_trigger() {
+                var on = Math.random();
+                if (on < (trigger_rate * interval)) {
+                    hisparc.removeClass('none').addClass('trigger');}
+                else {
+                    hisparc.removeClass('trigger').addClass('none');}
+            }
 
-        $(function() {
-            hisparc = $('#hisparciii');
-            setInterval(function() {check_trigger();},
-                        interval * 1000);
-        });
-    </script>
-    <style>
-        #hisparciii {
-            margin: 0 auto;
-            width: 728px;
-            height: 455px;
-            /* transition: background 0.05s linear; */}
+            $(function() {
+                hisparc = $('#hisparciii');
+                setInterval(function() {check_trigger();},
+                            interval * 1000);
+            });
+        </script>
+        <style>
+            #hisparciii {
+                margin: 0 auto;
+                width: 728px;
+                height: 455px;
+                /* transition: background 0.05s linear; */}
 
-        .trigger {
-            background-image: url('images/hisparciii_front_power_hit_trigger.png');}
+            .trigger {
+                background-image: url('images/hisparciii_front_power_hit_trigger.png');}
 
-        #preload-trigger {
-        	background: url('images/hisparciii_front_power_hit_trigger.png') no-repeat -9999px -9999px;}
+            #preload-trigger {
+                background: url('images/hisparciii_front_power_hit_trigger.png') no-repeat -9999px -9999px;}
 
-        .none {
-            background-image: url('images/hisparciii_front_power_hit.png');}
-    </style>
-</head>
+            .none {
+                background-image: url('images/hisparciii_front_power_hit.png');}
+        </style>
+    </head>
 
-<body>
-    <div id="hisparciii" class="none"></div>
-    <div id="preload-trigger"></div>
-</body>
+    <body>
+        <div id="hisparciii" class="none"></div>
+        <div id="preload-trigger"></div>
+    </body>
 </html>
