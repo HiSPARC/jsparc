@@ -27,17 +27,17 @@
 
    {timestamp: "coincidence timestamp",
     nanoseconds: "nanoseconds of coincidence timestamp",
-    events:[status: "statusinformation",
-            timestamp: "event timestamp",
-            nanoseconds: "nanoseconds of event"
-            longitude: "longitude of station",
-            latitude: "latitude of station",
-            altitude: "altitude of station",
-            number: "numbers of station",
-            pulseheights: ["the pulseheights of the trace 0/3 in mV"],
-            integrals: ["the area above the trace in mVns"],
-            mips: ["numper of mips for each detector"],
-            traces: [["arrays of data of the traces 0/3"]]]}
+    events: {status: "statusinformation",
+             timestamp: "event timestamp",
+             nanoseconds: "nanoseconds of event"
+             longitude: "longitude of station",
+             latitude: "latitude of station",
+             altitude: "altitude of station",
+             number: "numbers of station",
+             pulseheights: ["the pulseheights of the trace 0/3 in mV"],
+             integrals: ["the area above the trace in mVns"],
+             mips: ["numper of mips for each detector"],
+             traces: [["arrays of data of the traces 0/3"]]}}
 
    The variable "htmlInfo" contains information of the script wich calls the
    function and gives the names of input (output) instances, for intance:
@@ -49,7 +49,7 @@
     mipCalcId: "id for the input of the calculated flux",
     energyId: "id for the input for the calculated energy",
     stationEr: "id for the error of the energy using the station averages",
-    showerEr: "id for the input of the error using the detected values"};
+    showerEr: "id for the input of the error using the detected values"}
 
    Several functions to calculate the energy of the primary particle.
    The azimuth dependency is not used!!
