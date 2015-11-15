@@ -1,3 +1,8 @@
+"use strict";
+
+// Counter the options in jshintrc
+/* globals toProjection: true, fromProjection: true */
+
 var fromProjection = new OpenLayers.Projection("EPSG:4326"); // transform from WGS 1984
 var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 
@@ -43,14 +48,14 @@ function createStyle(map) {
                 "unknown": 'grey',
                 "gpsold": '#B85C32',
                 "gpsnew": '#2A7AE2'};
-            return colors[feature.attributes["status"]];},
+            return colors[feature.attributes.status];},
         getLabel: function(feature) {
             if (map.getZoom() >= 14) {
-                return feature.attributes["id"];}
+                return feature.attributes.id;}
             else {
-                return ''}},
+                return '';}},
         getSize: function(feature) {
-            return .55 * map.getZoom();}};
+            return 0.55 * map.getZoom();}};
     var pointStyle = {
         fillColor: "${getColor}", // using context.getColor(feature)
         fillOpacity: 0.6,

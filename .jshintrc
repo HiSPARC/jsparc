@@ -2,8 +2,8 @@
     "browser": true,  // assume brower for 'setTimeout'
     "curly": true,  // require brackets around blocks in loops/conditionals
     "devel": true,  // allow 'console'
-    "globalstrict": true,  // allow global 'use strict'
-    "loopfunc": true,
+    "strict": "global",  // require global use strict for each script
+    "loopfunc": true,  // allow defining functions in loops
     "newcap": false,
     "jquery": true,  // assume jQuery is used
     "globals": {
