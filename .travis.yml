@@ -8,7 +8,7 @@ node_js:
   - stable
 
 before_install:
-  - npm install -g jshint
+  - npm install -g jshint@latest
   - wget https://raw.githubusercontent.com/mozilla/html5-lint/master/html5check.py
 
 script:
