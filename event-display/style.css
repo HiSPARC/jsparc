@@ -27,7 +27,7 @@ svg {
     background-size: 90px 31px;}
 
 .coincidence {
-  fill: red;
+  fill: #D10;
   -webkit-transform: scale(1.5);
   transform: scale(1.5);
   -webkit-transform-origin: 50% 50%;
@@ -35,7 +35,7 @@ svg {
 }
 
 .event {
-  fill: SlateGray;
+  fill: #08C;
   -webkit-transform: scale(.8);
   transform: scale(.8);
   -webkit-transform-origin: 50% 50%;
@@ -60,5 +60,5 @@ svg {
     border-radius: 50%;
 }
 
-.legend-coincidence {background: red;}
-.legend-event {background: SlateGray;}
+.legend-coincidence {background: #D10;}
+.legend-event {background: #08C;}

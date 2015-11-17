@@ -48,7 +48,7 @@ function marker_size(event) {
     */
     var num_particles = event.n1 + event.n2 + event.n3 + event.n4,
         log_particles = Math.log10(1 + num_particles),
-        size = 10 * Math.sqrt(log_particles);
+        size = 25 * Math.sqrt(log_particles);
     return size;
 }
 
