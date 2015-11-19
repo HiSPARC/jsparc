@@ -1,5 +1,10 @@
 "use strict";
 
+// Fix Math.log10 support for IE
+Math.log10 = Math.log10 || function(x) {
+  return Math.log(x) / Math.LN10;
+};
+
 var SPEEDUP_FACTOR = 1;
 
 var station_info, timestamp_start, timestamp_end;
