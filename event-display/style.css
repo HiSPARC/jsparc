@@ -64,6 +64,6 @@ svg {
 .legend-event {background: #08C;}
 
 img.leaflet-tile {
-    filter: contrast(300%) brightness(50%);
-    -webkit-filter: contrast(300%) brightness(50%);
+    filter: brightness(.75) contrast(2);
+    -webkit-filter: brightness(.75) contrast(2);
 }
