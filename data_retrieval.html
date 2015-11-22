@@ -25,7 +25,7 @@
                 messageStyle: "none",
                 tex2jax: {preview: "none"}});
         </script>
-        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>
             "use strict";
             var jsparc;
@@ -292,8 +292,8 @@
 
                 // Show trace button
                 $('#preview').on('click', 'td.trace', function() {
-                    $('#preview tr.selectedEvent').removeClass('selectedEvent');
-                    $(this).parent().addClass('selectedEvent');
+                    $('#preview tr.selectedRow').removeClass('selectedRow');
+                    $(this).parent().addClass('selectedRow');
                     var url = $(this).attr('data-url');
                     jsparc.get_json(url).done(function(data) {
                         // Set plot options
@@ -305,12 +305,15 @@
                         $('#plot').show();
                         $('#graph').show();
                         jsparc.show_id('plot');
-                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {return jsparc['flot_' + $(this).val()]();}));
+                        jsparc.set_flot_options($('#plot_settings input:checked').map(function () {
+                            return jsparc['flot_' + $(this).val()]();}));
                     });
                 });
 
                 // Dataset list buttons
                 $('#dataset_list').on('click', '.preview', function() {
+                    $('#dataset_list tr.selectedRow').removeClass('selectedRow');
+                    $(this).parent().addClass('selectedRow');
                     jsparc.create_dataset_table($(this).attr('name'),
                                                 $('#preview'), 29);
                     $('#results').show();

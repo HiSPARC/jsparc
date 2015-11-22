@@ -603,7 +603,7 @@ be stored as strings.
                 var ncol = (format[key].column.length) ? format[key].column.length : 1;
                 firstrow.append($('<th>').text(format[key].name).attr('colspan', ncol));}
             if (type == 'events') {
-                firstrow.append($('<th>').text('trace'));}
+                firstrow.append($('<th>').text('Trace'));}
             table.append(firstrow);
 
             // Data rows

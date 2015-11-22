@@ -57,10 +57,11 @@ td {
     text-decoration: none;
     font-weight: bold;}
 
+#dataset_list table,
 #preview table {
     border-collapse: collapse;}
 
-#preview tr.selectedEvent {
+tr.selectedRow {
     background-color: #ddd;}
 
 .units:before {
