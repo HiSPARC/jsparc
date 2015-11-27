@@ -136,7 +136,7 @@ be stored as strings.
 
         jsparc.download_dataset = download_dataset;
         function download_dataset(station_number, startdate, enddate, type) {
-            /* Store the result of downlaoding data to the datasets
+            /* Store the result of downloading data to the datasets
 
             The url will be used as key to reference the data
 
@@ -146,7 +146,7 @@ be stored as strings.
             if (datasets[url]) {
                 alert('That dataset is already available');
                 return;}
-            return get_csv(url)
+            return get_tsv(url)
                    .done(function(data) {
                        if (!data.length) {
                            alert('No data found for the requested variables');}
@@ -173,7 +173,7 @@ be stored as strings.
                 alert('That dataset is already available');
                 return;}
             reader.onload = function(event) {
-                var data = parse_csv(event.target.result),
+                var data = parse_tsv(event.target.result),
                     info = parse_filename(file.name);
                 if (!data.length) {
                     alert('No data in the chosen file');}
@@ -499,8 +499,11 @@ be stored as strings.
                 row.append($('<td>').text(datasets[i].enddate).addClass('end'));
                 row.append($('<td>').text(datasets[i].data.length).addClass('entries'));
                 row.append($('<td>').text('show').addClass('preview').attr('name', datasets[i].url));
-                row.append($('<td>').text('csv').addClass('download')
-                                    .attr('name', datasets[i].url + '&download=true'));
+                if (datasets[i].url.slice(0, 4) == 'http') {
+                    row.append($('<td>').text('tsv').addClass('download')
+                                        .attr('name', datasets[i].url + '&download=true'));}
+                else {
+                    row.append($('<td>').text('-'));}
                 row.append($('<td>').text('x').addClass('delete'));
                 list.append(row);}
             target.html(list);
@@ -641,11 +644,11 @@ be stored as strings.
             return $.when.apply(null, urls.map(function (url) {return get_json(url);}));
         }
 
-        jsparc.get_multiple_csv = get_multiple_csv;
-        function get_multiple_csv(urls) {
-            /* Asynchronously download multiple urls of type csv
+        jsparc.get_multiple_tsv = get_multiple_tsv;
+        function get_multiple_tsv(urls) {
+            /* Asynchronously download multiple urls of type tsv
             */
-            return $.when.apply(null, urls.map(function (url) {return get_csv(url);}));
+            return $.when.apply(null, urls.map(function (url) {return get_tsv(url);}));
         }
 
         jsparc.get_json = get_json;
@@ -657,16 +660,16 @@ be stored as strings.
                            type: 'GET'});
         }
 
-        jsparc.get_csv = get_csv;
-        function get_csv(url) {
-            /* Asynchronously download data of type csv
+        jsparc.get_tsv = get_tsv;
+        function get_tsv(url) {
+            /* Asynchronously download data of type tsv
 
-            The csv data will be converted to an array
+            The tsv data will be converted to an array
             Comment headers will be removed
 
             */
             return $.ajax({url: url,
-                           converters: {'text json': parse_csv},
+                           converters: {'text json': parse_tsv},
                            dataType: 'json',
                            type: 'GET'});
         }
@@ -752,11 +755,11 @@ be stored as strings.
             /* Construct URLs to access local example data
             */
             if (type == 'events') {
-                return './examples/events-s501-20130910.csv';}
-                //return './examples/events-s8006-20130910.csv';}
+                return './examples/events-s501-20130910.tsv';}
+                //return './examples/events-s8006-20130910.tsv';}
             else {
-                return './examples/weather-s501-20130910.csv';}}
-                //return './examples/weather-s8006-20130910.csv';}}
+                return './examples/weather-s501-20130910.tsv';}}
+                //return './examples/weather-s8006-20130910.tsv';}}
 
         jsparc.data_download = data_download;
         function data_download(station_number, startdate, enddate, type) {
@@ -1122,7 +1125,7 @@ be stored as strings.
 
         jsparc.parse_filename = parse_filename;
         function parse_filename(filename) {
-            /* Get data type, station number, start and end date from csv name
+            /* Get data type, station number, start and end date from tsv name
 
             name should be of format: '[type]-s[station number]-[date]'
             where date can be one of the following formats:
@@ -1135,12 +1138,15 @@ be stored as strings.
             var delimiter = '-',
                 date_delimiter = '_',
                 empty = '',
-                extension = '.csv';
+                extension = '.tsv',
+                alt_extension = '.csv';
 
             var station_number, start, end;
 
             try {
-                var parts = filename.replace(extension, empty).split(delimiter);
+                var parts = filename.replace(extension, empty)
+                                    .replace(alt_extension, empty)
+                                    .split(delimiter);
                 if (parts[1][0] == 's') {
                     station_number = parts[1].substring(1);}
                 else {
@@ -1186,16 +1192,16 @@ be stored as strings.
                         'enddate': 'unknown'};}
         }
 
-        jsparc.parse_csv = parse_csv;
-        function parse_csv(csv) {
-            /* Convert downloaded csv to 2D Array
+        jsparc.parse_tsv = parse_tsv;
+        function parse_tsv(tsv) {
+            /* Convert downloaded tsv to 2D Array
             */
             var eol = '\n',
                 delimiter = '\t',
                 empty = '',
                 comments = '#';
             var data = [];
-            var lines = csv.split(eol);
+            var lines = tsv.split(eol);
             var values;
             while (lines.length !== 0 && lines[0][0] == comments) {
                 lines.splice(0, 1);}

@@ -38,9 +38,9 @@ Once you have made your choices click *Get Data!*.
 Local data
 ^^^^^^^^^^
 
-If you already have a .csv file (tab-separated values) on your computer,
+If you already have a .tsv file (tab-separated values) on your computer,
 you can load that into the web application. The application will try to
-interpert the filename of the .csv the following way: *[data
+interpert the filename of the .tsv the following way: *[data
 type]-s[station number]-[start date]_[end date]*. If the data type is
 one of the types provided by the |hisparc| Public Database the web
 application tries to identify the columns, otherwise it will simply
@@ -73,7 +73,7 @@ Controls
 Here you can choose which datasets you wish to use for creating plots by
 selecting them in the *Choice* columns. The *Preview* button creates a
 table overview of the dataset. The *Download* button downloads the dataset
-as a .csv file (tab-separated), which can be imported in other
+as a .tsv file (tab-separated), which can be imported in other
 applications like Excel. Finally there is a *Remove* button, this simply
 removes the dataset from the browser memory.
 
