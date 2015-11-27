@@ -78,6 +78,13 @@ be stored as strings.
                               'pmt_voltage': {'column': [1, 2, 3, 4], 'name': 'PMT voltage', 'units': 'V'}},
             current_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
                               'pmt_current': {'column': [1, 2, 3, 4], 'name': 'PMT current', 'units': 'mA'}},
+            trigger_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                              'low': {'column': [1, 2, 3, 4], 'name': 'Low threshold', 'units': 'ADC'},
+                              'high': {'column': [5, 6, 7, 8], 'name': 'High threshold', 'units': 'ADC'},
+                              'n_low': {'column': 9, 'name': 'Number of low', 'units': 'count'},
+                              'n_high': {'column': 10, 'name': 'Number of high', 'units': 'count'},
+                              'and_or': {'column': 10, 'name': 'And-or', 'units': 'boolean'},
+                              'external': {'column': 10, 'name': 'External', 'units': 'ternary'}},
             detector_timing_offsets_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
                                               'detector_timing_offset': {'column': [1, 2, 3, 4], 'name': 'Detector timing offset', 'units': 'ns'}},
             coincidencenumber_format = {'n_stations': {'column': 0, 'name': 'Number of stations', 'units': 'count'},
@@ -107,6 +114,7 @@ be stored as strings.
         jsparc.barometer_format = barometer_format;
         jsparc.voltage_format = voltage_format;
         jsparc.current_format = current_format;
+        jsparc.trigger_format = trigger_format;
         jsparc.detector_timing_offsets_format = detector_timing_offsets_format;
         jsparc.coincidencenumber_format = coincidencenumber_format;
         jsparc.coincidencetime_format = coincidencetime_format;
