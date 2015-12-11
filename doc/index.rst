@@ -26,3 +26,4 @@ Contents
 
    jsparc_analysis
    data_retrieval
+   event-display
