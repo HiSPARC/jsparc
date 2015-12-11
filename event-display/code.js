@@ -5,6 +5,14 @@ Math.log10 = Math.log10 || function(x) {
   return Math.log(x) / Math.LN10;
 };
 
+// Reload when changing cluster
+window.onhashchange = function() {
+    window.location.reload();
+};
+
+if (location.hash === '') {
+    location.hash = 'science_park';}
+
 var SPEEDUP_FACTOR = 1;
 
 var station_info, timestamp_start, timestamp_end;
@@ -47,6 +55,35 @@ legend.onAdd = function(map) {
 };
 
 legend.addTo(map);
+
+// select subcluster
+var legend = L.control({position: 'bottomright'});
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div');
+    var clusters = ['network', 'aarhus', 'alphen_aan_de_rijn',
+                    'amsterdam', 'bath', 'birmingham', 'bristol',
+                    'eindhoven', 'enschede', 'groningen', 'haarlem',
+                    'kennemerland', 'leiden', 'middelharnis',
+                    'nijmegen', 'science_park', 'tilburg', 'utrecht',
+                    'venray', 'weert', 'zaanstad', 'zwijndrecht'];
+    var select = '<select id="cluster" onchange="set_hash()">';
+    for (var i = 0; i < clusters.length; i ++) {
+        if (clusters[i] == location.hash.substring(1)) {
+            select += '<option selected>' + clusters[i] + '</option>';
+        } else {
+            select += '<option>' + clusters[i] + '</option>';
+        }
+    }
+    select += '</select>';
+    div.innerHTML = select;
+    return div;
+};
+
+legend.addTo(map);
+
+function set_hash() {
+    location.hash = document.getElementById("cluster").value;
+}
 
 function marker_size(event) {
     /* Calculate marker size for an event based on particle counts
@@ -158,7 +195,7 @@ function update_event(events, station) {
     }
 }
 
-d3.json('./stations.json?nocache=' + Math.random(), function(error, data) {
+d3.json('./data/stations_' + location.hash.substring(1) + '.json?nocache=' + Math.random(), function(error, data) {
     timestamp_start = data.limits[0];
     timestamp_end = data.limits[1];
     station_info = data.stations;
@@ -182,14 +219,14 @@ d3.json('./stations.json?nocache=' + Math.random(), function(error, data) {
         maxZoom: 18
     }).addTo(map);
 
-    d3.json('./coincidences.json?cache=' + timestamp_start + timestamp_end,
+    d3.json('./data/coincidences_' + location.hash.substring(1) + '.json?cache=' + timestamp_start + timestamp_end,
             function(error, data) {
                 update_coincidence(data);
             }
     );
 
     function load_json(station) {
-        d3.json('./events-s' + station + '.json?cache=' + timestamp_start + timestamp_end,
+        d3.json('./data/events_s' + station + '.json?cache=' + timestamp_start + timestamp_end,
                 function(error, data) {
                     update_event(data, station);
                 }
