@@ -7,8 +7,8 @@ Math.log10 = Math.log10 || function(x) {
 
 // Reload when changing cluster
 window.onhashchange = function() {
-    window.location.reload()
-}
+    window.location.reload();
+};
 
 if (location.hash === '') {
     location.hash = 'science_park';}
