@@ -216,7 +216,7 @@ d3.json('./data/stations_' + location.hash.substring(1) + '.json?nocache=' + Mat
         attribution: '<a href="../index.html">jSparc</a>, ' +
                      '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
                      '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        maxZoom: 18
+        maxZoom: 20
     }).addTo(map);
 
     d3.json('./data/coincidences_' + location.hash.substring(1) + '.json?cache=' + timestamp_start + timestamp_end,
