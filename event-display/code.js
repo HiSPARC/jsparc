@@ -2,7 +2,7 @@
 
 // Fix Math.log10 support for IE
 Math.log10 = Math.log10 || function(x) {
-  return Math.log(x) / Math.LN10;
+    return Math.log(x) / Math.LN10;
 };
 
 // Reload when changing cluster
@@ -10,7 +10,22 @@ window.onhashchange = function() {
     window.location.reload();
 };
 
-if (location.hash === '') {
+function get_hash() {
+    return location.hash.substring(1).toLowerCase()
+                   .split(' ').join('_').split('%20').join('_');
+}
+
+function set_hash() {
+    location.hash = document.getElementById("cluster").value;
+}
+
+var CLUSTERS = ['network', 'aarhus', 'alphen_aan_de_rijn', 'amsterdam',
+                'bath', 'birmingham', 'bristol', 'eindhoven', 'enschede',
+                'groningen', 'haarlem', 'kennemerland', 'leiden',
+                'middelharnis', 'nijmegen', 'science_park', 'tilburg',
+                'utrecht', 'venray', 'weert', 'zaanstad', 'zwijndrecht'];
+
+if (location.hash === '' || CLUSTERS.indexOf(get_hash()) === -1) {
     location.hash = 'science_park';}
 
 var SPEEDUP_FACTOR = 1;
@@ -60,18 +75,12 @@ legend.addTo(map);
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
     var div = L.DomUtil.create('div');
-    var clusters = ['network', 'aarhus', 'alphen_aan_de_rijn',
-                    'amsterdam', 'bath', 'birmingham', 'bristol',
-                    'eindhoven', 'enschede', 'groningen', 'haarlem',
-                    'kennemerland', 'leiden', 'middelharnis',
-                    'nijmegen', 'science_park', 'tilburg', 'utrecht',
-                    'venray', 'weert', 'zaanstad', 'zwijndrecht'];
     var select = '<select id="cluster" onchange="set_hash()">';
-    for (var i = 0; i < clusters.length; i ++) {
-        if (clusters[i] == location.hash.substring(1)) {
-            select += '<option selected>' + clusters[i] + '</option>';
+    for (var i = 0; i < CLUSTERS.length; i ++) {
+        if (CLUSTERS[i] == get_hash()) {
+            select += '<option selected>' + CLUSTERS[i] + '</option>';
         } else {
-            select += '<option>' + clusters[i] + '</option>';
+            select += '<option>' + CLUSTERS[i] + '</option>';
         }
     }
     select += '</select>';
@@ -80,10 +89,6 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
-
-function set_hash() {
-    location.hash = document.getElementById("cluster").value;
-}
 
 function marker_size(event) {
     /* Calculate marker size for an event based on particle counts
@@ -195,7 +200,7 @@ function update_event(events, station) {
     }
 }
 
-d3.json('./data/stations_' + location.hash.substring(1) + '.json?nocache=' + Math.random(), function(error, data) {
+d3.json('./data/stations_' + get_hash() + '.json?nocache=' + Math.random(), function(error, data) {
     timestamp_start = data.limits[0];
     timestamp_end = data.limits[1];
     station_info = data.stations;
@@ -219,7 +224,7 @@ d3.json('./data/stations_' + location.hash.substring(1) + '.json?nocache=' + Mat
         maxZoom: 20
     }).addTo(map);
 
-    d3.json('./data/coincidences_' + location.hash.substring(1) + '.json?cache=' + timestamp_start + timestamp_end,
+    d3.json('./data/coincidences_' + get_hash() + '.json?cache=' + timestamp_start + timestamp_end,
             function(error, data) {
                 update_coincidence(data);
             }
