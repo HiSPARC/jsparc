@@ -74,6 +74,7 @@
 /* global get_coincidence: true, detNum: true, showEvent: true */
 "use strict";
 
+var BASE_URL = "http://data.hisparc.nl/jsparc/";
 var c = 299792458;
 
 function toRad(x) {

@@ -17,8 +17,5 @@
         "toProjection": false,
         "fromProjection": false,
         "createMap": false,
-        "createStyle": false,
-
-        // jsparc.html
-        "BASE_URL": false}
+        "createStyle": false}
 }
