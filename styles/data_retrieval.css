@@ -129,6 +129,10 @@ input:disabled {
 #results .events td:nth-child(4n+7) {color: #D22;}
 #results .events td:nth-child(4n+8) {color: #1C2;}
 #results .events td:nth-child(4n+9) {color: #1AA;}
+#results .events td:nth-child(4n+6) {color: #222;}
+#results .events td:nth-child(23),
+#results .events td:nth-child(24) {
+    color: #222;}
 
 #results .station_layout td:nth-child(4n+3) {color: #222; padding-left: 15px;}
 #results .station_layout td:nth-child(4n+4) {color: #D22;}
