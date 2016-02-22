@@ -42,8 +42,8 @@ be stored as strings.
                              'number_of_mips': {'column': [12, 13, 14, 15], 'name': 'Number of MIPs', 'units': 'N'},
                              'arrival_times': {'column': [16, 17, 18, 19], 'name': 'Arrival time', 'units': 'ns'},
                              't_trigger': {'column': 20, 'name': 'Trigger time', 'units': 'ns'},
-                             'azimuth': {'column': 21, 'name': 'Azimuth', 'units': '°'},
-                             'zenith': {'column': 22, 'name': 'Zenith', 'units': '°'}},
+                             'zenith': {'column': 22, 'name': 'Zenith', 'units': '°'},
+                             'azimuth': {'column': 21, 'name': 'Azimuth', 'units': '°'}},
             weather_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
                               'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
                               'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
@@ -72,10 +72,10 @@ be stored as strings.
                                   'n_pulseheight': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
             pulseintegral_format = {'integral_bins': {'column': 0, 'name': 'Pulseintegral', 'units': 'mV.ns'},
                                     'n_integral': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
-            azimuth_format = {'azimuth_angle': {'column': 0, 'name': 'Azimuth', 'units': '°'},
-                              'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
             zenith_format = {'zenith_angle': {'column': 0, 'name': 'Zenith', 'units': '°'},
                              'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
+            azimuth_format = {'azimuth_angle': {'column': 0, 'name': 'Azimuth', 'units': '°'},
+                              'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
             temperature_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
                                   'temperature_outside': {'column': 1, 'name': 'Temperature', 'units': '°C'}},
             barometer_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
@@ -116,8 +116,8 @@ be stored as strings.
         jsparc.eventtime_format = eventtime_format;
         jsparc.pulseheight_format = pulseheight_format;
         jsparc.pulseintegral_format = pulseintegral_format;
-        jsparc.azimuth_format = azimuth_format;
         jsparc.zenith_format = zenith_format;
+        jsparc.azimuth_format = azimuth_format;
         jsparc.temperature_format = temperature_format;
         jsparc.barometer_format = barometer_format;
         jsparc.voltage_format = voltage_format;
