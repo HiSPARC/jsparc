@@ -1220,8 +1220,12 @@ be stored as strings.
             var lines = tsv.split(eol);
             var values;
             while (lines.length !== 0 && lines[0][0] == comments) {
+                // Remove header
                 lines.splice(0, 1);}
-            while (lines.length !== 0 && lines[lines.length - 1] == empty) {
+            while (lines.length !== 0 &&
+                   (lines[lines.length - 1] == empty ||
+                    lines[lines.length - 1][0] == comments)) {
+                // Remove footer and empty last line
                 lines.splice(lines.length - 1, 1);}
             for (var i = 0; i < lines.length; i++) {
                 values = lines[i].split(delimiter);
