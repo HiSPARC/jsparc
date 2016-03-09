@@ -6,6 +6,7 @@ import os
 import tables
 
 from sapphire import Network, Station, download_data, download_coincidences
+from sapphire.utils import pbar
 from sapphire.transformations.clock import datetime_to_gps
 
 
@@ -36,10 +37,11 @@ def download_coincidences_data(data):
 
 
 def download_events_data(data):
-    for station in STATIONS:
+    for station in pbar(STATIONS):
         group = '/s%d' % station
         if group not in data:
-            download_data(data, group, station, start=START, end=END)
+            download_data(data, group, station, start=START, end=END,
+                          progress=False)
 
 
 def build_coincidence_json(data, subcluster=None):
