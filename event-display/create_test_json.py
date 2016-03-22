@@ -11,8 +11,8 @@ from sapphire.transformations.clock import datetime_to_gps
 
 
 STATIONS = Network().station_numbers()
-START = datetime.datetime(2013, 6, 30, 14, 0)
-END = datetime.datetime(2013, 6, 30, 14, 20)
+START = datetime.datetime(2016, 2, 1, 11, 0)
+END = datetime.datetime(2016, 2, 1, 11, 20)
 LIMITS = [datetime_to_gps(START) * int(1e9),
           datetime_to_gps(END) * int(1e9)]
 
