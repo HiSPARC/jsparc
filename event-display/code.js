@@ -130,7 +130,7 @@ function update_coincidence(coincidences) {
 
         stations.enter().append("circle")
             .attr("class", "coincidence")
-            .style("opacity", .2)
+            .style("opacity", 0.2)
             .attr("cx", function(d) { return x(station_info[d.station]) + marker_x_offset(d); })
             .attr("cy", function(d) { return y(station_info[d.station]) + marker_y_offset(d); })
             .attr("r",  function(d) { return marker_size(d) / 2; })
@@ -182,7 +182,7 @@ function update_event(events, station) {
 
         g.insert("circle", ":first-child").datum(event)
             .attr("class", "event")
-            .style("opacity", .2)
+            .style("opacity", 0.2)
             .attr("cx", function(d) { return x(station_info[d.station]) + marker_x_offset(event); })
             .attr("cy", function(d) { return y(station_info[d.station]) + marker_y_offset(event); })
             .attr("r", 0)
