@@ -5,9 +5,9 @@ import os
 
 import tables
 
-from sapphire import Network, Station, download_data, download_coincidences
+from sapphire import (Network, Station, download_data, download_coincidences,
+                      datetime_to_gps)
 from sapphire.utils import pbar
-from sapphire.transformations.clock import datetime_to_gps
 
 
 STATIONS = Network().station_numbers()
@@ -136,15 +136,15 @@ def write_jsons(data):
     with open('data/coincidences_network.json', 'w') as f:
         json.dump(coincidences, f)
 
-    for station in STATIONS:
+    for station in pbar(STATIONS):
         events = build_events_json(data, station)
         with open('data/events_s%d.json' % station, 'w') as f:
             json.dump(events, f)
 
 
 def get_latlon_coordinates(station_number):
-    station = Station(station_number, date=START)
-    gps_location = station.location()
+    station = Station(station_number)
+    gps_location = station.gps_location(START)
     if gps_location['latitude'] == 0.:
         raise Exception
     return gps_location['latitude'], gps_location['longitude']
