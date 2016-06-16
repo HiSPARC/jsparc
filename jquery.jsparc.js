@@ -92,7 +92,10 @@ be stored as strings.
                               'and_or': {'column': 10, 'name': 'And-or', 'units': 'boolean'},
                               'external': {'column': 10, 'name': 'External', 'units': 'ternary'}},
             detector_timing_offsets_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
-                                              'detector_timing_offset': {'column': [1, 2, 3, 4], 'name': 'Detector timing offset', 'units': 'ns'}},
+                                              'detector_timing_offset': {'column': [1, 2, 3, 4], 'name': 'Detector offset', 'units': 'ns'}},
+            station_timing_offsets_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                             'offset': {'column': 1, 'name': 'Station offset', 'units': 'ns'},
+                                             'error': {'column': 2, 'name': 'Error', 'units': 'ns'}},
             coincidencenumber_format = {'n_stations': {'column': 0, 'name': 'Number of stations', 'units': 'count'},
                                         'n_coincidences': {'column': 1, 'name': 'Number of coincidences', 'units': 'count'}},
             coincidencetime_format = {'hour_of_day': {'column': 0, 'name': 'Hour of day', 'units': 'hour'},
@@ -124,6 +127,7 @@ be stored as strings.
         jsparc.current_format = current_format;
         jsparc.trigger_format = trigger_format;
         jsparc.detector_timing_offsets_format = detector_timing_offsets_format;
+        jsparc.station_timing_offsets_format = station_timing_offsets_format;
         jsparc.coincidencenumber_format = coincidencenumber_format;
         jsparc.coincidencetime_format = coincidencetime_format;
         jsparc.station_layout_format = station_layout_format;
@@ -1143,19 +1147,23 @@ be stored as strings.
         function parse_filename(filename) {
             /* Get data type, station number, start and end date from tsv name
 
-            name should be of format: '[type]-s[station number]-[date]'
-            where date can be one of the following formats:
+            name should have one of the following formats:
+                '[type]-s[station number]'
+                '[type]-s[station number]-[date]'
+                '[type]-s[reference station number]-s[station number]'
+            the date can be one of the following formats:
                 '[start date]'
                 '[start date]_[end date]'
                 '[start date]_[start time]_[end date]_[end time]'
-            where date should be yyyymmdd and time hhmmss
+            where date should be yyyymmdd and time hhmmss, date may also be omitted.
 
             */
             var delimiter = '-',
                 date_delimiter = '_',
                 empty = '',
                 extension = '.tsv',
-                alt_extension = '.csv';
+                alt_extension = '.csv',
+                date_idx = 2;
 
             var station_number, start, end;
 
@@ -1164,11 +1172,14 @@ be stored as strings.
                                     .replace(alt_extension, empty)
                                     .split(delimiter);
                 if (parts[1][0] == 's') {
-                    station_number = parts[1].substring(1);}
+                    station_number = parts[1].substring(1);
+                    if (parts.length > date_idx && parts[2][0] == 's') {
+                        station_number += '-' + parts[2].substring(1);
+                        date_idx++;}}
                 else {
                     station_number = parts[1];}
-                if (parts.length > 2) {
-                    var date = parts[2].split(date_delimiter);
+                if (parts.length > date_idx) {
+                    var date = parts[date_idx].split(date_delimiter);
 
                     if (date.length == 1) {
                         start = date[0].substr(0, 4) + '-' +
