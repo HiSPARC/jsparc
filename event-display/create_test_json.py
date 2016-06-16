@@ -2,6 +2,8 @@ import datetime
 import json
 import re
 import os
+from random import uniform
+from math import pi
 
 import tables
 
@@ -63,6 +65,8 @@ def build_coincidence_json(data, subcluster=None):
         vis_coincidence = {u: coincidence[u] for u in
                            ['timestamp', 'nanoseconds', 'ext_timestamp']}
         events = []
+        coin_direction = {'azimuth': round(uniform(-pi, pi), 4),
+                          'zenith': round(uniform(0, pi / 4), 4)}
         for s_idx, e_idx in c_index[coincidence['id']]:
             node_str = s_index[s_idx]
             station = data.get_node(node_str)
@@ -72,6 +76,7 @@ def build_coincidence_json(data, subcluster=None):
             event = {u: round(float(station_event[u]), 2)
                      if station_event[u] >= 0. else 0.
                      for u in ['n1', 'n2', 'n3', 'n4']}
+            event.update(coin_direction)
             event['station'] = station_number
             events.append(event)
         vis_coincidence['events'] = events
@@ -91,6 +96,8 @@ def build_events_json(data, station):
         output_event.update({u: round(float(event[u]), 2)
                              if event[u] >= 0. else 0.
                              for u in ['n1', 'n2', 'n3', 'n4']})
+        output_event.update({'azimuth': round(uniform(-pi, pi), 4),
+                             'zenith': round(uniform(0, pi / 4), 4)})
         output.append(output_event)
 
     return output

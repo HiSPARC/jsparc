@@ -99,6 +99,20 @@ function marker_size(event) {
     return size;
 }
 
+function marker_x_offset(event) {
+    /* Calculate shower start offset based on azimuth and zenith angles
+    */
+    var dx = Math.cos(event.azimuth) * 100 * event.zenith;
+    return dx;
+}
+
+function marker_y_offset(event) {
+    /* Calculate shower start offset based on azimuth and zenith angles
+    */
+    var dy = Math.sin(event.azimuth) * 100 * event.zenith;
+    return dy;
+}
+
 function update_coincidence(coincidences) {
     var c_idx = 0;
 
@@ -116,11 +130,16 @@ function update_coincidence(coincidences) {
 
         stations.enter().append("circle")
             .attr("class", "coincidence")
+            .style("opacity", .2)
+            .attr("cx", function(d) { return x(station_info[d.station]) + marker_x_offset(d); })
+            .attr("cy", function(d) { return y(station_info[d.station]) + marker_y_offset(d); })
+            .attr("r",  function(d) { return marker_size(d) / 2; })
+          .transition()
+            .duration(400)
+            .ease('poly', 2.5)
             .style("opacity", 0.7)
             .attr("cx", function(d) { return x(station_info[d.station]); })
             .attr("cy", function(d) { return y(station_info[d.station]); })
-            .attr("r", 0)
-          .transition()
             .attr("r", function(d) { return marker_size(d); })
           .transition()
             .duration(3000)
@@ -163,14 +182,20 @@ function update_event(events, station) {
 
         g.insert("circle", ":first-child").datum(event)
             .attr("class", "event")
-            .style("opacity", 0.8)
-            .attr("cx", function(d) { return x(station_info[d.station]); })
-            .attr("cy", function(d) { return y(station_info[d.station]); })
+            .style("opacity", .2)
+            .attr("cx", function(d) { return x(station_info[d.station]) + marker_x_offset(event); })
+            .attr("cy", function(d) { return y(station_info[d.station]) + marker_y_offset(event); })
             .attr("r", 0)
           .transition()
+            .duration(400)
+            .ease('poly', 0.6)
+            .style("opacity", 0.9)
+            .attr("cx", function(d) { return x(station_info[d.station]); })
+            .attr("cy", function(d) { return y(station_info[d.station]); })
             .attr("r", function(d) { return marker_size(d); })
           .transition()
             .duration(500)
+            .ease('poly', 0.6)
             .style("opacity", 0)
             .remove();
 
