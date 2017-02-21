@@ -82,7 +82,7 @@ tr.selectedRow {
 
 #graph {}
 
-#plot { 
+#plot {
     margin: 25px;
     clear: both;
     width: 800px;
@@ -141,6 +141,10 @@ input:disabled {
 
 #results .pulseheight td:nth-child(3),
 #results .pulseintegral td:nth-child(3),
+#results .singlesratelow td:nth-child(3),
+#results .singlesratehigh td:nth-child(3),
+#results .singleslow td:nth-child(3),
+#results .singleshigh td:nth-child(3),
 #results .voltage td:nth-child(3),
 #results .current td:nth-child(3),
 #results .trigger td:nth-child(3),
@@ -149,6 +153,10 @@ input:disabled {
 
 #results .pulseheight td:nth-child(4),
 #results .pulseintegral td:nth-child(4),
+#results .singlesratelow td:nth-child(4),
+#results .singlesratehigh td:nth-child(4),
+#results .singleslow td:nth-child(4),
+#results .singleshigh td:nth-child(4),
 #results .voltage td:nth-child(4),
 #results .current td:nth-child(4),
 #results .trigger td:nth-child(4),
@@ -157,6 +165,10 @@ input:disabled {
 
 #results .pulseheight td:nth-child(5),
 #results .pulseintegral td:nth-child(5),
+#results .singlesratelow td:nth-child(5),
+#results .singlesratehigh td:nth-child(5),
+#results .singleslow td:nth-child(5),
+#results .singleshigh td:nth-child(5),
 #results .voltage td:nth-child(5),
 #results .current td:nth-child(5),
 #results .trigger td:nth-child(5),
@@ -165,6 +177,10 @@ input:disabled {
 
 #results .pulseheight td:nth-child(6),
 #results .pulseintegral td:nth-child(6),
+#results .singlesratelow td:nth-child(6),
+#results .singlesratehigh td:nth-child(6),
+#results .singleslow td:nth-child(6),
+#results .singleshigh td:nth-child(6),
 #results .voltage td:nth-child(6),
 #results .current td:nth-child(6),
 #results .trigger td:nth-child(6),

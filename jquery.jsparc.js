@@ -72,6 +72,14 @@ be stored as strings.
                                   'n_pulseheight': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
             pulseintegral_format = {'integral_bins': {'column': 0, 'name': 'Pulseintegral', 'units': 'mV.ns'},
                                     'n_integral': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
+            singlesratelow_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                     'singles_rate': {'column': [1, 2, 3, 4], 'name': 'Singles rate', 'units': 'Hz'}},
+            singlesratehigh_format = {'timestamp': {'column': 0, 'name': 'Timestamp', 'units': 's'},
+                                     'singles_rate': {'column': [1, 2, 3, 4], 'name': 'Singles rate', 'units': 'Hz'}},
+            singleslow_format = {'singles_rate': {'column': 0, 'name': 'Singles rate', 'units': 'Hz'},
+                                 'n_singles': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
+            singleshigh_format = {'singles_rate': {'column': 0, 'name': 'Singles rate', 'units': 'Hz'},
+                                  'n_singles': {'column': [1, 2, 3, 4], 'name': 'Occurrence', 'units': 'count'}},
             zenith_format = {'zenith_angle': {'column': 0, 'name': 'Zenith', 'units': '°'},
                              'n_events': {'column': 1, 'name': 'Number of events', 'units': 'count'}},
             azimuth_format = {'azimuth_angle': {'column': 0, 'name': 'Azimuth', 'units': '°'},
@@ -119,6 +127,10 @@ be stored as strings.
         jsparc.eventtime_format = eventtime_format;
         jsparc.pulseheight_format = pulseheight_format;
         jsparc.pulseintegral_format = pulseintegral_format;
+        jsparc.singlesratelow_format = singlesratelow_format;
+        jsparc.singlesratehigh_format = singlesratehigh_format;
+        jsparc.singleslow_format = singleslow_format;
+        jsparc.singleshigh_format = singleshigh_format;
         jsparc.zenith_format = zenith_format;
         jsparc.azimuth_format = azimuth_format;
         jsparc.temperature_format = temperature_format;
