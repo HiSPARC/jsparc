@@ -4,14 +4,10 @@
         <meta charset="utf-8">
         <title>HiSPARC - jSparc - Data retrieval</title>
         <link rel="shortcut icon" href="images/favicon.ico">
-        <link rel="stylesheet" href="styles/jquery-ui-1.10.3.custom.css">
-        <link rel="stylesheet" href="styles/jquery-ui-timepicker-addon.css">
         <link rel="stylesheet" href="styles/common.css">
         <link rel="stylesheet" href="styles/data_retrieval.css">
         <!--[if lt IE 9]><script src="scripts/excanvas.js"></script><![endif]-->
         <script src="scripts/jquery-1.10.2.min.js"></script>
-        <script src="scripts/jquery-ui-1.10.3.custom.js"></script>
-        <script src="scripts/jquery-ui-timepicker-addon.js"></script>
         <script src="scripts/jquery.flot.js"></script>
         <script src="scripts/jquery.flot.time.js"></script>
         <script src="scripts/jquery.flot.log.js"></script>
@@ -41,8 +37,6 @@
 
                 var station_events_select = jsparc.make_station_select($('#station_events_choice'), 'events'),
                     station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather');
-                jsparc.make_datepicker($('#startdate_choice'), -2);
-                jsparc.make_datepicker($('#enddate_choice'), -1);
                 jsparc.set_dataset_list_controls($('#dataset_list'));
                 jsparc.set_flot_options([jsparc.flot_scatter()]);
 
@@ -400,8 +394,8 @@
             <p id="station_choice">Station:
                 <span id="station_events_choice"><select><option>Loading stations..</option></select></span>
                 <span style="display:none;" id="station_weather_choice"></span></p>
-            <p>Start date: <input id="startdate_choice" type="datetime-local"></p>
-            <p>End date: <input id="enddate_choice" type="datetime-local"></p>
+            <p>Start date: <input id="startdate_choice" type="datetime-local" min="2004-01-01"></p>
+            <p>End date: <input id="enddate_choice" type="datetime-local" min="2004-01-01"></p>
             <input type='button' value="Get Data!" id="download_dataset">
         </div>
         <div id="load_data">

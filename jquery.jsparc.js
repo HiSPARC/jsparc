@@ -426,24 +426,6 @@ be stored as strings.
 
         // User Interface
 
-        jsparc.make_datepicker = make_datepicker;
-        function make_datepicker(target, offset) {
-            /* Create an date input field
-
-            Possible choices should be limited to dates between start of
-            HiSPARC (9/1/2004) and yesterday.
-
-            Requires jquery-ui.js, jquery-ui-timepicker-addon.js
-
-            */
-            offset = (offset) ? offset : -1;
-            target.datetimepicker({minDate: new Date(2004, 1, 1),
-                                   maxDate: -1,
-                                   timezone:'UTC',
-                                   dateFormat: 'yy-mm-dd'});
-            target.datepicker('setDate', offset);
-        }
-
         jsparc.make_station_select = make_station_select;
         function make_station_select(target, type) {
             /* Create a select menu to choose a single station
