@@ -33,3 +33,7 @@ html, body {
 #station_choice_1 select,
 #station_choice_2 select {
     width: 250px;}
+
+img.leaflet-tile {
+    filter: brightness(.75) contrast(2);
+    -webkit-filter: brightness(.75) contrast(2);}
