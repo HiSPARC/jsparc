@@ -23,6 +23,6 @@
         "createMap": false,
         "boundsPadding": false,
         "statusColors": false,
-        "pointStyle": false,
+        "pointStyle": false
     }
 }
