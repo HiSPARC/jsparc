@@ -32,6 +32,16 @@
                            .bind('ajaxStop', function() {
                     $('#pageHeader').removeClass('animated');});
 
+                // Limit datetime fields and set initial values
+                var last_midnight = new Date();
+                last_midnight.setUTCHours(0, 0, 0, 0);
+                var max_choice = last_midnight.toISOString().split('.')[0];
+                var day_before_max = new Date(last_midnight - 86400 * 1000).toISOString().split('.')[0];
+                $('#startdate_choice').attr('max', max_choice);
+                $('#enddate_choice').attr('max', max_choice);
+                $('#startdate_choice').val(day_before_max);
+                $('#enddate_choice').val(max_choice);
+
                 // Load jSparc library
                 jsparc = $.jsparc();
 
@@ -394,8 +404,8 @@
             <p id="station_choice">Station:
                 <span id="station_events_choice"><select><option>Loading stations..</option></select></span>
                 <span style="display:none;" id="station_weather_choice"></span></p>
-            <p>Start date: <input id="startdate_choice" type="datetime-local" min="2004-01-01"></p>
-            <p>End date: <input id="enddate_choice" type="datetime-local" min="2004-01-01"></p>
+            <p>Start date: <input id="startdate_choice" type="datetime-local" min="2004-01-01T00:00:00" step="1"></p>
+            <p>End date: <input id="enddate_choice" type="datetime-local" min="2004-01-01T00:00:00" step="1"></p>
             <input type='button' value="Get Data!" id="download_dataset">
         </div>
         <div id="load_data">
