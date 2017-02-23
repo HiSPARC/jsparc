@@ -88,7 +88,7 @@
                 */
                 var line = L.polyline([L.latLng(station1.latitude, station1.longitude),
                                        L.latLng(station2.latitude, station2.longitude)],
-                                      {color: statusColors['down'], opacity: 0.4});
+                                      {color: statusColors.down, opacity: 0.4});
                 station_layer.addLayer(line);
             }
 
@@ -96,7 +96,7 @@
                 /* Add station marker to map.
                 */
                 var station_marker = L.circleMarker(L.latLng(station.latitude, station.longitude),
-                                                    $.extend({}, pointStyle, {color: statusColors['down']}));
+                                                    $.extend({}, pointStyle, {color: statusColors.down}));
                 station_marker.bindTooltip(station.number + " - " + station.name, {direction: 'top'});
                 station_layer.addLayer(station_marker);
             }

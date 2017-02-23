@@ -16,6 +16,13 @@
         // OpenLayersHisparcMap.js
         "toProjection": false,
         "fromProjection": false,
+        // "createMap": false,
+        "createStyle": false,
+        
+        // leaflet.hisparc.js
         "createMap": false,
-        "createStyle": false}
+        "boundsPadding": false,
+        "statusColors": false,
+        "pointStyle": false,
+    }
 }

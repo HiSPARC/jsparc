@@ -19,4 +19,4 @@ endif
 
 test:
 	jshint --extract auto *.html
-	jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js scripts/OpenLayersHisparcMap.js
+	jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js scripts/OpenLayersHisparcMap.js leaflet.hisparc.js
