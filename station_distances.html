@@ -4,17 +4,17 @@
         <meta charset="utf-8">
         <title>HiSPARC - jSparc - Station distances</title>
         <link rel="shortcut icon" href="images/favicon.ico">
-        <link rel="stylesheet" media="all" href="styles/OpenLayers-2.12.css">
+        <link rel="stylesheet" media="all" href="styles/leaflet.css">
         <link rel="stylesheet" media="all" href="styles/common.css">
         <link rel="stylesheet" media="all" href="styles/map_controls.css">
         <link rel="stylesheet" media="all" href="styles/station_distances.css">
         <script src="scripts/jquery-1.10.2.min.js"></script>
-        <script src="scripts/OpenLayers-2.13b.min.js"></script>
-        <script src="scripts/OpenLayersHisparcMap.js"></script>
+        <script src="scripts/leaflet.js"></script>
+        <script src="scripts/leaflet.hisparc.js"></script>
         <script src="jquery.jsparc.js"></script>
         <script>
             "use strict";
-            var jsparc, map;
+            var jsparc, map, station_layer;
 
             function radians(degrees) {
                 /* Convert degrees to radians
@@ -74,20 +74,31 @@
             function update_map(station1, station2) {
                 /* Update the map to show the given stations.
                 */
-                var station_layer = map.getLayersByName('hisparc-stations')[0];
-                station_layer.removeAllFeatures();
+                station_layer.clearLayers();
+                add_station_marker(station1);
+                add_station_marker(station2);
+                line_between_stations(station1, station2);
 
-                var pnt1 = new OpenLayers.Geometry.Point(station1.longitude, station1.latitude).transform(fromProjection, toProjection),
-                    pnt2 = new OpenLayers.Geometry.Point(station2.longitude, station2.latitude).transform(fromProjection, toProjection),
-                    feature1 = new OpenLayers.Feature.Vector(pnt1, {id: station1.number, name: station1.number + " - " + station1.name, status: "down"}),
-                    feature2 = new OpenLayers.Feature.Vector(pnt2, {id: station2.number, name: station2.number + " - " + station2.name, status: "down"});
-                station_layer.addFeatures([feature1, feature2]);
+                // Zoom to fit stations
+                map.fitBounds(station_layer.getBounds(), {padding: boundsPadding});
+            }
 
-                // Zoom to fit cluster
-                var bounds = station_layer.getDataExtent();
-                if (bounds) {
-                    map.zoomToExtent(bounds);
-                    map.zoomTo(Math.floor(map.getZoom()));}
+            function line_between_stations(station1, station2) {
+                /* Draw connecting line between station markers on map.
+                */
+                var line = L.polyline([L.latLng(station1.latitude, station1.longitude),
+                                       L.latLng(station2.latitude, station2.longitude)],
+                                      {color: statusColors['down'], opacity: 0.4});
+                station_layer.addLayer(line);
+            }
+
+            function add_station_marker(station) {
+                /* Add station marker to map.
+                */
+                var station_marker = L.circleMarker(L.latLng(station.latitude, station.longitude),
+                                                    $.extend({}, pointStyle, {color: statusColors['down']}));
+                station_marker.bindTooltip(station.number + " - " + station.name, {direction: 'top'});
+                station_layer.addLayer(station_marker);
             }
 
             function get_info_and_update() {
@@ -119,13 +130,10 @@
                 });
 
                 // Create the map
-                map = createMap("olmap");
-                var style = createStyle(map);
+                map = createMap("map");
 
-                map.setCenter(new OpenLayers.LonLat(4.950, 52.355).transform(fromProjection, toProjection), 5);
-
-                var station_layer = new OpenLayers.Layer.Vector("hisparc-stations", {styleMap: new OpenLayers.StyleMap(style)});
-                map.addLayer(station_layer);
+                station_layer = L.featureGroup();
+                station_layer.addTo(map);
             });
         </script>
     </head>
@@ -154,8 +162,8 @@
                    Try selecting other stations.
                 </p>
             </div>
-            <div id="map">
-                <div id="olmap"></div>
+            <div id="map_container">
+                <div id="map"></div>
             </div>
         </div>
     </body>

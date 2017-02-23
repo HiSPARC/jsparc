@@ -8,10 +8,11 @@ html, body {
 
 #menu,
 #header,
-#map {
+#map_container {
     display: table-row;}
 
-#map, #olmap {
+#map_container,
+#map {
     height: 100%;}
 
 #wrapper {

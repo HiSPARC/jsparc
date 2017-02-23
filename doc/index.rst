@@ -24,6 +24,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   jsparc_analysis
    data_retrieval
    event-display
+   jsparc_analysis
+   station_distances
