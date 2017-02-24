@@ -20,6 +20,8 @@ re_station_number = re.compile(".*/station_([0-9]+)$")
 
 
 def download_coincidences_data(data):
+    """Download coincidence data for each subcluster and for all stations"""
+
     for subcluster in Network().subclusters():
         group = ('/coincidences_%s' %
                  subcluster['name'].lower().replace(' ', '_'))
@@ -37,6 +39,8 @@ def download_coincidences_data(data):
 
 
 def download_events_data(data):
+    """Download event data for each station into a separate table"""
+
     for station in pbar(STATIONS):
         group = '/s%d' % station
         if group not in data:
@@ -45,6 +49,8 @@ def download_events_data(data):
 
 
 def build_coincidence_json(data, subcluster=None):
+    """Create a JSON file for each dataset of coincidences"""
+
     vis_coincidences = []
 
     if subcluster is None:
@@ -81,6 +87,8 @@ def build_coincidence_json(data, subcluster=None):
 
 
 def build_events_json(data, station):
+    """Create a JSON file for the events of each station"""
+
     output = []
 
     events = data.get_node('/s%d/events' % station)
@@ -97,6 +105,13 @@ def build_events_json(data, station):
 
 
 def build_station_json(data, subcluster=None):
+    """Create the station JSON files for each subcluster and the network
+
+    Each JSON contains the GPS coordintes of all stations in that subcluster
+    (or network). Also the start and end timestamp (in ns) of the dataset are
+    included to synchronize the event and coincidence datasets.
+
+    """
     stations = {}
     if subcluster is None:
         station_numbers = STATIONS
@@ -143,6 +158,12 @@ def write_jsons(data):
 
 
 def get_latlon_coordinates(station_number):
+    """Retrieve the GPS coordinates for a specific station
+
+    An exception is raised if the station does not have valid coordinates.
+
+    """
+
     station = Station(station_number)
     gps_location = station.gps_location(START)
     if gps_location['latitude'] == 0.:
