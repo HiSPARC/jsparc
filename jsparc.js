@@ -409,30 +409,31 @@ function interactionTrace(data) {
     if (i == 3) {
         A = 2 * ((x[0] - x[1]) * (y[0] - y[2]) - (x[0] - x[2]) * (y[0] - y[1]));
         B = 2 * ((x[0] - x[2]) * (z[0] - z[1]) - (x[0] - x[1]) * (z[0] - z[2]));
-        C = 2 * ((x[0] - x[1]) * (t[2] - t[0]) - (x[0] - x[2]) * (t[1] - t[0])) * c * c;
-        D = (x[0] - x[2]) * ((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]) + (t[0] - t[1]) * (t[0] - t[1]) * c * c);
-        D = D - (x[0] - x[1]) * ((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]) + (t[0] - t[2]) * (t[0] - t[2]) * c * c);
+        C = 2 * ((x[0] - x[1]) * (t[2] - t[0]) - (x[0] - x[2]) * (t[1] - t[0])) * Math.pow(c, 2);
+        D = (x[0] - x[2]) * (Math.pow(x[0] - x[1], 2) + Math.pow(y[0] - y[1], 2) + Math.pow(z[0] - z[1], 2) + Math.pow(t[0] - t[1], 2) * Math.pow(c, 2)) -
+            (x[0] - x[1]) * (Math.pow(x[0] - x[2], 2) + Math.pow(y[0] - y[2], 2) + Math.pow(z[0] - z[2], 2) + Math.pow(t[0] - t[2], 2) * Math.pow(c, 2));
         E = 2 * ((y[0] - y[1]) * (z[0] - z[2]) - (y[0] - y[2]) * (z[0] - z[1]));
-        F = 2 * ((y[0] - y[2]) * (t[1] - t[0]) - (y[0] - y[1]) * (t[2] - t[0])) * c * c;
-        G = (y[0] - x[1]) * ((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]) + (t[0] - t[2]) * (t[0] - t[2]) * c * c);
-        G = G - (y[0] - y[2]) * ((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]) + (t[0] - t[1]) * (t[0] - t[1]) * c * c);
-        var travelTime = Math.sqrt((x[0] - x[1]) * (x[0] - x[1]) + (y[0] - y[1]) * (y[0] - y[1]) + (z[0] - z[1]) * (z[0] - z[1]));
-        travelTime += Math.sqrt((x[1] - x[2]) * (x[1] - x[2]) + (y[1] - y[2]) * (y[1] - y[2]) + (z[1] - z[2]) * (z[1] - z[1]));
-        travelTime += Math.sqrt((x[0] - x[2]) * (x[0] - x[2]) + (y[0] - y[2]) * (y[0] - y[2]) + (z[0] - z[2]) * (z[0] - z[2]));
-        travelTime /= (4 * c);
-        travelTime -= t[0];
+        F = 2 * ((y[0] - y[2]) * (t[1] - t[0]) - (y[0] - y[1]) * (t[2] - t[0])) * Math.pow(c, 2);
+        G = (y[0] - x[1]) * (Math.pow(x[0] - x[2], 2) + Math.pow(y[0] - y[2], 2) + Math.pow(z[0] - z[2], 2) + Math.pow(t[0] - t[2], 2) * Math.pow(c, 2)) -
+            (y[0] - y[2]) * (Math.pow(x[0] - x[1], 2) + Math.pow(y[0] - y[1], 2) + Math.pow(z[0] - z[1], 2) + Math.pow(t[0] - t[1], 2) * Math.pow(c, 2));
+        var travelTime = Math.sqrt(Math.pow(x[0] - x[1], 2) + Math.pow(y[0] - y[1], 2) + Math.pow(z[0] - z[1], 2)) +
+                         Math.sqrt(Math.pow(x[1] - x[2], 2) + Math.pow(y[1] - y[2], 2) + Math.pow(z[1] - z[2], 2)) +
+                         Math.sqrt(Math.pow(x[0] - x[2], 2) + Math.pow(y[0] - y[2], 2) + Math.pow(z[0] - z[2], 2)) /
+                         (4 * c) - t[0];
         alert(c * (travelTime + t[0]) + ", " + c * (travelTime + t[1]) + ", " + c * (travelTime + t[2]));
-        var ALFA = ((travelTime + t[0]) * (B * C + E * F) + B * D + E * G) / (A * A + B * B + E * E);
-        var BETA = (D * D + G * G + 2 * (C * D + F * G) * (travelTime + t[0]) + (C + F - c * c * A * A) * (travelTime + t[0]) * (travelTime + t[0])) / (A * A + B * B + E * E);
+        var ALFA = ((travelTime + t[0]) * (B * C + E * F) + B * D + E * G) / (Math.pow(A, 2) + Math.pow(B, 2) + Math.pow(E, 2));
+        var BETA = (Math.pow(D, 2) + Math.pow(G, 2) + 2 * (C * D + F * G) * (travelTime + t[0]) +
+                    (C + F - Math.pow(c, 2) * Math.pow(A, 2)) * (travelTime + t[0]) * (travelTime + t[0])) /
+                   (Math.pow(A, 2) + Math.pow(B, 2) + Math.pow(E, 2));
 
         if ((ALFA * ALFA - BETA) < 0) {
             alert("No solution, D = " + (ALFA * ALFA - BETA) + ", ALFA = " + ALFA + ", BETA = " + BETA);}
         else {
             var dz1 = -ALFA + Math.sqrt(ALFA * ALFA - BETA),
                 dz2 = -ALFA - Math.sqrt(ALFA * ALFA - BETA),
-                dy1 = dz1 * B / A + (travelTime + t[0]) * C / A + D / A,
-                dy2 = dz2 * B / A + (travelTime + t[0]) * C / A + D / A,
-                dx1 = dz1 * E / A + (travelTime + t[0]) * F / A + G / A,
-                dx2 = dz2 * E / A + (travelTime + t[0]) * F / A + G / A;
+                dy1 = (dz1 * B + (travelTime + t[0]) * C + D) / A,
+                dy2 = (dz2 * B + (travelTime + t[0]) * C + D) / A,
+                dx1 = (dz1 * E + (travelTime + t[0]) * F + G) / A,
+                dx2 = (dz2 * E + (travelTime + t[0]) * F + G) / A;
             alert("(" + dx1 + ", " + dy1 + ", " + dz1 + ") and (" + dx2 + ", " + dy2 + ", " + dz2 + ")");}}
 }
