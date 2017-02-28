@@ -5,12 +5,12 @@
   <title>HiSPARC - jSparc - Analysis</title>
   <link rel="shortcut icon" href="images/favicon.ico">
   <link rel="stylesheet" media="screen" href="styles/jquery.jqplot.min.css">
-  <link rel="stylesheet" media="screen" href="styles/OpenLayers-2.12.css">
+  <link rel="stylesheet" media="screen" href="styles/leaflet.css">
   <link rel="stylesheet" href="styles/common.css">
   <link rel="stylesheet" media="screen" href="styles/jsparc.css">
-  <!--[if lt IE 9]><script src="scripts/excanvas.js"></script><![endif]-->
   <script src="scripts/jquery-1.7.2.min.js"></script>
-  <script src="scripts/OpenLayers-2.13b.min.js"></script>
+  <script src="scripts/leaflet.js"></script>
+  <script src="scripts/leaflet.hisparc.js"></script>
   <script src="scripts/jquery.jqplot.min.js"></script>
   <script src="scripts/plugins/jqplot.cursor.min.js"></script>
   <script src="scripts/plugins/jqplot.canvasTextRenderer.min.js"></script>
@@ -22,25 +22,19 @@
     "use strict";
     var BASE_URL = "http://data.hisparc.nl/jsparc/";
     var MIPdens = [];
-    var detNum = [];
+    var detector_number = [];
+    var station_number;
     var infoURL = [];
     var get_coincidence = {};
     get_coincidence.session_title = "";
     get_coincidence.session_pin = "";
     get_coincidence.student_name = "";
-    var htmlInfo = {
-        mapId: "map-id",
-        distId: "dist",
-        chartId: "chartdiv",
-        mipId: "MIP",
-        mipCalcId: "MIPcalc",
-        energyId: "showEn",
-        stationEr: "showEr",
-        showerEr: "measEr"};
     var diagramColor = ["#600", "#f00", "#f90", "#ff0",
-                        "#6f0", "#6ff", "#f0f", "#ccc"];
+                        "#6f0", "#6ff", "#f0f", "#666",
+                        "#eee", "#fd0", "#ccc", "#060",
+                        "#00f", "#0f0"];
     var traceColor = ["#222", "#D22", "#1C2", "#1CC"];
-    var Dataflag = true;
+    var dataflag = true;
 
     function padZero(number, length) {
         var str = '' + number;
@@ -48,14 +42,7 @@
             str = '0' + str;}
         return str;
     }
-    
-    function showEvent(i) {
-        for (var u = 0; u < 8; u++) {
-            if (u != i) {
-                $("#chartdiv" + u).hide();}}
-        $("#chartdiv" + i).show();
-    }
-    
+
     function calcMIP() {
         for (var i = 0; i < MIPdens.length; i++) {
             $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
@@ -95,25 +82,19 @@
     function loadData(data) {
         $("#dataButton").hide();
         $("#exampleButton").hide();
-        Dataflag = false;
-        detNum = detectorNumber(data);
-        var stationNumber = data.events.length;
-        makeShowerMap(htmlInfo, data);
-        plotGraph(htmlInfo, data);
-        // interactionTrace(data);
+        $("body").addClass("loaded");
+        dataflag = false;
+        detector_number = detectorNumber(data);
+        station_number = detector_number.length;
 
         // Disable session options
         $('#sessionTitle').attr('disabled', true);
         $('#sessionPin').attr('disabled', true);
         $('#studentName').attr('disabled', true);
-
-        $("#datum-id").css('visibility', 'visible');
-        $("#result-id").css('visibility', 'visible');
-        $("#tracelegend").css('visibility', 'visible');
         
         //  Get Year, Month, Day, Hour, Minute, Second.
         var datum = timestampToDate(data.events[0].timestamp);
-        $("#datum").html(datum);
+        $("#utc_date").html(datum);
 
         // Greenwich Mean Sidereal Time in hours
         var GMST = timestampToGMST(data.events[0].timestamp);
@@ -121,50 +102,49 @@
 
         // Write information to dashboard
         var i, j;
-        var tabWidth = 1 + data.events.length;
-        var txt = "<tr><td colspan='" + tabWidth + "'>Station</td></tr><tr><td></td>";
-        for (i = 0; i < data.events.length; i++) {
-            txt += "<td onclick='getStatus(" + i + ")' style='cursor: pointer; text-align: center; border-radius: 2px; background-color:" + diagramColor[i] + ";";
-            if (i < 2) {
-                txt += " color:#fff;";}
-            txt += "'>" + data.events[i].number;}
-        txt += "</td></tr><tr><td colspan='" + tabWidth + "'>Distance to shower in [m]</td></tr><tr><td></td>";
-        for (i = 0; i < data.events.length; i++) {
-            txt += "<td><input type='text' id='dist" + i + "' disabled='disabled' size=5></td>";
+        var column_count = 1 + station_number;
+        var txt = "<tr><td colspan='" + column_count + "'>Station</td></tr><tr class='data_buttons'><td></td>";
+        for (i = 0; i < station_number; i++) {
+            txt += "<td onclick='getStatus(" + i + ")' class='station_" + i + "'>" + data.events[i].number;}
+        txt += "</td></tr><tr><td colspan='" + column_count + "'>Distance to shower core in [m]</td></tr><tr><td></td>";
+        for (i = 0; i < station_number; i++) {
+            txt += "<td><input type='text' id='core_distance_" + i + "' disabled size=5></td>";
             MIPdens[i] = 0;}
-        txt += "</tr><tr><td colspan='" + tabWidth + "'>Detectorflux in [MIP/m<sup>2</sup>]</td></tr>";
+        txt += "</tr><tr><td colspan='" + column_count + "'>Detector signal in [MIP/m<sup>2</sup>]</td></tr>";
         for (j = 0; j < 4; j++) {
-            txt += "<tr><td align='center' class='det" + (j + 1) + "' style='border-radius:2px;'>" + (1 + j) + "</td>";
-            for (i = 0; i < data.events.length; i++) {
-                if (j < detNum[i]) {
+            txt += "<tr><td align='center' class='detector_" + (j + 1) + "' style='border-radius:2px;'>" + (1 + j) + "</td>";
+            for (i = 0; i < station_number; i++) {
+                if (j < detector_number[i]) {
                     if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                         MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-                        txt += "<td><input id='MIP" + i + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled='disabled' size=5></td>";}
+                        txt += "<td><input id='MIP" + i + "_" + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled size=5></td>";}
                     else {
-                        txt += "<td><input id='MIP" + i + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled='disabled' size=5></td>";}}
+                        txt += "<td><input id='MIP" + i + "_" + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled size=5></td>";}}
                 else {
                     txt += "<td></td>";}}
             txt += "</tr>";}
         txt += "<tr><td></td>";
-        for (i = 0; i < data.events.length; i++) {
+        for (i = 0; i < station_number; i++) {
             txt += "<td><select id='count" + i + "' onchange='calcMIP()'>";
-            for (j = detNum[i]; j > 0; j--) {
+            for (j = detector_number[i]; j > 0; j--) {
                 txt += "<option value=" + j + ">" + j + "</option>";}
             txt += "</select></td>";}
-        txt += "</tr><tr><td colspan='" + tabWidth + "'>Stationflux in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>";
-        for (i = 0; i < data.events.length; i++) {
-            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled='disabled' size=5></td>";}
+        txt += "</tr><tr><td colspan='" + column_count + "'>Station average signal in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>";
+        for (i = 0; i < station_number; i++) {
+            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled size=5></td>";}
         txt += "</tr><tr><td>Calc.</td>";
-        for (i = 0; i < data.events.length; i++) {
-            txt += "<td><input type='text' id='MIPcalc" + i + "' disabled='disabled' size=5></td>";
-            $("#choice" + i).html(data.events[i].number).show().css('visibility', 'visible');
+        for (i = 0; i < station_number; i++) {
+            txt += "<td><input type='text' id='calculated_mip_" + i + "' disabled size=5></td>";
+            $("#choice").append("<div class='station_" + i + "'>" + data.events[i].number + "</div>");
             infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 10) + "/";}
         $(txt).appendTo("#coinInfo");
         $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()">').appendTo('#info');
 
-        showEvent(0);
-        $("#choice").on("click", "td", function(event) {showEvent($(this).index());});
-        writeDist(htmlInfo, showerMerc, data);
+        $("#choice").on("click", "div", function(event) {showEvent($(this).index());});
+
+        makeShowerMap(data);
+        plotGraph(data);
+        // interactionTrace(data);
     }
 
     function showError(data) {
@@ -175,8 +155,12 @@
             alert(json.message);}
     }
 
-    function retrieveData(htmlInfo, BASE_URL) {
-        $.getJSON(BASE_URL + "get_coincidence/", get_coincidence)
+    function retrieveData() {
+        var url = BASE_URL + "get_coincidence/";
+        // Use local test data
+        // url = 'examples/jsparc_data_n4.json';
+        // url = 'examples/jsparc_data_n9.json';
+        $.getJSON(url, get_coincidence)
             .done(loadData)
             .fail(showError);
     }
@@ -188,8 +172,8 @@
         get_coincidence.session_title = $("#sessionTitle").val();
         get_coincidence.session_pin = $("#sessionPin").val();
         get_coincidence.student_name = $("#studentName").val();
-        if (Dataflag) {
-            retrieveData(htmlInfo, BASE_URL);}
+        if (dataflag) {
+            retrieveData();}
     }
 
     function getData() {
@@ -199,8 +183,8 @@
             get_coincidence.session_title = $("#sessionTitle").val();
             get_coincidence.session_pin = $("#sessionPin").val();
             get_coincidence.student_name = $("#studentName").val();
-            if (Dataflag) {
-                retrieveData(htmlInfo, BASE_URL);}}
+            if (dataflag) {
+                retrieveData();}}
     }
 
     $(function() {
@@ -228,58 +212,47 @@
   </script>
 </head>
 <body>
-    <div id="graph-id">
+    <div id="graphs">
         <div id="chartdiv" class="coincidencegraph"></div>
-        <table id="choice">
-            <tr>
-                <td id="choice0">&nbsp;</td>
-                <td id="choice1"></td>
-                <td id="choice2"></td>
-                <td id="choice3"></td>
-                <td id="choice4"></td>
-                <td id="choice5"></td>
-                <td id="choice6"></td>
-                <td id="choice7"></td>
-            </tr>
-        </table>
-        <div id="chartdiv0" class="tracegraph"></div>
-        <div id="chartdiv1" class="tracegraph"></div>
-        <div id="chartdiv2" class="tracegraph"></div>
-        <div id="chartdiv3" class="tracegraph"></div>
-        <div id="chartdiv4" class="tracegraph"></div>
-        <div id="chartdiv5" class="tracegraph"></div>
-        <div id="chartdiv6" class="tracegraph"></div>
-        <div id="chartdiv7" class="tracegraph"></div>
-        <table id="tracelegend">
-            <tr>
-                <td class="det1">Detector 1</td>
-                <td class="det2">Detector 2</td>
-                <td class="det3">Detector 3</td>
-                <td class="det4">Detector 4</td>
-            </tr>
-        </table>
+        <div id="choice"></div>
+        <div id="tracegraphs"></div>
+        <div id="tracelegend">
+            <div class="detector_1">Detector 1</div>
+            <div class="detector_2">Detector 2</div>
+            <div class="detector_3">Detector 3</div>
+            <div class="detector_4">Detector 4</div>
+        </div>
     </div>
-    <div id="datum-id">UTC Date: <span id="datum"></span>GMST: <span id="gmst"></span></div>
-    <div id="map-id"></div>
-    <div id="result-id">
-        Energy in [eV]:<input type="text" id="showEn" disabled="disabled" size=8>
-        <a style="font-family: serif;">&#967;</a><sup>2</sup>:<input type="text" id="showEr" disabled="disabled" size=8>
-    </div>
-    <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
-    <div id="doc_link">
-        <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
-        <a href="index.html">➔ jSparc</a>
+    <div id="map_data">
+        <div id="datum">
+            <div>UTC Date: <span id="utc_date"></span></div>
+            <div>GMST: <span id="gmst"></span></div>
+        </div>
+        <div id="map"></div>
+        <div id="result">
+            <div>Latitude: <span id="core_latitude"></span>°</div>
+            <div>Longitude: <span id="core_longitude"></span>°</div>
+            <div>Energy: <span id="calculated_energy"></span> eV</div>
+            <div><a style="font-family: serif;">&#967;</a><sup>2</sup>: <span id="energy_error"></span></div>
+        </div>
     </div>
     <div id="dashboard">
-        <form>
-            <table>
-                <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
-                <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
-                <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
-            </table>
-        </form>
-        <input type="button" id="dataButton" value="Get data">
-        <input type="button" id="exampleButton" value="Get example">
+        <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
+        <div id="doc_link">
+            <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
+            <a href="index.html">➔ jSparc</a>
+        </div>
+        <div id="session_form">
+            <form>
+                <table>
+                    <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
+                    <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
+                    <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
+                </table>
+            </form>
+            <input type="button" id="dataButton" value="Get data">
+            <input type="button" id="exampleButton" value="Get example">
+        </div>
         <form id="info">
             <table id="coinInfo">
             </table>

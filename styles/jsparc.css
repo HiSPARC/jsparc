@@ -1,188 +1,247 @@
-#datum-id {
-    width: 440px;
-    height: 25px;
+body {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    color: #000;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    background: #fff;
+}
+
+sup {
+    vertical-align: top;
+}
+
+body:not(.loaded) #graphs,
+body:not(.loaded) #map_data {
+    display: none;
+}
+
+#graphs {
+    width: 335px;
+    padding: 5px;
+    margin: 0;
+}
+
+#map_data {
+    width: 450px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+#dashboard {
+    padding: 5px;
+}
+
+#datum {
     background-color: #ddd;
     border-radius: 5px 5px 0 0;
     text-align: center;
     font-size: .95em;
-    padding: 5px 5px 0 5px;
-    visibility: hidden;
-    left: 350px;
-    top: 5px;}
-
-#result-id {
-    width: 450px;
-    height: 25px;
     padding: 5px;
-    visibility: hidden;
-    left: 350px;
-    top: 490px;}
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+}
 
-#map-id {
-    width: 450px;
-    height: 455px;
-    left: 350px;
-    top: 35px;}
+#map {
+    height: 450px;
+}
+
+#result {
+    background-color: #ddd;
+    border-radius: 0 0 5px 5px;
+    padding: 5px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
 
 #logo {
-    width: 180px;
+    width: 190px;
     height: 63px;
     padding: 0;
     left: 805px;
-    top: 0;}
+    top: 0;
+}
 
 #doc_link {
     width: 190px;
     padding: 0;
     left: 805px;
-    top: 65px;}
+    top: 65px;
+}
 
 #doc_link a {
-    font-size: 75%;}
-
-#dashboard {
-    height: 470px;
-    padding: 5px;
-    left: 805px;
-    top: 80px;}
-
-#graph-id {
-    width: 335px;
-    height: 500px;
-    padding: 5px;
-    left: 0;
-    top: 0;}
-
-#datum-id,
-#result-id,
-#map-id,
-#logo,
-#doc_link,
-#dashboard,
-#graph-id {
-    position: absolute;
-    margin: 0;}
+    font-size: 75%;
+}
 
 #choice {
-    width: 335px;
-    margin-bottom: 15px;}
+    margin-bottom: 15px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
 
-#tracelegend {
-    width: 335px;
-    visibility: hidden;}
-
-#choice td {
+#choice div {
     cursor: pointer;
     text-align: center;
-    border-radius: 2px;}
+    border-radius: 3px;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    padding: 2px;
+    margin: 1px;
+}
 
-#tracelegend td {
+#coinInfo tr.data_buttons td {
+    cursor: pointer;
     text-align: center;
-    border-radius: 2px;}
+    border-radius: 2px;
+}
 
-body {
-    position: relative;
-    color: #000;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    font-size: 1em;
-    background: #fff;}
+#tracelegend {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+#tracelegend div {
+    text-align: center;
+    border-radius: 3px;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    padding: 2px;
+    margin: 1px;
+}
 
 img {
-    border: 0;}
+    border: 0;
+}
 
 input {
     font-family: Arial, Sans-Serif;
     font-size: 11px;
-    text-align: right;}
+    text-align: right;
+}
 
-input[disabled='disabled'] {
+input[disabled] {
     background-color: #fff;
     color: #111;
-    -webkit-text-fill-color: #111;}
+    -webkit-text-fill-color: #111;
+}
 
 input[type="button"] {
     font-family: "Trebuchet MS", Arial;
     font-size: 1em;
-    cursor: pointer;}
+    cursor: pointer;
+}
 
 .coincidencegraph {
     height: 225px;
-    width: 325px;}
+    width: 325px;
+}
 
 .tracegraph {
     display: none;
     height: 225px;
-    width: 325px;}
+    width: 325px;
+}
 
-#datum {
-    margin-right: 30px;}
-
-#datum,
+#utc_date,
 #gmst {
-    font-family: Arial, Sans-Serif;}
+    font-family: Arial, Sans-Serif;
+}
 
 table {
-    border: 0;}
+    border: 0;
+}
 
 .tracegraph,
 .coincidencegraph,
 .jqplot-yaxis-label {
-    color: #000;}
+    color: #000;
+}
 
-.olControlAttribution {
-    position: absolute;
-    font-size: 10px;
-    bottom: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.7);
-    font-family: Arial;
-    padding: 2px 4px;
-    border-radius: 5px 0 0 0;}
-
-.olControlScaleLine {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.7);
-    font-family: Arial;
-    padding: 2px 4px;
-    border-radius: 0 5px 0 0;}
-
-.det1 {
+.detector_1 {
     background: #222;
-    color: #fff;}
+    color: #fff;
+}
 
-.det2 {
+.detector_2 {
     background: #D22;
-    color: #fff;}
+    color: #fff;
+}
 
-.det3 {
-    background: #1C2;}
+.detector_3 {
+    background: #1C2;
+}
 
-.det4 {
-    background: #1CC;}
+.detector_4 {
+    background: #1CC;
+}
 
-#choice0 {
-    background: #600;
-    visibility: hidden;
-    color: #fff;}
+.shower_core {
+    margin-left: -60px;
+    margin-top: -60px;
+    width: 120px;
+    height: 120px;
+    background-image: radial-gradient(
+        circle closest-side,
+        rgba(0, 0, 0, 1),
+        rgba(0, 0, 0, 0.9) 15%,
+        rgba(0, 0, 0, 0.1) 85%,
+        transparent
+    );
+}
 
-#choice1 {
-    background: #f00;
-    color: #fff;}
+.station_marker {
+    display: table;
+    margin-left: -17px;
+    margin-top: -17px;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    text-align: center;
+}
 
-#choice2 {background: #f90;}
-#choice3 {background: #ff0;}
-#choice4 {background: #6f0;}
-#choice5 {background: #6ff;}
-#choice6 {background: #f0f;}
-#choice7 {background: #ccc;}
+.station_marker span {
+    display: table-cell;
+    vertical-align: middle;
+    font-weight: bold;
+}
 
-#choice1,
-#choice2,
-#choice3,
-#choice4,
-#choice5,
-#choice6,
-#choice7 {
-    display: none;}
+/* Hide focus outline on map markers */
+.station_marker:focus,
+.shower_core:focus {
+    outline: none;
+}
+
+.station_0 {background: #600; color: #fff;}
+.station_1 {background: #f00; color: #fff;}
+.station_2 {background: #f90;}
+.station_3 {background: #ff0;}
+.station_4 {background: #6f0;}
+.station_5 {background: #6ff;}
+.station_6 {background: #f0f;}
+.station_7 {background: #666; color: #fff;}
+.station_8 {background: #eee;}
+.station_9 {background: #fd0;}
+.station_10 {background: #ccc;}
+.station_11 {background: #060; color: #fff;}
+.station_12 {background: #00f; color: #fff;}
+.station_13 {background: #0f0; color: #fff;}

@@ -1,13 +1,13 @@
 
 function createMap(name) {
     /* Create a Leaflet map in the div with the given name
-    
+
     A reference to the created map is returned.
     Use this to add markers and other features to the map.
 
     Do not forget to set the map center and zoom level,
     either directly or by using the fitBounds method.
-    
+
     */
     var map = L.map(name, {
         zoomSnap: 0.2,
@@ -57,4 +57,4 @@ var pointStyle = {
 };
 
 // Use as padding when using fitBounds
-var boundsPadding = [15, 15];
+var boundsPadding = [25, 25];
