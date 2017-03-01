@@ -136,6 +136,9 @@ img {
 input {
     font-family: Arial, Sans-Serif;
     font-size: 11px;
+}
+
+#info input {
     text-align: right;
 }
 
