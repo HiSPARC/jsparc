@@ -45,7 +45,7 @@
 
     function calcMIP() {
         for (var i = 0; i < MIPdens.length; i++) {
-            $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(3));}
+            $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(2));}
     }
     
     function getStatus(i) {
@@ -117,7 +117,7 @@
                 if (j < detector_number[i]) {
                     if (data.events[i].pulseheights[j] * data.events[i].integrals[j] !== 0) {
                         MIPdens[i] = data.events[i].mips[j] + MIPdens[i];
-                        txt += "<td><input id='MIP" + i + "_" + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(3) + " disabled size=5></td>";}
+                        txt += "<td><input id='MIP" + i + "_" + j + "' type='text' value=" + (2 * data.events[i].mips[j]).toFixed(2) + " disabled size=5></td>";}
                     else {
                         txt += "<td><input id='MIP" + i + "_" + j + "' type='text' value='no data' style='color:#f33; -webkit-text-fill-color: #f33;' disabled size=5></td>";}}
                 else {
@@ -131,7 +131,7 @@
             txt += "</select></td>";}
         txt += "</tr><tr><td colspan='" + column_count + "'>Station average signal in [MIP/m<sup>2</sup>]</td></tr><tr><td>Data</td>";
         for (i = 0; i < station_number; i++) {
-            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(3) + " disabled size=5></td>";}
+            txt += "<td><input type='text' id='MIP" + i + "' value=" + (MIPdens[i] / 2).toFixed(2) + " disabled size=5></td>";}
         txt += "</tr><tr><td>Calc.</td>";
         for (i = 0; i < station_number; i++) {
             txt += "<td><input type='text' id='calculated_mip_" + i + "' disabled size=5></td>";

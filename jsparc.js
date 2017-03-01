@@ -126,8 +126,8 @@ function calculateEnergy() {
     var k = invNKG(0, core_distances[0]);
     calculated_mips = [];
     for (var i = 0; i < core_distances.length; i++) {
-        calculated_mips[i] = NKG(k, core_distances[i])
-        $("#calculated_mip_" + i).val(calculated_mips[i].toFixed(3));}
+        calculated_mips[i] = NKG(k, core_distances[i]);
+        $("#calculated_mip_" + i).val(calculated_mips[i].toFixed(2));}
     calculated_energy = energy(k);
     $("#calculated_energy").html(toScientific(calculated_energy, (calculated_energy / 10)));
     result.logEnergy = Math.log(calculated_energy) / Math.log(10);
