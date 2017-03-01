@@ -44,7 +44,7 @@
 
 */
 
-/* global get_coincidence: true, detector_number: true, showEvent: true */
+/* global get_coincidence: true, detector_number: true, showEvent: true, calculated_energy: true, station_number: true, diagramColor: true */
 "use strict";
 
 var showerMerc, shower4326;
@@ -157,7 +157,7 @@ function initializeShowerCore(data) {
     for (var i = 0; i < data.events.length; i++) {
         stations_center.lat += data.events[i].latitude / data.events.length;
         stations_center.lng += data.events[i].longitude / data.events.length;
-    };
+    }
 
     var shower_icon = new L.DivIcon({
         iconSize: null,
@@ -172,7 +172,7 @@ function initializeShowerCore(data) {
          title:'Shower core',
          zIndexOffset: 1000}
     );
-};
+}
 
 
 function initializeStationLayer(data) {
@@ -199,7 +199,7 @@ function initializeStationLayer(data) {
         );
         station_layer.addLayer(station);
     }
-};
+}
 
 function makeShowerMap(data) {
     /* Create the map showing the shower core and station locations
@@ -228,8 +228,8 @@ function makeShowerMap(data) {
             calculateEnergy();
             calculateError();
         }
-    )
-};
+    );
+}
 
 function sendResult() {
     /* Send the analysis result to the server
@@ -377,7 +377,7 @@ function plotGraph(data) {
         var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
 
         station_trace = "trace_" + j;
-        $('#tracegraphs').append("<div id='" + station_trace + "' class='tracegraph'></div>")
+        $('#tracegraphs').append("<div id='" + station_trace + "' class='tracegraph'></div>");
         showEvent(j);
         $.jqplot(station_trace, eventdata, tracePlotStyle);
     }
