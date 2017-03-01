@@ -53,16 +53,8 @@
     }
 
     function timestampToDate(timestamp) {
-        var date = new Date(timestamp * 1000);
-        var year = date.getUTCFullYear();
-        var month = date.getUTCMonth() + 1;
-        var day = date.getUTCDate();
-        var hour = date.getUTCHours();
-        var minute = date.getUTCMinutes();
-        var second = date.getUTCSeconds();
-        var datumOut = year + "/" + padZero(month, 2) + "/" + padZero(day, 2) + " " +
-                       padZero(hour, 2) + ":" + padZero(minute, 2) + ":" + padZero(second, 2);
-        return datumOut;
+        var iso_date = new Date(timestamp * 1000).toISOString();
+        return iso_date.replace('T', ' ').replace('.000Z', '');
     }
     
     function timestampToGMST(timestamp) {
