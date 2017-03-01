@@ -16,8 +16,6 @@ work with HiSPARC data.
 Documentation can be found here:
 [jSparc docs](http://docs.hisparc.nl/jsparc/).
 
-Designed by Niek and Arne.
-
 
 Analysis sessions
 -----------------
@@ -35,8 +33,15 @@ A web application to easily download data, look into the data and make
 many kinds of plots.
 
 
+Event Display
+-------------
+
+Show the detection of station events and coincidences between stations
+in real-time on a map.
+
+
 Trigger simulation
 ------------------
 
 A webpage that simulates HiSPARC III electronics for a 2 detector
-station, flashing the trigger LED with an aaverage event rate of 0.3 Hz.
+station, flashing the trigger LED with an average event rate of 0.3 Hz.
