@@ -9,16 +9,9 @@
     "globals": {
         "d3": false,
         "L": false,  // Leaflet
-        "OpenLayers": false,
         "MathJax": false,
         "regression": false,
 
-        // OpenLayersHisparcMap.js
-        "toProjection": false,
-        "fromProjection": false,
-        // "createMap": false,
-        "createStyle": false,
-        
         // leaflet.hisparc.js
         "createMap": false,
         "boundsPadding": false,
