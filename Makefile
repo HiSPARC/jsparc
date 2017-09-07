@@ -3,7 +3,7 @@
 test: htmltest jstest doctest
 
 htmltest:
-	html5validator --root . --show-warnings
+	html5validator --root . --show-warnings --ignore '"datetime-local" input'
 
 jstest:
 	jshint --extract auto *.html
