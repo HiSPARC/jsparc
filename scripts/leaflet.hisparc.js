@@ -1,3 +1,4 @@
+"use strict";
 
 function createMap(name) {
     /* Create a Leaflet map in the div with the given name
