@@ -1,3 +1,4 @@
+/* global createMap: true, boundsPadding: true, statusColors: true, pointStyle: true */
 "use strict";
 
 function createMap(name) {
@@ -32,7 +33,7 @@ function createMap(name) {
             markerRadius = 0.8 * Math.pow(currentZoom, 0.88);
         map.eachLayer(function(layer) {
             if ('setStyle' in layer) {
-                layer.setStyle({radius: markerRadius})
+                layer.setStyle({radius: markerRadius});
             }
         });
     });
