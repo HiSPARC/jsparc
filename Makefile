@@ -7,7 +7,7 @@ htmltest:
 
 jstest:
 	jshint --extract auto *.html
-	jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js leaflet.hisparc.js
+	jshint jquery.jsparc.js jsparc.js event-display/code.js scripts/regression.js scripts/leaflet.hisparc.js
 
 doctest:
 	sphinx-build -anW doc doc/_build/html
