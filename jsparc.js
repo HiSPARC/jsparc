@@ -44,7 +44,7 @@
 
 */
 
-/* global get_coincidence: true, detector_number: true, showEvent: true, calculated_energy: true, station_number: true, diagramColor: true */
+/* global get_coincidence: true, detector_number: true, showEvent: true,  station_number: true, diagramColor: true */
 "use strict";
 
 var showerMerc, shower4326;
@@ -128,7 +128,7 @@ function calculateEnergy() {
     for (var i = 0; i < core_distances.length; i++) {
         calculated_mips[i] = NKG(k, core_distances[i]);
         $("#calculated_mip_" + i).val(calculated_mips[i].toFixed(2));}
-    calculated_energy = energy(k);
+    var calculated_energy = energy(k);
     $("#calculated_energy").html(toScientific(calculated_energy, (calculated_energy / 10)));
     result.logEnergy = Math.log(calculated_energy) / Math.log(10);
 }
