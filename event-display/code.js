@@ -213,7 +213,7 @@ d3.json('./data/stations_' + get_hash() + '.json?nocache=' + Math.random(), func
                 data: coincidences_data,
                 painter: paint_coincidence,
                 index: 0,
-            }
+            };
             initiate_updates(coincidences);
         }
     );
@@ -228,7 +228,7 @@ d3.json('./data/stations_' + get_hash() + '.json?nocache=' + Math.random(), func
                     station: station,
                     painter: paint_event,
                     index: 0,
-                }
+                };
                 initiate_updates(events);
             }
         );
