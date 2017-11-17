@@ -26,21 +26,8 @@ svg {
     background: url(../images/HiSPARC_animated_traces.png) top right no-repeat;
     background-size: 90px 31px;}
 
-.coincidence {
-  fill: #D10;
-  -webkit-transform: scale(1.5);
-  transform: scale(1.5);
-  -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-}
-
-.event {
-  fill: #08C;
-  -webkit-transform: scale(.8);
-  transform: scale(.8);
-  -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-}
+.coincidence {fill: #dd1100;}
+.event {fill: #0088cc;}
 
 .legend {
     padding: 6px 8px;

@@ -75,12 +75,12 @@ legend.onAdd = function (map) {
 
 legend.addTo(map);
 
-function marker_size(event) {
+function marker_size(event, multiplier) {
     /* Calculate marker size for an event based on particle counts
     */
     var num_particles = event.n1 + event.n2 + event.n3 + event.n4,
         log_particles = Math.log10(1 + num_particles),
-        size = 25 * Math.sqrt(log_particles);
+        size = multiplier * 20 * Math.sqrt(log_particles);
     return size;
 }
 
@@ -149,7 +149,7 @@ function paint_coincidence(coincidences) {
         .attr("cy", function(data) { return y(station_info[data.station]); })
         .attr("r", 0)
       .transition()
-        .attr("r", function(data) { return marker_size(data); })
+        .attr("r", function(data) { return marker_size(data, 1.25); })
       .transition()
         .duration(3000)
         .style("opacity", 0)
@@ -170,7 +170,7 @@ function paint_event(events) {
         .attr("cy", function(data) { return y(station_info[data.station]); })
         .attr("r", 0)
       .transition()
-        .attr("r", function(data) { return marker_size(data); })
+        .attr("r", function(data) { return marker_size(data, 1); })
       .transition()
         .duration(500)
         .style("opacity", 0)
