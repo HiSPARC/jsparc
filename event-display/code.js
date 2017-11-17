@@ -84,149 +84,155 @@ function marker_size(event) {
     return size;
 }
 
-function update_coincidence(coincidences) {
-    var c_idx = 0;
-
-    function update() {
-        var events = coincidences[c_idx].events;
-        events.forEach(function (value) {
-            value.key = 'c-' + c_idx + '-' + value.station; });
-
-        var stations = g.selectAll(".coincidence")
-            .data(events, function(d) { return d.key; });
-
-        stations
-            .each(function() {
-                console.warn("Updated an element."); });
-
-        stations.enter().append("circle")
-            .attr("class", "coincidence")
-            .style("opacity", 0.7)
-            .attr("cx", function(d) { return x(station_info[d.station]); })
-            .attr("cy", function(d) { return y(station_info[d.station]); })
-            .attr("r", 0)
-          .transition()
-            .attr("r", function(d) { return marker_size(d); })
-          .transition()
-            .duration(3000)
-            .style("opacity", 0)
-            .remove();
-
-        c_idx ++;
-        var delta_t;
-        if (c_idx == coincidences.length) {
-            delta_t = (coincidences[0].ext_timestamp - timestamp_start) +
-                      (timestamp_end - coincidences[coincidences.length - 1].ext_timestamp);
-            c_idx = 0;
-        } else {
-            delta_t = coincidences[c_idx].ext_timestamp -
-                      coincidences[c_idx - 1].ext_timestamp;
-        }
+function initiate_updates(dataset) {
+    /* Determine initial delay for the dataset, then start updates.
+    */
+    if (dataset.data.length > 0) {
+        // delay of first event after the start timestamp
+        var delta_t = dataset.data[0].ext_timestamp - timestamp_start;
+        // nanoseconds to milliseconds
         delta_t /= 1e6;
         // debug
         delta_t /= SPEEDUP_FACTOR;
-        // console.log("delta_t: ", delta_t);
-        setTimeout(update, delta_t);
-    }
-
-    if (coincidences.length > 0) {
-        var delay = (coincidences[0].ext_timestamp - timestamp_start);
-        delay /= 1e6;
-        // debug
-        delay /= SPEEDUP_FACTOR;
-        setTimeout(update, delay);
+        setTimeout(update, delta_t, dataset);
     }
 }
 
-function update_event(events, station) {
-    var e_idx = 0;
-
-    function update() {
-        var event = events[e_idx];
-        event.key = 'e-' + station + '-' + e_idx;
-        event.station = station;
-
-        g.insert("circle", ":first-child").datum(event)
-            .attr("class", "event")
-            .style("opacity", 0.8)
-            .attr("cx", function(d) { return x(station_info[d.station]); })
-            .attr("cy", function(d) { return y(station_info[d.station]); })
-            .attr("r", 0)
-          .transition()
-            .attr("r", function(d) { return marker_size(d); })
-          .transition()
-            .duration(500)
-            .style("opacity", 0)
-            .remove();
-
-        e_idx ++;
-        var delta_t;
-        if (e_idx == events.length) {
-            delta_t = (events[0].ext_timestamp - timestamp_start) +
-                      (timestamp_end - events[events.length - 1].ext_timestamp);
-            e_idx = 0;
-        } else {
-            delta_t = events[e_idx].ext_timestamp -
-                      events[e_idx - 1].ext_timestamp;
-        }
-        delta_t /= 1e6;
-        // debug
-        delta_t /= SPEEDUP_FACTOR;
-        // console.log("event delta_t: ", delta_t);
-        setTimeout(update, delta_t);
-    }
-
-    if (events.length > 0) {
-        var delay = (events[0].ext_timestamp - timestamp_start);
-        delay /= 1e6;
-        // debug
-        delay /= SPEEDUP_FACTOR;
-        setTimeout(update, delay);
-    }
+function update(dataset) {
+    /* Paint the current data, then progress to the next and Update the dataset
+    */
+    dataset.painter(dataset);
+    progress(dataset);
 }
 
+function progress(dataset) {
+    /* Progress the dataset by updating the index, and determine delay until next update.
+    */
+    var index = dataset.index,
+        data = dataset.data,
+        delta_t;
+
+    index ++;
+    if (index == data.length) {
+        delta_t = (data[0].ext_timestamp - timestamp_start) +
+                  (timestamp_end - data[data.length - 1].ext_timestamp);
+        index = 0;
+    } else {
+        delta_t = data[index].ext_timestamp -
+                  data[index - 1].ext_timestamp;
+    }
+    // nanoseconds to milliseconds
+    delta_t /= 1e6;
+    // debug
+    delta_t /= SPEEDUP_FACTOR;
+
+    // Update dataset object
+    dataset.index = index;
+
+    setTimeout(update, delta_t, dataset);
+}
+
+function paint_coincidence(coincidences) {
+    /* Paint a coincidence on the map
+    */
+    var events = coincidences.data[coincidences.index].events;
+    events.forEach(function (value) {
+        value.key = 'c-' + coincidences.index + '-' + value.station; });
+
+    var stations = g.selectAll(".coincidence")
+        .data(events, function(data) { return data.key; });
+
+    stations.enter().append("circle")
+        .attr("class", "coincidence")
+        .style("opacity", 0.7)
+        .attr("cx", function(data) { return x(station_info[data.station]); })
+        .attr("cy", function(data) { return y(station_info[data.station]); })
+        .attr("r", 0)
+      .transition()
+        .attr("r", function(data) { return marker_size(data); })
+      .transition()
+        .duration(3000)
+        .style("opacity", 0)
+        .remove();
+}
+
+function paint_event(events) {
+    /* Paint an event on the map
+    */
+    var event = events.data[events.index];
+    event.key = 'e-' + events.station + '-' + events.index;
+    event.station = events.station;
+
+    g.insert("circle", ":first-child").datum(event)
+        .attr("class", "event")
+        .style("opacity", 0.8)
+        .attr("cx", function(data) { return x(station_info[data.station]); })
+        .attr("cy", function(data) { return y(station_info[data.station]); })
+        .attr("r", 0)
+      .transition()
+        .attr("r", function(data) { return marker_size(data); })
+      .transition()
+        .duration(500)
+        .style("opacity", 0)
+        .remove();
+}
+
+// Get stations for the currently selected subcluster
 d3.json('./data/stations_' + get_hash() + '.json?nocache=' + Math.random(), function(error, data) {
     timestamp_start = data.limits[0];
     timestamp_end = data.limits[1];
     station_info = data.stations;
-    var values = Object.keys(station_info).map(function (key) {
+    var stations_latlon = Object.keys(station_info).map(function (key) {
         return station_info[key];
     });
 
     function lat(d) { return d[0]; }
     function lon(d) { return d[1]; }
 
-    var lat_min = d3.min(values, lat),
-        lat_max = d3.max(values, lat),
-        lon_min = d3.min(values, lon),
-        lon_max = d3.max(values, lon);
+    var lat_min = d3.min(stations_latlon, lat),
+        lat_max = d3.max(stations_latlon, lat),
+        lon_min = d3.min(stations_latlon, lon),
+        lon_max = d3.max(stations_latlon, lon);
 
     map.fitBounds([[lat_min, lon_min], [lat_max, lon_max]]);
-    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        attribution: '<a href="../index.html">jSparc</a>, ' +
-                     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
-                     '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        maxZoom: 20
-    }).addTo(map);
+    L.tileLayer(
+        'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+        {
+            attribution: '<a href="../index.html">jSparc</a>, ' +
+                         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, ' +
+                         '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+            maxZoom: 20
+        }
+    ).addTo(map);
 
-    d3.json('./data/coincidences_' + get_hash() + '.json?cache=' + timestamp_start + timestamp_end,
-            function(error, data) {
-                update_coincidence(data);
+    // Load coincidences data
+    d3.json(
+        './data/coincidences_' + get_hash() + '.json?cache=' + timestamp_start + timestamp_end,
+        function(error, coincidences_data) {
+            var coincidences = {
+                data: coincidences_data,
+                painter: paint_coincidence,
+                index: 0,
             }
+            initiate_updates(coincidences);
+        }
     );
 
+    // Load station data
     function load_json(station) {
-        d3.json('./data/events_s' + station + '.json?cache=' + timestamp_start + timestamp_end,
-                function(error, data) {
-                    update_event(data, station);
+        d3.json(
+            './data/events_s' + station + '.json?cache=' + timestamp_start + timestamp_end,
+            function(error, events_data) {
+                var events = {
+                    data: events_data,
+                    station: station,
+                    painter: paint_event,
+                    index: 0,
                 }
+                initiate_updates(events);
+            }
         );
     }
 
-    var stations = Object.keys(station_info),
-        station;
-    for (var i = 0; i < stations.length; i ++) {
-        station = stations[i];
-        load_json(station);
-    }
+    Object.keys(station_info).forEach(load_json);
 });
