@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import datetime
 import json
 import re
@@ -10,6 +12,7 @@ from sapphire import (Network, Station, download_data, download_coincidences,
 from sapphire.utils import pbar
 
 
+EVENT_DISPLAY_DIR = os.path.dirname(__file__)
 STATIONS = Network().station_numbers()
 START = datetime.datetime(2016, 2, 1, 11, 0)
 END = datetime.datetime(2016, 2, 1, 11, 20)
@@ -70,7 +73,7 @@ def build_coincidence_json(data, subcluster=None):
                            ['timestamp', 'nanoseconds', 'ext_timestamp']}
         events = []
         for s_idx, e_idx in c_index[coincidence['id']]:
-            node_str = s_index[s_idx]
+            node_str = s_index[s_idx].decode('utf-8')
             station = data.get_node(node_str)
             station_event = station.events[e_idx]
             station_number = re_station_number.match(node_str).group(1)
@@ -129,9 +132,10 @@ def build_station_json(data, subcluster=None):
 
 
 def write_jsons(data):
-    if not os.path.exists('data/'):
-        os.mkdir('data')
+    if not os.path.exists(os.path.join(EVENT_DISPLAY_DIR, 'data/')):
+        os.mkdir(os.path.join(EVENT_DISPLAY_DIR, 'data'))
 
+    # Create subcluster station location and coincidences JSONs
     for subcluster in Network().subclusters():
         subcluster_name = subcluster['name'].lower().replace(' ', '_')
 
@@ -143,6 +147,7 @@ def write_jsons(data):
         with open('data/coincidences_' + subcluster_name + '.json', 'w') as f:
             json.dump(coincidences, f)
 
+    # Create network station location and coincidences JSONs
     stations = build_station_json(data)
     with open('data/stations_network.json', 'w') as f:
         json.dump(stations, f)
@@ -151,6 +156,7 @@ def write_jsons(data):
     with open('data/coincidences_network.json', 'w') as f:
         json.dump(coincidences, f)
 
+    # Create station events JSONs
     for station in pbar(STATIONS):
         events = build_events_json(data, station)
         with open('data/events_s%d.json' % station, 'w') as f:
@@ -163,7 +169,6 @@ def get_latlon_coordinates(station_number):
     An exception is raised if the station does not have valid coordinates.
 
     """
-
     station = Station(station_number)
     gps_location = station.gps_location(START)
     if gps_location['latitude'] == 0.:
@@ -173,7 +178,7 @@ def get_latlon_coordinates(station_number):
 
 if __name__ == '__main__':
     if 'data' not in globals():
-        data = tables.open_file('data.h5', 'w')
+        data = tables.open_file(os.path.join(EVENT_DISPLAY_DIR, 'data.h5'), 'r')
 
     download_events_data(data)
     download_coincidences_data(data)
