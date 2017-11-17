@@ -25,6 +25,7 @@ var CLUSTERS = ['network', 'aarhus', 'alphen_aan_de_rijn', 'amsterdam',
                 'middelharnis', 'nijmegen', 'science_park', 'tilburg',
                 'utrecht', 'venray', 'weert', 'zaanstad', 'zwijndrecht'];
 
+// if no cluster is selected set cluster to science park
 if (location.hash === '' || CLUSTERS.indexOf(get_hash()) === -1) {
     location.hash = 'science_park';}
 
@@ -32,9 +33,11 @@ var SPEEDUP_FACTOR = 1;
 
 var station_info, timestamp_start, timestamp_end;
 
+// create map and add scale controls
 var map = L.map('map');
 L.control.scale().addTo(map);
 
+// Create SVG on the map overlay pane to paint the events on
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
@@ -43,7 +46,6 @@ function y(coord) { return map.latLngToLayerPoint(coord).y; }
 
 // add a legend
 var legend = L.control({position: 'topright'});
-
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'legend leaflet-bar');
     div.innerHTML = '<div id="pageHeader"></div><br>' +
@@ -54,7 +56,7 @@ legend.onAdd = function(map) {
 
 legend.addTo(map);
 
-// select subcluster
+// add subcluster select
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
     var div = L.DomUtil.create('div');
