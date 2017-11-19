@@ -44,6 +44,23 @@ var svg = d3.select(map.getPanes().overlayPane).append("svg"),
 function x(coord) { return map.latLngToLayerPoint(coord).x; }
 function y(coord) { return map.latLngToLayerPoint(coord).y; }
 
+function update_layer_position() {
+    // update layer's position to top-left of map container
+    var pos = map.containerPointToLayerPoint([0, 0]);
+    L.DomUtil.setPosition(svg.node(), pos);
+
+    // if you reposition the overlay, translate it with the negative offset
+    // to be able to use the conversion functions.
+    g.attr("transform", "translate(" + -pos.x + "," + -pos.y + ")");
+
+    // reposition all circles
+    g.selectAll("circle")
+        .attr("cx", function(d) { return x(station_info[d.station]); })
+        .attr("cy", function(d) { return y(station_info[d.station]); });
+}
+
+map.on('moveend', update_layer_position);
+
 // add a legend
 var legend = L.control({position: 'topright'});
 legend.onAdd = function(map) {
