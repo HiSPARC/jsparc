@@ -34,8 +34,8 @@
              latitude: "latitude of station",
              altitude: "altitude of station",
              number: "numbers of station",
-             pulseheights: ["the pulseheights of the trace 0/3 in mV"],
-             integrals: ["the area above the trace in mVns"],
+             pulseheights: ["the pulseheights of the trace 0/3 in ADC"],
+             integrals: ["the area above the trace in ADC.sample"],
              mips: ["numper of mips for each detector"],
              traces: [["arrays of data of the traces 0/3"]]}}
 
@@ -292,7 +292,7 @@ function plotGraph(data) {
             yaxis: {
                 numberTicks: 3,
                 max: 0,
-                label: "Pulseheight [mV]"}},
+                label: "Pulseheight [ADC]"}},
         grid: {
             shadow: false,
             background: "#fff",
