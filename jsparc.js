@@ -291,7 +291,7 @@ function plotGraph(data) {
                 label: "Time [ns]"},
             yaxis: {
                 numberTicks: 3,
-                max: 0,
+                min: 0,
                 label: "Pulseheight [ADC]"}},
         grid: {
             shadow: false,
