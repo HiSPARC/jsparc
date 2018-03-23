@@ -64,7 +64,7 @@
         // CSS spec for the font-family css attribute.
         // Applies only to browsers supporting native font rendering in the
         // canvas tag.  Currently Mozilla 3.5 and Safari 4.
-        this.fontFamily = '"Trebuchet MS", Arial, Helvetica, sans-serif';
+        this.fontFamily = 'sans-serif';
         // prop: fontSize
         // CSS spec for font size.
         this.fontSize = '11pt';
