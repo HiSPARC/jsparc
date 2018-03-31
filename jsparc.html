@@ -150,8 +150,8 @@
     function retrieveData() {
         var url = BASE_URL + "get_coincidence/";
         // Use local test data
-        // url = 'examples/jsparc_data_n4.json';
-        // url = 'examples/jsparc_data_n9.json';
+        // url = 'examples/jsparc_data_n3.json';
+        // url = 'examples/jsparc_data_n6.json';
         $.getJSON(url, get_coincidence)
             .done(loadData)
             .fail(showError);
