@@ -34,8 +34,8 @@
              latitude: "latitude of station",
              altitude: "altitude of station",
              number: "numbers of station",
-             pulseheights: ["the pulseheights of the trace 0/3 in mV"],
-             integrals: ["the area above the trace in mVns"],
+             pulseheights: ["the pulseheights of the trace 0/3 in ADC"],
+             integrals: ["the area above the trace in ADC.sample"],
              mips: ["numper of mips for each detector"],
              traces: [["arrays of data of the traces 0/3"]]}}
 
@@ -291,8 +291,8 @@ function plotGraph(data) {
                 label: "Time [ns]"},
             yaxis: {
                 numberTicks: 3,
-                max: 0,
-                label: "Pulseheight [mV]"}},
+                min: 0,
+                label: "Pulseheight [ADC]"}},
         grid: {
             shadow: false,
             background: "#fff",
@@ -316,13 +316,13 @@ function plotGraph(data) {
 
     var tracedata = [],
         eventdata = [],
-        trace_min = 0;
+        trace_max = 0;
 
     for (j = 0; j < data.events.length; j++) {
         for (k = 0; k < detector_number[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
-            if (Array.min(data.events[j].traces[k]) < trace_min) {
-                trace_min = Array.min(data.events[j].traces[k]);}
+            if (Array.max(data.events[j].traces[k]) > trace_max) {
+                trace_max = Array.max(data.events[j].traces[k]);}
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
             eventdata.push(tracedata[k]);}}
@@ -341,8 +341,8 @@ function plotGraph(data) {
                 min: 0,
                 max: Math.ceil((tmax - tmin) / 40.0) * 40.0},
             yaxis: {
-                min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
-                max: 0}}};
+                min: 0,
+                max: Math.ceil(trace_max * 1.1 / 2.0) * 2.0}}};
 
     var eventPlotStyle = $.extend(true, {}, plotStyle, _eventPlotStyle);
 
@@ -351,16 +351,15 @@ function plotGraph(data) {
     // Plot the individual station trace diagrams
 
     for (j = 0; j < data.events.length; j++) {
-
         tracedata = [];
         eventdata = [];
-        trace_min = 0;
+        trace_max = 0;
         for (k = 0; k < detector_number[j]; k++) {
             tracedata[k] = [[(data.events[j].nanoseconds - tmin), data.events[j].traces[k][0]]];
             for (i = 1; i < data.events[j].traces[k].length; i++) {
                 tracedata[k].push([(i * 2.5 + data.events[j].nanoseconds - tmin), data.events[j].traces[k][i]]);}
-            if (Array.min(data.events[j].traces[k]) < trace_min) {
-                trace_min = Array.min(data.events[j].traces[k]);}
+            if (Array.max(data.events[j].traces[k]) > trace_max) {
+                trace_max = Array.max(data.events[j].traces[k]);}
             eventdata.push(tracedata[k]);}
 
         var _tracePlotStyle = {
@@ -371,8 +370,8 @@ function plotGraph(data) {
                     min: 0,
                     max: Math.ceil((data.events[j].traces[0].length * 2.5 + data.events[j].nanoseconds - tmin) / 40.0) * 40.0},
                 yaxis: {
-                    min: Math.ceil(trace_min * 1.1 / 2.0) * 2.0,
-                    max: 0}}};
+                    min: 0,
+                    max: Math.ceil(trace_max * 1.1 / 2.0) * 2.0}}};
 
         var tracePlotStyle = $.extend(true, {}, plotStyle, _tracePlotStyle);
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>HiSPARC - jSparc - Analysis</title>
   <link rel="shortcut icon" href="images/favicon.ico">
-  <link rel="stylesheet" media="screen" href="styles/jquery.jqplot.min.css">
+  <link rel="stylesheet" media="screen" href="styles/jquery.jqplot.css">
   <link rel="stylesheet" media="screen" href="styles/leaflet.css">
   <link rel="stylesheet" href="styles/common.css">
   <link rel="stylesheet" media="screen" href="styles/jsparc.css">
@@ -47,7 +47,7 @@
         for (var i = 0; i < MIPdens.length; i++) {
             $('#MIP' + i).val((2 * MIPdens[i] / $('#count' + i).val()).toFixed(2));}
     }
-    
+
     function getStatus(i) {
         window.open(infoURL[i]);
     }
@@ -56,7 +56,7 @@
         var iso_date = new Date(timestamp * 1000).toISOString();
         return iso_date.replace('T', ' ').replace('.000Z', '');
     }
-    
+
     function timestampToGMST(timestamp) {
         var sidDays = timestamp / 86400 - 10957;
         var GMST = 18.697374558 + 24.06570982441908 * sidDays; // http://en.wikipedia.org/wiki/Sidereal_time
@@ -83,7 +83,7 @@
         $('#sessionTitle').attr('disabled', true);
         $('#sessionPin').attr('disabled', true);
         $('#studentName').attr('disabled', true);
-        
+
         //  Get Year, Month, Day, Hour, Minute, Second.
         var datum = timestampToDate(data.events[0].timestamp);
         $("#utc_date").html(datum);
@@ -150,8 +150,8 @@
     function retrieveData() {
         var url = BASE_URL + "get_coincidence/";
         // Use local test data
-        // url = 'examples/jsparc_data_n4.json';
-        // url = 'examples/jsparc_data_n9.json';
+        // url = 'examples/jsparc_data_n3.json';
+        // url = 'examples/jsparc_data_n6.json';
         $.getJSON(url, get_coincidence)
             .done(loadData)
             .fail(showError);
@@ -181,25 +181,17 @@
 
     $(function() {
         // Animate HiSPARC logo during ajax activity
-        $(document).bind('ajaxStart', function() {
-                            $('#pageHeader').addClass('animated');})
-                   .bind('ajaxStop', function() {
-                            $('#pageHeader').removeClass('animated');});
+        $(document).ajaxStart(function() {$('#pageHeader').addClass('animated');})
+                   .ajaxStop(function() {$('#pageHeader').removeClass('animated');});
 
         $("#sessionHash").val(get_coincidence.session_hash);
 
-        $("#exampleButton").bind('click', function (event) {
-            getExample();
-        });
+        $("#exampleButton").click(getExample);
+        $("#dataButton").click(getData);
 
-        $("#dataButton").bind('click', function (event) {
-            getData();
-        });
-
-        $(window).keyup(function (e) {
-            if (e.keyCode === 13) {
-                getData();}
-        });
+        $('body').keyup(function (event) {
+            if (event.which === 13) {
+                getData();}});
     });
   </script>
 </head>
