@@ -32,7 +32,7 @@ be stored as strings.
         var jsparc = this,
             API_URL = 'http://data.hisparc.nl/api',
             DATA_URL = 'http://data.hisparc.nl/data',
-            JSPARC_URL = 'http://data.hisparc.nl/jsparc',
+            JSPARC_URL = 'http://data.hisparc.nl/analysis-session',
             events_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
                              'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
                              'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
@@ -786,7 +786,7 @@ be stored as strings.
 
         jsparc.jsparc_get_coincidence = jsparc_get_coincidence;
         function jsparc_get_coincidence(get_coincidence) {
-            /* Create url with query to get a coincidence from a jSparc session
+            /* Create url with query to get a coincidence from a jSparc analysis session
 
             get_coincidence should be an object with the following keys:
             session_title, session_pin, student_name
@@ -796,7 +796,7 @@ be stored as strings.
 
         jsparc.jsparc_result = jsparc_result;
         function jsparc_result(result) {
-            /* Create url with query to send the jSparc results to the server
+            /* Create url with query to send the jSparc analysis session results to the server
 
             result should be an object with the following keys:
             session_title, session_pin, student_name, pk, logEnergy, error, lon, lat

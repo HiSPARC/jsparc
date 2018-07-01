@@ -50,7 +50,7 @@
 var showerMerc, shower4326;
 var map, station_layer, shower_core;
 var core_distances, calculated_mips, calculated_energies;
-var BASE_URL = "http://data.hisparc.nl/jsparc/";
+var BASE_URL = "http://data.hisparc.nl/analysis-session";
 var c = 299792458;
 var result = {};
 
@@ -237,7 +237,7 @@ function sendResult() {
     result.session_title = get_coincidence.session_title;
     result.session_pin = get_coincidence.session_pin;
     result.student_name = get_coincidence.student_name;
-    $.getJSON(BASE_URL + 'result/', result, function(data) {
+    $.getJSON(BASE_URL + '/result/', result, function(data) {
         $("#analyseTab").hide();
         window.alert(data.msg + "\nYou are number " + data.rank + ".");
         // FIXME: This 'reload' should be smarter and remember the Title and PIN (possible probably also the Student name)

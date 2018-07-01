@@ -20,7 +20,7 @@
   <script>
     /* global detectorNumber: true, makeShowerMap: true, plotGraph: true, writeDist: true, showerMerc: true, showEvent: true */
     "use strict";
-    var BASE_URL = "http://data.hisparc.nl/jsparc/";
+    var BASE_URL = "http://data.hisparc.nl/analysis-session";
     var MIPdens = [];
     var detector_number = [];
     var station_number;
@@ -148,7 +148,7 @@
     }
 
     function retrieveData() {
-        var url = BASE_URL + "get_coincidence/";
+        var url = BASE_URL + "/get_coincidence/";
         // Use local test data
         // url = 'examples/jsparc_data_n3.json';
         // url = 'examples/jsparc_data_n6.json';
