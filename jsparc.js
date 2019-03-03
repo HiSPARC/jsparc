@@ -50,7 +50,7 @@
 var showerMerc, shower4326;
 var map, station_layer, shower_core;
 var core_distances, calculated_mips, calculated_energies;
-var BASE_URL = "http://data.hisparc.nl/analysis-session";
+var BASE_URL = "https://data.hisparc.nl/analysis-session";
 var c = 299792458;
 var result = {};
 

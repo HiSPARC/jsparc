@@ -30,9 +30,9 @@ be stored as strings.
 
         /* jshint validthis: true */
         var jsparc = this,
-            API_URL = 'http://data.hisparc.nl/api',
-            DATA_URL = 'http://data.hisparc.nl/data',
-            JSPARC_URL = 'http://data.hisparc.nl/analysis-session',
+            API_URL = 'https://data.hisparc.nl/api',
+            DATA_URL = 'https://data.hisparc.nl/data',
+            JSPARC_URL = 'https://data.hisparc.nl/analysis-session',
             events_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
                              'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
                              'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},

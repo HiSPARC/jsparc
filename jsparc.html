@@ -20,7 +20,7 @@
   <script>
     /* global detectorNumber: true, makeShowerMap: true, plotGraph: true, writeDist: true, showerMerc: true, showEvent: true */
     "use strict";
-    var BASE_URL = "http://data.hisparc.nl/analysis-session";
+    var BASE_URL = "https://data.hisparc.nl/analysis-session";
     var MIPdens = [];
     var detector_number = [];
     var station_number;
@@ -128,7 +128,7 @@
         for (i = 0; i < station_number; i++) {
             txt += "<td><input type='text' id='calculated_mip_" + i + "' disabled size=5></td>";
             $("#choice").append("<div class='station_" + i + "'>" + data.events[i].number + "</div>");
-            infoURL[i] = "http://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 4) + "/" + datum.substring(5, 7) + "/" + datum.substring(8, 10) + "/";}
+            infoURL[i] = "https://data.hisparc.nl/show/stations/" + data.events[i].number + "/" + datum.substring(0, 4) + "/" + datum.substring(5, 7) + "/" + datum.substring(8, 10) + "/";}
         $(txt).appendTo("#coinInfo");
         $('<input type="button" value="Send result" id="sendButton" onclick="sendResult()">').appendTo('#info');
 
@@ -221,9 +221,9 @@
         </div>
     </div>
     <div id="dashboard">
-        <div id="logo"><a target="_blank" href="http://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
+        <div id="logo"><a target="_blank" href="https://www.hisparc.nl/"><span id="pageHeader"></span></a></div>
         <div id="doc_link">
-            <a href="http://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
+            <a href="https://docs.hisparc.nl/jsparc/jsparc_analysis.html" target="jsparc_doc">➔ Documentation</a>
             <a href="index.html">➔ jSparc</a>
         </div>
         <div id="session_form">
