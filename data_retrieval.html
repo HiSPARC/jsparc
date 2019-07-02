@@ -46,7 +46,8 @@
                 jsparc = $.jsparc();
 
                 var station_events_select = jsparc.make_station_select($('#station_events_choice'), 'events'),
-                    station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather');
+                    station_weather_select = jsparc.make_station_select($('#station_weather_choice'), 'weather'),
+                    station_singles_select = jsparc.make_station_select($('#station_singles_choice'), 'singles');
                 jsparc.set_dataset_list_controls($('#dataset_list'));
                 jsparc.set_flot_options([jsparc.flot_scatter()]);
 
@@ -54,9 +55,15 @@
                 $('#type_choice input').change(function() {
                     if ($(this).val() == 'weather') {
                         $('#station_events_choice').hide();
+                        $('#station_singles_choice').hide();
                         $('#station_weather_choice').show();}
+                    else if ($(this).val() == 'singles') {
+                        $('#station_singles_choice').show();
+                        $('#station_events_choice').hide();
+                        $('#station_weather_choice').hide();}
                     else if ($(this).val() == 'events') {
                         $('#station_events_choice').show();
+                        $('#station_singles_choice').hide();
                         $('#station_weather_choice').hide();}
                 });
 
@@ -84,13 +91,13 @@
                         for (var i = 0; i < checked_input.length; i++) {
                             input_array[checked_input[i].name] = checked_input[i].value;
                         }
-                    }                    
+                    }
 
                     var download_return = jsparc.download_dataset($('#station_' + data_type + '_choice select').val(),
                                                                   $('#startdate_choice').val(),
                                                                   $('#enddate_choice').val(),
                                                                   data_type);
-                          
+
                     // Check return type because if for example dataset is already available
                     // the object return is not a reader object
                     if (typeof download_return != "undefined") {
@@ -253,7 +260,7 @@
                             // Convert seconds to milliseconds.
                             order = order * 1000;}}
 
-                    // If a fit type is selected use regression.js to get trend 
+                    // If a fit type is selected use regression.js to get trend
                     // points and add them to data to plot
                     if (fit_type != 'none') {
                         var formulas = $('<div>').append($('<h3>').text('Fit formula with correlation coefficient'));
@@ -399,11 +406,13 @@
                 <span id="type_choice">
                     <input name="data_type" type="radio" value="events" checked="checked"> Events
                     <input name="data_type" type="radio" value="weather"> Weather
+                    <input name="data_type" type="radio" value="singles"> Singles
                 </span>
             </p>
             <p id="station_choice">Station:
                 <span id="station_events_choice"><select><option>Loading stations..</option></select></span>
-                <span style="display:none;" id="station_weather_choice"></span></p>
+                <span style="display:none;" id="station_weather_choice"></span>
+                <span style="display:none;" id="station_singles_choice"></span></p>
             <p>Start date: <input id="startdate_choice" type="datetime-local" min="2004-01-01T00:00:00" step="1"></p>
             <p>End date: <input id="enddate_choice" type="datetime-local" min="2004-01-01T00:00:00" step="1"></p>
             <input type='button' value="Get Data!" id="download_dataset">
@@ -454,8 +463,8 @@
                         Bins: <input name="hist_bins" type="number" min=0 step=10 style="width: 60px;" value="100"><br>
                     </span><br>
                     <span class="key">Fit:</span><br>
-                    <span id="fit"> 
-                        Type:   
+                    <span id="fit">
+                        Type:
                         <select id="fit_options" title="Select the type of function to fit to the selected data.">
                             <option value="none">No fit</option>
                             <option value="linear">Linear</option>
@@ -470,7 +479,7 @@
                         Period: <input name="period" type="number" style="width: 66px;" disabled value="86400"
                                        title="Set the period of the sine function, in same units as the x-axis."><br>
                         Degree: <input name="degree" type="number" min=0 max=10 step=1 style="width: 60px;" disabled value="2"
-                                       title="Set the degree (highest power) of the polynomial."><br>      
+                                       title="Set the degree (highest power) of the polynomial."><br>
                     </span><br>
                 </div>
                 <input type="button" value="Create Plot" id="make_plot">
