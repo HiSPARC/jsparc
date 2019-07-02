@@ -435,6 +435,8 @@ be stored as strings.
                 url = api_stations_with_data();}
             else if (type == 'weather') {
                 url = api_stations_with_weather();}
+            else if (type == 'singles') {
+                url = api_stations_with_singles();}
             else {
                 url = api_stations();}
             return get_json(url)
@@ -732,6 +734,10 @@ be stored as strings.
         jsparc.api_stations_with_weather = api_stations_with_weather;
         function api_stations_with_weather(year, month, day) {
             return build_url([API_URL, 'stations/weather', year, month, day, '']);}
+
+        jsparc.api_stations_with_singles = api_stations_with_singles;
+        function api_stations_with_singles(year, month, day) {
+            return build_url([API_URL, 'stations/singles', year, month, day, '']);}
 
         jsparc.api_station_info = api_station_info;
         function api_station_info(station_number, year, month, day) {
