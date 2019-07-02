@@ -59,6 +59,17 @@ be stored as strings.
                               'heat_index': {'column': 14, 'name': 'Heat index', 'units': '°C'},
                               'dew_point': {'column': 15, 'name': 'Dew point', 'units': '°C'},
                               'wind_chill': {'column': 16, 'name': 'Wind chill', 'units': '°C'}},
+            singles_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
+                              'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
+                              'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
+                              'mas_ch1_high': {'column': 3, 'name': 'ch1 high', 'units': 'Hz'},
+                              'mas_ch1_low': {'column': 4, 'name': 'ch1 low', 'units': 'Hz'},
+                              'mas_ch2_high': {'column': 5, 'name': 'ch2 high', 'units': 'Hz'},
+                              'mas_ch2_low': {'column': 6, 'name': 'ch2 low', 'units': 'Hz'},
+                              'slv_ch1_high': {'column': 7, 'name': 'ch3 high', 'units': 'Hz'},
+                              'slv_ch1_low': {'column': 8, 'name': 'ch3 low', 'units': 'Hz'},
+                              'slv_ch2_high': {'column': 9, 'name': 'ch4 high', 'units': 'Hz'},
+                              'slv_ch2_low': {'column': 10, 'name': 'ch4 low', 'units': 'Hz'}},
             lightning_format = {'date': {'column': 0, 'name': 'Date', 'units': 'GPS date'},
                                 'time': {'column': 1, 'name': 'Time', 'units': 'GPS time'},
                                 'timestamp': {'column': 2, 'name': 'Timestamp', 'units': 's'},
@@ -123,6 +134,7 @@ be stored as strings.
         jsparc.JSPARC_URL = JSPARC_URL;
         jsparc.events_format = events_format;
         jsparc.weather_format = weather_format;
+        jsparc.singles_format = singles_format;
         jsparc.lightning_format = lightning_format;
         jsparc.eventtime_format = eventtime_format;
         jsparc.pulseheight_format = pulseheight_format;
