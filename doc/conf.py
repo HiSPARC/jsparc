@@ -170,7 +170,7 @@ html_static_path = ['_static']
 htmlhelp_basename = 'jSparcdoc'
 
 def setup(app):
-    app.add_stylesheet('hisparc_style.css')
+    app.add_css_file('hisparc_style.css')
 
 # -- Options for LaTeX output --------------------------------------------------
 

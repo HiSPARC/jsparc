@@ -1,8 +1,8 @@
 jSparc library
 ==============
 
-[![GPLv3](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/HiSPARC/jsparc/blob/master/LICENSE)
-[![Travis Status](http://img.shields.io/travis/HiSPARC/jsparc/master.svg)](https://travis-ci.org/HiSPARC/jsparc)
+[![GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](https://github.com/HiSPARC/jsparc/blob/master/LICENSE)
+[![GitHub Actions](https://img.shields.io/github/checks-status/HiSPARC/jsparc/master)](https://github.com/HiSPARC/jsparc/actions/)
 
 This contains the source code for the jSparc JavaScript library, which
 is used for a couple of web applications that can be found here:
