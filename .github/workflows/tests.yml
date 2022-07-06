@@ -1,0 +1,43 @@
+name: Run tests
+
+on:
+  push:
+
+jobs:
+  htmlvalidation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Cyb3r-Jak3/html5validator-action@v7.1.1
+        with:
+          root: .
+          css: true
+          log_level: INFO
+
+  jshint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/gallium
+      - run: npm install -g jshint@latest
+      - run: make jstest
+
+  docs:
+    if: github.ref == 'refs/heads/master'
+    needs: [htmlvalidation, jshint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install Sphinx
+      - run: make doctest
+      - uses: peaceiris/actions-gh-pages@v3.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: doc/_build/html
+          publish_branch: gh-pages
+          force_orphan: true

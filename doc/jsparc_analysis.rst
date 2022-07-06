@@ -18,7 +18,7 @@ The page will be quite empty at first and only show the |hisparc| logo
 and a form where you can enter the session title and pin and your name.
 The title and pin can be obtained by you or your teacher by requesting
 an analysis session, which can be done on the `Session Request Form
-<http://www.hisparc.nl/en/hisparc-data/jsparc/sessie-aanvragen/>`_.
+<https://data.hisparc.nl/analysis-session/request/>`_.
 Once you have filled in this information you can press the *Get data*
 button to load the data. If you do not have a session you can still use
 this web application by pressing the *Get example* button.
