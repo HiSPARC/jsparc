@@ -11,7 +11,7 @@
             var scale = 0.5;
             var canvas, context;
 
-            function initCanvas() {          
+            function initCanvas() {
                 canvas = document.getElementById('station_layout');
                 context = canvas.getContext('2d');
                 context.translate(300,500);
@@ -31,7 +31,7 @@
                     var x = (600 * Math.random()),
                         y = (600 * Math.random());
                     drawParticle(context, x, y);}}
-    
+
             function radians(degrees) {
                 return degrees * Math.PI / 180;}
 
@@ -78,11 +78,11 @@
         <div id="container">
             <div id="header"><div id="pageHeader"></div></div>
             <div id="doc_link">
-                <a href="http://docs.hisparc.nl/infopakket/pdf/air_showers.pdf" target="jsparc_doc">➔ Werkblad</a>
+                <a href="https://docs.hisparc.nl/infopakket/pdf/air_showers.pdf" target="jsparc_doc">➔ Werkblad</a>
                 <a href="index.html">➔ jSparc</a>
             </div>
             <p>
-                Particle density in [m<sup>-2</sup>]: 
+                Particle density in [m<sup>-2</sup>]:
                 <input type="text" id="density" value="2">
                 <button onclick="scatter_particles()">Start simulation</button>
             </p>

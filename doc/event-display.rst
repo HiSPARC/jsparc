@@ -4,7 +4,7 @@ Event display
 =============
 
 This page describes how the `Event display
-<http://data.hisparc.nl/media/jsparc/event-display/>`_ works. With this
+<https://data.hisparc.nl/media/jsparc/event-display/>`_ works. With this
 web application you can see |hisparc| events occuring on a map.
 
 .. _event-display:

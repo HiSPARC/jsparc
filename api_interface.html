@@ -32,7 +32,7 @@
 
             function syntaxHighlight(json) {
                 /* Syntax highlighting for JSON
-                
+
                 from: http://stackoverflow.com/a/7220510/1033535
 
                 */
@@ -98,7 +98,7 @@
 
             function getParamNames(func) {
                 /* Get param names
-                
+
                 from: http://stackoverflow.com/a/9924463/1033535
 
                 */
@@ -110,7 +110,7 @@
                     {result = [];}
                 return result;
             }
-	
+
             $(document).ready(function () {
                 // Animate HiSPARC logo during ajax activity
                 $(document).bind('ajaxStart', function() {
@@ -122,7 +122,7 @@
                 jsparc = $.jsparc();
 
                 var api_list = [];
-                // Get all api functions 
+                // Get all api functions
                 for (var fun in jsparc) {
                     if (fun.slice(0, 4) == 'api_') {
                         api_list.push(fun);}}
@@ -146,7 +146,7 @@
                         inputs = $('#url_options input, #url_options select').each(function() {options.push($(this).val());});
 
                     var url = jsparc[$('#api_urls select').val()].apply(this, options);
-                    
+
                     $('#result_url').text(url);
                     jsparc.get_json(url)
                         .done(function (data) {
@@ -177,7 +177,7 @@
             </div>
             <div id="options">
                 <h3>URL</h3>
-                <pre id="url_options">http://data.hisparc.nl/api/</pre>
+                <pre id="url_options">https://data.hisparc.nl/api/</pre>
             </div>
             <input type='button' value="Execute!" id="execute">
         </div>

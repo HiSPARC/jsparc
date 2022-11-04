@@ -4,7 +4,7 @@ jSparc analysis
 ===============
 
 This page describes the functions of the `jSparc analysis
-<http://data.hisparc.nl/media/jsparc/jsparc.html>`_ web
+<https://data.hisparc.nl/media/jsparc/jsparc.html>`_ web
 application. With this web application you can analyse air showers
 detected by multiple |hisparc| stations.
 

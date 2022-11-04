@@ -6,13 +6,13 @@ jSparc library
 
 This contains the source code for the jSparc JavaScript library, which
 is used for a couple of web applications that can be found here:
-[jSparc](http://data.hisparc.nl/media/jsparc/index.html).
+[jSparc](https://data.hisparc.nl/media/jsparc/index.html).
 
 This project is intended to provide tools for high school students to
 work with HiSPARC data.
 
 Documentation can be found here:
-[jSparc docs](http://docs.hisparc.nl/jsparc/).
+[jSparc docs](https://docs.hisparc.nl/jsparc/).
 
 
 Analysis sessions

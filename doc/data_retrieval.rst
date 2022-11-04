@@ -4,7 +4,7 @@ Data retrieval
 ==============
 
 This page describes the functions of the `Data retrieval
-<http://data.hisparc.nl/media/jsparc/data_retrieval.html>`_ web
+<https://data.hisparc.nl/media/jsparc/data_retrieval.html>`_ web
 application. With this web application you can retrieve |hisparc| data,
 with which you can make plots.
 

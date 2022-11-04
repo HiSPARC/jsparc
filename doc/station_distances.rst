@@ -4,7 +4,7 @@ Station distances
 =================
 
 This page describes the web application `Station distances
-<http://data.hisparc.nl/media/jsparc/station_distances.html>`_. With this
+<https://data.hisparc.nl/media/jsparc/station_distances.html>`_. With this
 simple web application you can easily determine the distances between any two
 |hisparc| stations.
 
@@ -16,7 +16,7 @@ The shown distances is the great-cricle distance between the stations.
 Which means that it accounts for the curvature of the Earth. More information
 about this and the equations used to calculate the distance can be found on
 this page: `Great-circle distance between two points
-<http://www.movable-type.co.uk/scripts/latlong.html>`_.
+<https://www.movable-type.co.uk/scripts/latlong.html>`_.
 
 
 Units
