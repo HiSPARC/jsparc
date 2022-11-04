@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Cyb3r-Jak3/html5validator-action@v7.1.1
+      - uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
           root: .
           css: true
