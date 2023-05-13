@@ -2,7 +2,7 @@ jSparc library
 ==============
 
 [![GPLv3](https://img.shields.io/badge/license-GPLv3-blue)](https://github.com/HiSPARC/jsparc/blob/master/LICENSE)
-[![GitHub Actions](https://img.shields.io/github/checks-status/HiSPARC/jsparc/master)](https://github.com/HiSPARC/jsparc/actions/)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/HiSPARC/jsparc/tests.yml?branch=master)](https://github.com/HiSPARC/jsparc/actions/)
 
 This contains the source code for the jSparc JavaScript library, which
 is used for a couple of web applications that can be found here:
