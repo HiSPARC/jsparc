@@ -1,0 +1,59 @@
+#plots {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#map, #map svg {
+  width: 500px;
+  height: 350px;
+  display: inline-block;
+}
+
+#ldf {
+  display: inline-block;
+}
+
+#map, #ldf {
+  margin: 0 20px;
+}
+
+.station {
+  fill: red;
+  /*-webkit-transform: scale(1.5);
+  transform: scale(1.5);
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;*/
+}
+
+.event {
+  fill: SlateGray;
+  /*-webkit-transform: scale(.8);
+  transform: scale(.8);
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;*/
+}
+
+#front {
+  stroke: red;
+}
+
+.distance {
+  stroke: blue;
+}
+
+#direction {
+  stroke: red;
+}
+
+.distance_label {
+  fill: blue;
+}
+
+.axis .domain,
+.axis .tick line,
+.data_rectangle
+{
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5px;
+}
