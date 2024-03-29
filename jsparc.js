@@ -234,13 +234,10 @@ function makeShowerMap(data) {
 function sendResult() {
     /* Send the analysis result to the server
     */
-    result.session_title = get_coincidence.session_title;
-    result.session_pin = get_coincidence.session_pin;
-    result.student_name = get_coincidence.student_name;
+    result.session_title = 'example';
     $.getJSON(BASE_URL + '/result/', result, function(data) {
         $("#analyseTab").hide();
         window.alert(data.msg + "\nYou are number " + data.rank + ".");
-        // FIXME: This 'reload' should be smarter and remember the Title and PIN (possible probably also the Student name)
         window.location.reload();
     });
 }

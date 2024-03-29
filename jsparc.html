@@ -152,31 +152,14 @@
         // Use local test data
         // url = 'examples/jsparc_data_n3.json';
         // url = 'examples/jsparc_data_n6.json';
-        $.getJSON(url, get_coincidence)
+        $.getJSON(url, {'session_title': 'example'})
             .done(loadData)
             .fail(showError);
     }
 
     function getExample() {
-        $("#sessionTitle").val('example');
-        $("#sessionPin").val('1337');
-        $("#studentName").val('test');
-        get_coincidence.session_title = $("#sessionTitle").val();
-        get_coincidence.session_pin = $("#sessionPin").val();
-        get_coincidence.student_name = $("#studentName").val();
         if (dataflag) {
             retrieveData();}
-    }
-
-    function getData() {
-        if ($("#sessionTitle").val() === "" || $("#sessionPin").val() === "" || $("#studentName").val() === "") {
-            alert("Fill in each field");}
-        else {
-            get_coincidence.session_title = $("#sessionTitle").val();
-            get_coincidence.session_pin = $("#sessionPin").val();
-            get_coincidence.student_name = $("#studentName").val();
-            if (dataflag) {
-                retrieveData();}}
     }
 
     $(function() {
@@ -187,11 +170,6 @@
         $("#sessionHash").val(get_coincidence.session_hash);
 
         $("#exampleButton").click(getExample);
-        $("#dataButton").click(getData);
-
-        $('body').keyup(function (event) {
-            if (event.which === 13) {
-                getData();}});
     });
   </script>
 </head>
@@ -227,15 +205,7 @@
             <a href="index.html">➔ jSparc</a>
         </div>
         <div id="session_form">
-            <form>
-                <table>
-                    <tr><td>Title</td><td><input type="text" id="sessionTitle"></td></tr>
-                    <tr><td>Pin</td><td><input type="text" id="sessionPin"></td></tr>
-                    <tr><td>Name</td><td><input type="text" id="studentName"></td></tr>
-                </table>
-            </form>
-            <input type="button" id="dataButton" value="Get data">
-            <input type="button" id="exampleButton" value="Get example">
+            <input type="button" id="exampleButton" value="Get a coincidence">
         </div>
         <form id="info">
             <table id="coinInfo">
