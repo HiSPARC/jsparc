@@ -7,7 +7,7 @@ jobs:
   htmlvalidation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
           root: .
@@ -17,7 +17,7 @@ jobs:
   jshint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: lts/gallium
@@ -29,7 +29,7 @@ jobs:
     needs: [htmlvalidation, jshint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
