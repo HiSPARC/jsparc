@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Event display &#8212; jSparc 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
+    <link rel="stylesheet" type="text/css" href="_static/hisparc_style.css?v=4fdd9aee" />
+    <script src="_static/documentation_options.js?v=db78e746"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="jSparc analysis" href="jsparc_analysis.html" />
+    <link rel="prev" title="Data retrieval" href="data_retrieval.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="jsparc_analysis.html" title="jSparc analysis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="data_retrieval.html" title="Data retrieval"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">jSparc 0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Event display</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="event-display">
+<h1>Event display<a class="headerlink" href="#event-display" title="Link to this heading">¶</a></h1>
+<p>This page describes how the <a class="reference external" href="https://data.hisparc.nl/media/jsparc/event-display/">Event display</a> works. With this
+web application you can see HiSPARC events occuring on a map.</p>
+<figure class="align-center" id="id3">
+<span id="id2"></span><a class="reference internal image-reference" href="_images/event-display.png"><img alt="_images/event-display.png" src="_images/event-display.png" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The event display for Science Park.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="markers">
+<h2>Markers<a class="headerlink" href="#markers" title="Link to this heading">¶</a></h2>
+<p>The map will show two kinds of markers:</p>
+<ul class="simple">
+<li><p><strong>events</strong> are air showers detected by a single HiSPARC station</p></li>
+<li><p><strong>coincidences</strong> are air showers detected by multiple HiSPARC stations
+simultaneously</p></li>
+</ul>
+<p>Their respective colors are shown in the legend in the topright.</p>
+<figure class="align-center" id="id4">
+<span id="event-display-legend"></span><a class="reference internal image-reference" href="_images/event-display_legend.png"><img alt="_images/event-display_legend.png" src="_images/event-display_legend.png" style="width: 134px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Marker legend.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="choose-cluster">
+<h2>Choose cluster<a class="headerlink" href="#choose-cluster" title="Link to this heading">¶</a></h2>
+<p>In the bottom right of the page is a dropdown menu from which a
+subcluster can be selected. Events and coincidences from the chosen
+subcluster will be shown on the map.</p>
+<p>The chosen subcluster will be set as the location hash of the page. So
+if Amsterdam is chosen the url ends in <code class="docutils literal notranslate"><span class="pre">#amsterdam</span></code>. If the page is
+loaded without a hash it will default to the Science Park cluster,
+automatically setting the hash to that value.</p>
+<figure class="align-center" id="id5">
+<span id="event-display-cluster"></span><a class="reference internal image-reference" href="_images/event-display_cluster.png"><img alt="_images/event-display_cluster.png" src="_images/event-display_cluster.png" style="width: 178px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Menu to choose the cluster.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="json-data">
+<h2>JSON data<a class="headerlink" href="#json-data" title="Link to this heading">¶</a></h2>
+<p>The page works by loading pregenerated JSON data.</p>
+<ul class="simple">
+<li><p>First a station JSON is loaded. This contains a list of stations and
+their locations, and the start and end timestamps of the dataset. The
+start and end timestamps are used to align the individual events and
+coincidences.</p></li>
+<li><p>Then a JSON with a list of events is loaded for each of these stations.
+For each event the exact timestamp and number of particles is given.
+The timestamps are used to playback the events in real-time, since the
+time between consecutive events is known. The number of particles is
+used to determine the size of the marker.</p></li>
+<li><p>Finally a JSON with coincidences between the stations is loaded. This
+contains similar data like the event JSONs, but then for each shower the
+number of particles for each participating station.</p></li>
+</ul>
+<p>In the <a class="reference external" href="https://github.com/HiSPARC/jsparc/tree/master/event-display">source code</a> the
+Python script that creates the JSONs can be found. The JSON data is
+loaded with relative paths, so if ran locally you can supply your own
+data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to use Chrome when running this page locally it needs to be
+started with the <code class="docutils literal notranslate"><span class="pre">--allow-file-access-from-files</span></code> option.</p>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/header.png" alt="Logo of jSparc"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Event display</a><ul>
+<li><a class="reference internal" href="#markers">Markers</a></li>
+<li><a class="reference internal" href="#choose-cluster">Choose cluster</a></li>
+<li><a class="reference internal" href="#json-data">JSON data</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="data_retrieval.html"
+                          title="previous chapter">Data retrieval</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="jsparc_analysis.html"
+                          title="next chapter">jSparc analysis</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/event-display.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="jsparc_analysis.html" title="jSparc analysis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="data_retrieval.html" title="Data retrieval"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">jSparc 0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Event display</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2013, HiSPARC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

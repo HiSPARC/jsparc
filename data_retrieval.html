@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data retrieval &#8212; jSparc 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=279e0f84" />
+    <link rel="stylesheet" type="text/css" href="_static/hisparc_style.css?v=4fdd9aee" />
+    <script src="_static/documentation_options.js?v=db78e746"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Event display" href="event-display.html" />
+    <link rel="prev" title="Welcome to jSparc’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="event-display.html" title="Event display"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to jSparc’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">jSparc 0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Data retrieval</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="data-retrieval">
+<h1>Data retrieval<a class="headerlink" href="#data-retrieval" title="Link to this heading">¶</a></h1>
+<p>This page describes the functions of the <a class="reference external" href="https://data.hisparc.nl/media/jsparc/data_retrieval.html">Data retrieval</a> web
+application. With this web application you can retrieve HiSPARC data,
+with which you can make plots.</p>
+<p>Here is a step by step guide for the functions of the page.</p>
+<section id="get-data">
+<h2>Get data<a class="headerlink" href="#get-data" title="Link to this heading">¶</a></h2>
+<p>The page will be quite empty at first and only show the HiSPARC logo
+and two forms with which you can either download data or load local
+datafiles. Whenever the HiSPARC logo becomes animated, it indicates
+that data is being retrieved from the HiSPARC servers.</p>
+<figure class="align-center" id="id8">
+<span id="id2"></span><a class="reference internal image-reference" href="_images/get_data.png"><img alt="_images/get_data.png" src="_images/get_data.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The two forms to load data and the HiSPARC logo indicating activity.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="download-data">
+<h3>Download data<a class="headerlink" href="#download-data" title="Link to this heading">¶</a></h3>
+<p>If you choose to download data you can first select a HiSPARC station,
+the start and end date (and time) and the type of data you want to get.
+Once you have made your choices click <em>Get Data!</em>.</p>
+</section>
+<section id="local-data">
+<h3>Local data<a class="headerlink" href="#local-data" title="Link to this heading">¶</a></h3>
+<p>If you already have a .tsv file (tab-separated values) on your computer,
+you can load that into the web application. The application will try to
+interpert the filename of the .tsv the following way: <em>[data
+type]-s[station number]-[start date]_[end date]</em>. If the data type is
+one of the types provided by the HiSPARC Public Database the web
+application tries to identify the columns, otherwise it will simply
+give each column a number.</p>
+</section>
+</section>
+<section id="data-overview">
+<h2>Data overview<a class="headerlink" href="#data-overview" title="Link to this heading">¶</a></h2>
+<p>Once the data has been (down)loaded a new section on the website
+appears, giving you and overview of all the datasets that you have. It
+is possible to get multiple datasets, simply use the form again to get
+another.</p>
+<p>For each downloaded dataset you can see the options that were used in
+the form, the number of entries it contains. Each row also has controls
+to choose, preview, download and remove a dataset.</p>
+<figure class="align-center" id="id9">
+<span id="id3"></span><a class="reference internal image-reference" href="_images/data_overview.png"><img alt="_images/data_overview.png" src="_images/data_overview.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">An overview of the loaded datasets.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="controls">
+<h3>Controls<a class="headerlink" href="#controls" title="Link to this heading">¶</a></h3>
+<p>Here you can choose which datasets you wish to use for creating plots by
+selecting them in the <em>Choice</em> columns. The <em>Preview</em> button creates a
+table overview of the dataset. The <em>Download</em> button downloads the dataset
+as a .tsv file (tab-separated), which can be imported in other
+applications like Excel. Finally there is a <em>Remove</em> button, this simply
+removes the dataset from the browser memory.</p>
+</section>
+</section>
+<section id="plot-options">
+<h2>Plot options<a class="headerlink" href="#plot-options" title="Link to this heading">¶</a></h2>
+<p>Once you have chosen at least one dataset (with the <em>Choice</em> column) the
+plot controls appear, with which you can select the type of plots you
+want to create: <em>Scatter</em>, <em>Histogram</em> or a <em>Time series</em>. You can also
+choose whether to display the x and y axes as linear or logarithmic and
+the number of bins for the histogram plot.</p>
+<p>To the right of these options are the available variables from the
+chosen dataset, you can choose which variable to use for the x, and
+which to use for the y-axis. After selecting a plot type which requires
+only one variable, the other axis column will be disabled. For instance
+a histogram requires only x-axis values, the y-axis values are the
+number of counts in each bin, so the y-axis selection will be disabled.</p>
+<p>Once you have made your choices you can click the <em>Create Plot</em> button
+and the plot will be shown in a new section appearing under these
+options. If you wish to create a different plot, simply change the
+options and click <em>Create Plot</em> button again.</p>
+<figure class="align-center" id="id10">
+<span id="id4"></span><a class="reference internal image-reference" href="_images/plot_options.png"><img alt="_images/plot_options.png" src="_images/plot_options.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Options for creating plots and variable lists to select which
+variables to plot.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="interpolation">
+<h3>Interpolation<a class="headerlink" href="#interpolation" title="Link to this heading">¶</a></h3>
+<p>It is possible to get multiple datasets and then select one dataset as
+choice 1 and another as choice 2. When two datasets are chosen the
+variables for each dataset will appear side by side, and variables for
+the x or y axes can be chosen from either dataset. If the x and y data
+are from different datasets the data will be interpolated to match the
+different timestamps. This can cause strange values in some cases,
+especially when the start and end dates for the two datasets do not
+match.</p>
+</section>
+</section>
+<section id="plot">
+<h2>Plot<a class="headerlink" href="#plot" title="Link to this heading">¶</a></h2>
+<p>The plot view appears as soon as you click <em>Create Plot</em>. On the top
+right is a <em>Save image</em> button that will open a new window with a .png
+version of the plot, which can be saved to your pc. Currently there are
+no options to change axis limits (zoom in, move around).</p>
+<figure class="align-center" id="id11">
+<span id="id5"></span><a class="reference internal image-reference" href="_images/plot.png"><img alt="_images/plot.png" src="_images/plot.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">An example plot of barometer data.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="data-preview">
+<h2>Data preview<a class="headerlink" href="#data-preview" title="Link to this heading">¶</a></h2>
+<p>If you click the <em>show</em> button for a dataset this section will show a
+table with some rows of data. Each row shows all variables in the
+dataset for each event. At first a small subset will be shown, since it
+would take the browser to long to display all data rows. You can shows
+more by clicking the line in the middle of the shown data. However, if
+you wish to see all data, it is better to download the data to your pc.</p>
+<figure class="align-center" id="id12">
+<span id="id6"></span><a class="reference internal image-reference" href="_images/data_preview.png"><img alt="_images/data_preview.png" src="_images/data_preview.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The data preview table showing the raw values in the dataset.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="event-traces">
+<h3>Event traces<a class="headerlink" href="#event-traces" title="Link to this heading">¶</a></h3>
+<p>Cosmic-ray events consist of signal measurements from each PMT with a
+scintillator detector. Variables like <em>Pulseheight</em> and <em>Arrival time</em>
+are derived from these signals. These signals are referred to as
+<em>traces</em>. When looking at the data for a cosmic-ray dataset the last
+column is called <em>Traces</em> and will contains <em>show</em> buttons for each
+event. When clicked, the traces are retrieved and them shown in the plot.</p>
+<figure class="align-center" id="id13">
+<span id="id7"></span><a class="reference internal image-reference" href="_images/event_traces.png"><img alt="_images/event_traces.png" src="_images/event_traces.png" style="width: 425px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The traces of a chosen event.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="multiple-detectors">
+<h2>Multiple detectors<a class="headerlink" href="#multiple-detectors" title="Link to this heading">¶</a></h2>
+<p>Depending on your choice of variables a plot may contain datapoints with
+multiple colors, this is because some variables are measured by multiple
+detectors. For cosmic-ray data there are either 2 or 4 detectors for the
+<em>Pulseheights</em>, <em>Integral</em>, <em>Number of mips</em> and <em>Arrival times</em>, the
+colors are respectively black, red, green and blue. For weather data the
+<em>Temperature</em> and <em>Humidity</em> are measured both indoor (black) and
+outdoor (red).</p>
+</section>
+<section id="missing-data">
+<h2>Missing data<a class="headerlink" href="#missing-data" title="Link to this heading">¶</a></h2>
+<p>When a weather sensor is out of duty or a cosmic-ray station has 2
+detectors instead of 4, the missing data will be given the value -999 or
+-1. Those error values are omitted in the plot, preventing distortions
+of the plot limits. A problem can arise when working with temperatures
+that include -1 °C, because the filter will remove it, though it is a
+valid measurement. Luckily a temperature of -1 °C is fairly rare.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/header.png" alt="Logo of jSparc"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Data retrieval</a><ul>
+<li><a class="reference internal" href="#get-data">Get data</a><ul>
+<li><a class="reference internal" href="#download-data">Download data</a></li>
+<li><a class="reference internal" href="#local-data">Local data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-overview">Data overview</a><ul>
+<li><a class="reference internal" href="#controls">Controls</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plot-options">Plot options</a><ul>
+<li><a class="reference internal" href="#interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plot">Plot</a></li>
+<li><a class="reference internal" href="#data-preview">Data preview</a><ul>
+<li><a class="reference internal" href="#event-traces">Event traces</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multiple-detectors">Multiple detectors</a></li>
+<li><a class="reference internal" href="#missing-data">Missing data</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to jSparc’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="event-display.html"
+                          title="next chapter">Event display</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/data_retrieval.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="event-display.html" title="Event display"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to jSparc’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">jSparc 0.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Data retrieval</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2013, HiSPARC.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>
